@@ -2,7 +2,7 @@
 ==========================
 
 该应用采用WebView来实现，提供用户访问东北林业大学教务管理系统。简单的说如同一个定向了的浏览器。
-[Apk下载(进入该界面后，点击raw即可下载！)]()
+[Apk下载(进入该界面后，点击raw即可下载！)](https://github.com/david-loman/WebAppliction/blob/master/jwcglxt_nefu.apk)
 
 ###使用说明
 进入应用后就可以使用了。
