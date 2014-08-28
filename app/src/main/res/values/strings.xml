@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">东林教务管理系统</string>
+    <string name="action_settings">设置</string>
+    <string name="action_exit">退出</string>
+    <string name="action_orientation">屏幕方向</string>
+    <string name="action_otherweb">其他网站</string>
+    <string name="webUrlList">网站列表</string>
+    <string name="nefu.com">东北林业大学</string>
+</resources>

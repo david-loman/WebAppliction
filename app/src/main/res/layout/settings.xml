@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/webUrlList"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/webUrlList"/>
+
+    <Button
+        android:id="@+id/nefu_com"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:textColor="@android:color/holo_blue_light"
+        android:background="@android:color/transparent"
+        android:text="@string/nefu.com"
+        android:visibility="invisible"/>
+
+</LinearLayout>
