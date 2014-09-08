@@ -18,6 +18,6 @@
         android:textColor="@android:color/holo_blue_light"
         android:background="@android:color/transparent"
         android:text="@string/nefu.com"
-        android:visibility="invisible"/>
+       />
 
 </LinearLayout>

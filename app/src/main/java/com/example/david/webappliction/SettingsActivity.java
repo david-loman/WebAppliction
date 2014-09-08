@@ -43,9 +43,8 @@ public class SettingsActivity extends Activity {
         nefuButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(SettingsActivity.this,"功能尚未实现！^_^|||",Toast.LENGTH_SHORT).show();
                 Intent intent=new Intent();
-//                intent.putExtra("URL","http://www.nefu.edu.cn/");
+                intent.putExtra("URL","http://jwcweb.nefu.edu.cn/");
                 setResult(resultCode,intent);
                 finish();
             }
