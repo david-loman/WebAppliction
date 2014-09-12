@@ -7,12 +7,17 @@
         android:orderInCategory="100"
         app:showAsAction="never" />
 
+
     <item android:id="@+id/action_newJwc"
         android:title="@string/action_newJwc"
         android:orderInCategory="100"/>
 
     <item android:id="@+id/action_oldJwc"
         android:title="@string/action_oldJwc"
+        android:orderInCategory="100"/>
+
+    <item android:id="@+id/change"
+        android:title="@string/changes"
         android:orderInCategory="100"/>
 
     <item android:id="@+id/action_exit"

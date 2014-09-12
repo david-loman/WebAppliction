@@ -1,23 +1,156 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:background="#ffcfcfcf"
+    >
 
-    <TextView
-        android:id="@+id/webUrlList"
+   <TableLayout
+       android:id="@+id/system_opt"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:layout_margin="5dp"
+       android:padding="2dp"
+       android:background="#ffffffff"
+
+       android:stretchColumns="1,2">
+       <TableRow >
+           <TextView
+               android:textSize="18sp"
+               android:textStyle="bold"
+               android:text="@string/systemoption"
+               />
+       </TableRow>
+       <TableRow>
+           <TextView
+               android:text="@string/defalut_system"
+               />
+           <Button
+               android:id="@+id/selectNewButton"
+               android:text="@string/newsystem"
+               android:background="@android:color/transparent"
+               />
+           <Button
+               android:id="@+id/selectOldButton"
+               android:text="@string/oldsystem"
+               android:background="@android:color/transparent"
+               />
+       </TableRow>
+       <TableRow>
+           <TextView
+               android:text="@string/loginways"
+               />
+           <Button
+               android:id="@+id/selectNoPswButton"
+               android:text="@string/nopassword"
+               android:background="@android:color/transparent"
+               />
+           <Button
+               android:id="@+id/selectHasPswButton"
+               android:text="@string/needpassword"
+               android:background="@android:color/transparent"
+               />
+       </TableRow>
+       </TableLayout>
+
+    <TableLayout
+        android:id="@+id/user_count"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/webUrlList"/>
+        android:layout_margin="5dp"
+        android:padding="2dp"
+        android:stretchColumns="1"
+        android:layout_below="@+id/system_opt"
+        android:background="#ffffffff">
+
+        <TableRow>
+            <TextView
+                android:text="@string/userinfo"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                />
+        </TableRow>
+
+        <TableRow>
+            <TextView
+                android:text="@string/user"
+                android:gravity="right|center_vertical"
+                />
+            <EditText
+                android:id="@+id/user_count_username"
+                android:hint="@string/usrname"
+                android:inputType="number"
+                android:imeOptions="actionNext"
+                />
+        </TableRow>
+        <TableRow>
+            <TextView
+                android:text="@string/psw"
+                android:gravity="right|center_vertical"
+                />
+            <EditText
+                android:id="@+id/user_count_password"
+                android:hint="@string/password"
+                />
+        </TableRow>
+
+        </TableLayout>
 
     <Button
-        android:id="@+id/nefu_com"
+        android:id="@+id/diyButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="20sp"
-        android:textColor="@android:color/holo_blue_light"
-        android:background="@android:color/transparent"
-        android:text="@string/nefu.com"
-       />
+        android:gravity="left|center_vertical"
+        android:layout_margin="5dp"
+        android:padding="2dp"
+        android:text="@string/diy"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:layout_below="@+id/user_count"
+        android:background="#ffffffff"/>
 
-</LinearLayout>
+    <Button
+        android:id="@+id/developerButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="left|center_vertical"
+        android:layout_margin="5dp"
+        android:padding="2dp"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:text="@string/developer"
+        android:background="#ffffffff"
+        android:layout_below="@+id/diyButton"
+        />
+
+    <Button
+        android:id="@+id/helpButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="left|center_vertical"
+        android:layout_margin="5dp"
+        android:padding="2dp"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:text="@string/help"
+        android:background="#ffffffff"
+        android:layout_below="@+id/developerButton"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/helpButton"
+        android:layout_margin="5dp"
+        android:background="#ffffffff"
+        >
+        <Button
+            android:id="@+id/sureButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:text="@string/sure"
+            />
+
+        </RelativeLayout>
+
+</RelativeLayout>

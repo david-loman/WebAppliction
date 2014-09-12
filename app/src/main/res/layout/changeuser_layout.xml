@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:stretchColumns="1">
+
+    <TableRow>
+        <TextView
+            android:id="@+id/usernameTextView"
+            android:gravity="right|center_vertical"
+            android:layout_margin="3dp"
+            android:padding="3dp"
+            android:text="@string/user"
+            />
+        <EditText
+            android:id="@+id/usernameEditText"
+            android:hint="@string/usrname"
+            android:inputType="number"
+            android:imeOptions="actionNext"
+            />
+    </TableRow>
+    <TableRow>
+        <TextView
+            android:id="@+id/passwordTextView"
+            android:gravity="right|center_vertical"
+            android:layout_margin="3dp"
+            android:padding="3dp"
+            android:text="@string/psw"
+            />
+        <EditText
+            android:id="@+id/passwordEditText"
+            android:hint="@string/password"
+            android:password="true"
+            android:imeOptions="actionGo"
+            />
+    </TableRow>
+</TableLayout>

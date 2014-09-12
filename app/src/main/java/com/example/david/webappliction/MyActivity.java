@@ -2,40 +2,45 @@ package com.example.david.webappliction;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.net.ConnectivityManager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.util.Log;
-import android.util.Xml;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.webkit.CookieManager;
+import android.webkit.CookieSyncManager;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.EditText;
 import android.widget.Toast;
 import org.apache.http.util.EncodingUtils;
-
-import java.security.KeyException;
-
 
 public class MyActivity extends ActionBarActivity {
 
     private final int requestCode = 1;
     private String url = null;
+    private String urlCode=null;
+    private String introUrl=null;
     private WebView webView;
     private ConnectivityManager conn;
+    private SharedPreferences sp;
     private boolean wifi;
     private boolean mobile;
-    private final String name="USERNAME";
-    private final String password="PASSWORD";
-    private final String oldJwcURL = "http://jwcweb.nefu.edu.cn/";
-    private final String newJwcURL="http://jwcnew.nefu.edu.cn/dblydx_jsxsd/";
-    private final String postNewJwcURL ="http://jwcnew.nefu.edu.cn/dblydx_jsxsd/xk/LoginToXk";
+    private final String USERNAME="USERNAME";
+    private final String PASSWORD="PASSWORD";
+    private final String URL="URL";
+    private final String OLDSYSTEM="oldJwcURL";
+    private final String NEWSYSTEM="postNewJwcURL";
+    private final String SYSTEM_NAME="System_name";
+    private final String OLDJWCURL="http://jwcweb.nefu.edu.cn/";
+    private final String DEFALUTJWCURL="http://jwcnew.nefu.edu.cn/dblydx_jsxsd/";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,10 +49,13 @@ public class MyActivity extends ActionBarActivity {
 
         webView = (WebView) findViewById(R.id.myWebView);
 
-        if (savedInstanceState != null) {
-            url = savedInstanceState.getString("url");
-        } else {
-            url = newJwcURL;
+        sp=getSharedPreferences("app",MODE_PRIVATE);
+        urlCode=sp.getString(SYSTEM_NAME,"oldSystem");
+        url=sp.getString(URL,DEFALUTJWCURL);
+        if (urlCode.equals("oldSystem")){
+            introUrl=DEFALUTJWCURL;
+        }else {
+            introUrl=url;
         }
 
         webView.getSettings().setJavaScriptEnabled(true);
@@ -73,10 +81,18 @@ public class MyActivity extends ActionBarActivity {
         super.onResume();
 
         if (cheeckNetWork()) {
-
-//            String postData="USERNAME=20112790&PASSWORD=20112790";
-//            webView.postUrl(url, EncodingUtils.getBytes(postData, "base64"));
-            webView.loadUrl(url);
+            if (urlCode.equals(OLDSYSTEM)){
+                webView.loadUrl(url);
+            }else if (urlCode.equals(NEWSYSTEM)){
+                String name=sp.getString(USERNAME,USERNAME);
+                String psw=sp.getString(PASSWORD,PASSWORD);
+                StringBuffer stringBuffer=new StringBuffer();
+                stringBuffer.append(USERNAME).append("=").append(name).append("&").append(PASSWORD).append("=").append(psw);
+                webView.postUrl(url, EncodingUtils.getBytes(stringBuffer.toString(),"base64"));
+            }else {
+                AlertDialog alertDialog=new AlertDialog.Builder(MyActivity.this).setTitle("错误").setMessage("获取数据出错，请重新启动应用!")
+                        .setPositiveButton("是", null).show();
+            }
         } else {
             AlertDialog checkNetWork = new AlertDialog.Builder(MyActivity.this).setTitle("连接错误")
                     .setMessage("网络未连接请检查网络后访问").setPositiveButton("确定", new DialogInterface.OnClickListener() {
@@ -113,12 +129,19 @@ public class MyActivity extends ActionBarActivity {
                     view.goBack();
                 }else {
                     view.loadUrl("http://www.baidu.com/");
+                    AlertDialog alertDialog=new AlertDialog.Builder(MyActivity.this).setTitle("提示信息").setMessage("是否要退出应用")
+                            .setNegativeButton("取消",null).setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    finish();
+                                }
+                            }).show();
                 }
             }
 
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
-                if (url.equals(oldJwcURL)|| url.equals(newJwcURL)){
+                if (url.equals(introUrl)|| url.equals(DEFALUTJWCURL)){
                     Toast.makeText(MyActivity.this,"页面加载中",Toast.LENGTH_SHORT).show();
                 }
                 super.onPageStarted(view, url, favicon);
@@ -126,7 +149,7 @@ public class MyActivity extends ActionBarActivity {
 
             @Override
             public void onPageFinished(WebView view, String url) {
-                if (url.equals(oldJwcURL) || url.equals(newJwcURL)) {
+                if (url.equals(introUrl) || url.equals(DEFALUTJWCURL)) {
                     Toast.makeText(MyActivity.this, "页面加载完成", Toast.LENGTH_SHORT).show();
                 }
                 super.onPageFinished(view, url);
@@ -140,10 +163,21 @@ public class MyActivity extends ActionBarActivity {
     }
 
     @Override
+    protected void onDestroy() {
+        //清除Cookie信息
+        CookieSyncManager.createInstance(MyActivity.this);
+        CookieSyncManager.getInstance().startSync();
+        CookieManager.getInstance().removeSessionCookie();
+        super.onDestroy();
+    }
+
+    @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if ((keyCode == KeyEvent.KEYCODE_BACK) && webView.canGoBack()) {
             webView.goBack();
             return true;
+        }else if (keyCode ==KeyEvent.KEYCODE_BACK && !webView.canGoBack()){
+            finish();
         }
         return super.onKeyDown(keyCode, event);
     }
@@ -163,15 +197,43 @@ public class MyActivity extends ActionBarActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == R.id.action_settings) {
-            Toast.makeText(getBaseContext(),"目前尚不支持",Toast.LENGTH_SHORT).show();
+            Intent intent =new Intent(MyActivity.this,SettingsActivity.class);
+            startActivity(intent);
         } else if (id == R.id.action_exit) {
             this.finish();
         } else if (id== R.id.action_newJwc){
-            url=newJwcURL;
+            url=DEFALUTJWCURL;
             webView.loadUrl(url);
         }else if (id== R.id.action_oldJwc){
-            url=oldJwcURL;
+            url=OLDJWCURL;
             webView.loadUrl(url);
+        }else if(id==R.id.change){
+
+            LayoutInflater inflater =getLayoutInflater();
+            View loginView=inflater.inflate(R.layout.changeuser_layout,null);
+            final EditText user=(EditText)loginView.findViewById(R.id.usernameEditText);
+            final EditText psw=(EditText)loginView.findViewById(R.id.passwordEditText);
+
+            AlertDialog dialog=new AlertDialog.Builder(MyActivity.this).setTitle("请输入学号、密码").setView(loginView).setNegativeButton("取消", null).setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    String name, psword;
+                    name = user.getText().toString();
+                    psword = psw.getText().toString();
+                    if (name == null || name.length() <= 0 || psw == null || psw.length() <= 0) {
+                        Toast.makeText(MyActivity.this, "请输入完整的信息！", Toast.LENGTH_SHORT).show();
+                    } else {
+                        StringBuffer stringBuffer = new StringBuffer();
+                        stringBuffer.append(USERNAME).append("=").append(name).append("&").append(PASSWORD).append("=").append(psword);
+                        //清除Cookie信息
+                        CookieSyncManager.createInstance(MyActivity.this);
+                        CookieSyncManager.getInstance().startSync();
+                        CookieManager.getInstance().removeSessionCookie();
+                        //加载页面
+                        webView.postUrl("http://jwcnew.nefu.edu.cn/dblydx_jsxsd/xk/LoginToXk", EncodingUtils.getBytes(stringBuffer.toString(), "base64"));
+                    }
+                }
+            }).show();
         }
         return super.onOptionsItemSelected(item);
     }

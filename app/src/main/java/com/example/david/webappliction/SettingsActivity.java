@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
@@ -19,33 +20,33 @@ import java.util.Map;
  */
 public class SettingsActivity extends Activity {
 
-    private Button nefuButton;
-    private final int resultCode =1;
+    private Button commitButton;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.settings);
 
-        nefuButton =(Button)findViewById(R.id.nefu_com);
+        //取消EditText默认的焦点
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN | WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+
+        commitButton=(Button)findViewById(R.id.sureButton);
+        Toast.makeText(SettingsActivity.this,"本页面暂时无法使用！若要修改默认账户，可以在\n“管理”——>“应用管理”中选择本应用\n“清除数据”",Toast.LENGTH_LONG).show();
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-
-
     }
 
     @Override
     protected void onResume() {
         super.onResume();
 
-        nefuButton.setOnClickListener(new View.OnClickListener() {
+        commitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent=new Intent();
-                intent.putExtra("URL","http://jwcweb.nefu.edu.cn/");
-                setResult(resultCode,intent);
+                Intent intent=new Intent(SettingsActivity.this,MyActivity.class);
+                startActivity(intent);
                 finish();
             }
         });
