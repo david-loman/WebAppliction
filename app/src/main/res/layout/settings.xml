@@ -91,6 +91,7 @@
             <EditText
                 android:id="@+id/user_count_password"
                 android:hint="@string/password"
+                android:password="true"
                 />
         </TableRow>
 
