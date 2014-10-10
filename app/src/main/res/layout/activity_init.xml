@@ -10,132 +10,86 @@
         android:layout_margin="5dp"
         android:padding="2dp"
         android:orientation="vertical"
-        android:background="#96ddffc5"
-        >
+        android:background="#96ddffc5">
+
         <TextView
             android:id="@+id/noteTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/note"
-            android:textSize="20sp"/>
+            android:textSize="20sp" />
 
         <TextView
             android:id="@+id/oneTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
-            android:text="@string/one"/>
+            android:text="@string/one" />
 
         <TextView
             android:id="@+id/twoTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
-            android:text="@string/two"/>
+            android:text="@string/two" />
 
         <TextView
             android:id="@+id/threeTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
-            android:text="@string/three"/>
-        </LinearLayout>
+            android:text="@string/three" />
 
-    <RelativeLayout
-        android:id="@+id/default_settings"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="5dp"
-        android:layout_below="@+id/infomatiaonLayout"
-        android:background="#96fefe87"
-        >
-
-        <TableLayout
-            android:id="@+id/default_settings_table"
+        <TextView
+            android:id="@+id/fourTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:stretchColumns="1">
+            android:layout_marginTop="2dp"
+            android:text="@string/four" />
 
-            <TableRow>
-                <TextView
-                    android:id="@+id/default_system"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
-                    android:padding="2dp"
-                    android:text="@string/defalut_system"
-                    />
-                <TextView
-                    android:id="@+id/show_result"
-
-                    />
-            </TableRow>
-        </TableLayout>
-        <TableLayout
-            android:id="@+id/default_settings_detial"
+        <TextView
+            android:id="@+id/fiveTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:stretchColumns="0,1"
-            android:layout_below="@+id/default_settings_table">
-            <TableRow>
-                <Button
-                    android:id="@+id/newsystem"
-                    android:background="@android:color/transparent"
-                    android:padding="2dp"
-                    android:text="@string/newsystem"/>
-                <Button
-                    android:id="@+id/oldsystem"
-                    android:background="@android:color/transparent"
-                    android:padding="2dp"
-                    android:text="@string/oldsystem"/>
-            </TableRow>
-            <TableRow>
-                <TextView
-                    android:id="@+id/userinfo"
-                    android:textSize="14sp"
-                    android:padding="2dp"
-                    android:textStyle="bold"
-                    android:text="@string/userinfo"
-                    />
-            </TableRow>
-            <TableRow>
-                <EditText
-                    android:id="@+id/usrname"
-                    android:padding="2dp"
-                    android:hint="@string/usrname"
-                    android:gravity="left"
-                    android:inputType="number"
-                    android:imeOptions="actionNext"
-                    />
-                <EditText
-                    android:id="@+id/password"
-                    android:padding="2dp"
-                    android:password="true"
-                    android:hint="@string/password"
-                    android:gravity="left"
-                    />
-            </TableRow>
+            android:layout_marginTop="2dp"
+            android:text="@string/five" />
+    </LinearLayout>
 
-            </TableLayout>
-        </RelativeLayout>
 
     <ImageView
         android:id="@+id/picture"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/infomatiaonLayout"
+        android:layout_above="@+id/default_settings_detial"
         android:layout_margin="5dp"
-        android:layout_above="@+id/sure"
-        android:layout_below="@+id/default_settings"
         android:src="@drawable/init_picture"
-        android:background="#96ffe5f5"
-        />
+        android:background="#96ffe5f5" />
 
-    <Button
-        android:id="@+id/sure"
+    <TableLayout
+        android:id="@+id/default_settings_detial"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="5dp"
         android:layout_alignParentBottom="true"
-        android:background="#96d7dcff"
-        android:text="@string/sure"
-        />
+        android:stretchColumns="0,1">
+
+        <TableRow>
+
+            <Button
+                android:id="@+id/newsystem"
+                android:layout_margin="2dp"
+                android:background="#962049c0"
+                android:padding="2dp"
+                android:text="@string/newsystem" />
+
+            <Button
+                android:id="@+id/oldsystem"
+                android:layout_margin="2dp"
+                android:background="#962049c0"
+                android:padding="2dp"
+                android:text="@string/oldsystem" />
+        </TableRow>
+
+
+    </TableLayout>
 </RelativeLayout>

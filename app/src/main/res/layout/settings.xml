@@ -2,100 +2,32 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#ffcfcfcf"
-    >
+    android:background="#ffcfcfcf">
 
-   <TableLayout
-       android:id="@+id/system_opt"
-       android:layout_width="match_parent"
-       android:layout_height="wrap_content"
-       android:layout_margin="5dp"
-       android:padding="2dp"
-       android:background="#ffffffff"
+    <Button
+        android:id="@+id/select_system"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="left|center_vertical"
+        android:layout_margin="5dp"
+        android:padding="2dp"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:text="@string/systemSeleciton"
+        android:background="#ffffffff" />
 
-       android:stretchColumns="1,2">
-       <TableRow >
-           <TextView
-               android:textSize="18sp"
-               android:textStyle="bold"
-               android:text="@string/systemoption"
-               />
-       </TableRow>
-       <TableRow>
-           <TextView
-               android:text="@string/defalut_system"
-               />
-           <Button
-               android:id="@+id/selectNewButton"
-               android:text="@string/newsystem"
-               android:background="@android:color/transparent"
-               />
-           <Button
-               android:id="@+id/selectOldButton"
-               android:text="@string/oldsystem"
-               android:background="@android:color/transparent"
-               />
-       </TableRow>
-       <TableRow>
-           <TextView
-               android:text="@string/loginways"
-               />
-           <Button
-               android:id="@+id/selectNoPswButton"
-               android:text="@string/nopassword"
-               android:background="@android:color/transparent"
-               />
-           <Button
-               android:id="@+id/selectHasPswButton"
-               android:text="@string/needpassword"
-               android:background="@android:color/transparent"
-               />
-       </TableRow>
-       </TableLayout>
-
-    <TableLayout
+    <Button
         android:id="@+id/user_count"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="left|center_vertical"
         android:layout_margin="5dp"
         android:padding="2dp"
-        android:stretchColumns="1"
-        android:layout_below="@+id/system_opt"
-        android:background="#ffffffff">
-
-        <TableRow>
-            <TextView
-                android:text="@string/userinfo"
-                android:textStyle="bold"
-                android:textSize="18sp"
-                />
-        </TableRow>
-
-        <TableRow>
-            <TextView
-                android:text="@string/user"
-                android:gravity="right|center_vertical"
-                />
-            <EditText
-                android:id="@+id/user_count_username"
-                android:hint="@string/usrname"
-                android:inputType="number"
-                android:imeOptions="actionNext"
-                />
-        </TableRow>
-        <TableRow>
-            <TextView
-                android:text="@string/psw"
-                android:gravity="right|center_vertical"
-                />
-            <EditText
-                android:id="@+id/user_count_password"
-                android:hint="@string/password"
-                android:password="true"
-                />
-        </TableRow>
-
-        </TableLayout>
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:text="@string/userinfo"
+        android:background="#ffffffff"
+        android:layout_below="@+id/select_system" />
 
     <Button
         android:id="@+id/diyButton"
@@ -108,7 +40,20 @@
         android:textSize="18sp"
         android:textStyle="bold"
         android:layout_below="@+id/user_count"
-        android:background="#ffffffff"/>
+        android:background="#ffffffff" />
+
+    <Button
+        android:id="@+id/updataButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="left|center_vertical"
+        android:layout_margin="5dp"
+        android:padding="2dp"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:text="@string/updata"
+        android:background="#ffffffff"
+        android:layout_below="@+id/diyButton" />
 
     <Button
         android:id="@+id/developerButton"
@@ -121,8 +66,7 @@
         android:textStyle="bold"
         android:text="@string/developer"
         android:background="#ffffffff"
-        android:layout_below="@+id/diyButton"
-        />
+        android:layout_below="@+id/updataButton" />
 
     <Button
         android:id="@+id/helpButton"
@@ -135,23 +79,62 @@
         android:textStyle="bold"
         android:text="@string/help"
         android:background="#ffffffff"
-        android:layout_below="@+id/developerButton"/>
+        android:layout_below="@+id/developerButton" />
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/helpButton"
         android:layout_margin="5dp"
-        android:background="#ffffffff"
-        >
+        android:background="#ffffffff">
+
+        <TextView
+            android:id="@+id/curren_System"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:background="#ffffffff"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:text="@string/currenSystem" />
+
+        <TextView
+            android:id="@+id/selecd_System"
+            android:layout_toRightOf="@+id/curren_System"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:layout_alignBaseline="@+id/curren_System"
+            android:layout_margin="5dp" />
+
+        <TextView
+            android:id="@+id/curren_User"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/curren_System"
+            android:background="#ffffffff"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:text="@string/currenUser"
+            android:layout_margin="5dp" />
+
+        <TextView
+            android:id="@+id/selecd_User"
+            android:layout_toRightOf="@+id/curren_User"
+            android:layout_below="@+id/selecd_System"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/curren_User"
+            android:textSize="16sp"
+            android:layout_margin="5dp" />
+
         <Button
             android:id="@+id/sureButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:text="@string/sure"
-            />
+            android:text="@string/sure" />
 
-        </RelativeLayout>
+    </RelativeLayout>
 
 </RelativeLayout>

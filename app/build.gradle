@@ -6,10 +6,10 @@ android {
 
     defaultConfig {
         applicationId "com.example.david.webappliction"
-        minSdkVersion 8
-        targetSdkVersion 20
+        minSdkVersion 9
+        targetSdkVersion 19
         versionCode 1
-        versionName "0.1.2"
+        versionName "0.1.3"
     }
     buildTypes {
         release {

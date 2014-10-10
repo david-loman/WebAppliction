@@ -2,61 +2,70 @@ package com.example.david.webappliction;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.net.ConnectivityManager;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.KeyEvent;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
-import android.view.WindowManager;
-import android.widget.Button;
+import android.webkit.CookieManager;
+import android.webkit.CookieSyncManager;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.EditText;
-import android.widget.ShareActionProvider;
-import android.widget.TextView;
+import android.widget.Toast;
 
-/**
- * Created by David on 2014/9/9.
- */
+import org.apache.http.util.EncodingUtils;
+
 public class MainActivity extends Activity {
 
-    private SharedPreferences sp = null;
-    private Button oldSystem = null;
-    private Button newSystem = null;
-    private Button sureButton = null;
-    private TextView defalutSystem = null;
-    private EditText username = null;
-    private EditText password = null;
-    private String url = null;
-    private String usernameValue = null;
-    private String passwordValue = null;
-    private String URLCODE = "noClick";
-    private boolean isOK = false;
-
+    private WebView webView;
+    private final int requestCode = 1;
+    private String USERNAME = "USERNAME";
+    private String PASSWORD = "PASSWORD";
+    private String systemUrl = null;
+    private String systemName = null;
+    private String visitUrl = null;
+    private ConnectivityManager conn;
+    private SharedPreferences sp;
+    private boolean wifi;
+    private boolean mobile;
+    private String defalutInfo = "hello";
+    private String myURL = "http://davidloman.net";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        sp = getSharedPreferences("app", MODE_PRIVATE);
-        if (sp.getString("System_name", "old").equals("old")) {
-            setContentView(R.layout.activity_init);
-            oldSystem = (Button) findViewById(R.id.oldsystem);
-            newSystem = (Button) findViewById(R.id.newsystem);
-            defalutSystem = (TextView) findViewById(R.id.show_result);
-            username = (EditText) findViewById(R.id.usrname);
-            password = (EditText) findViewById(R.id.password);
-            sureButton = (Button) findViewById(R.id.sure);
-
-            //取消EditText默认的焦点
-            getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN | WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
-
-            url = "http://jwcnew.nefu.edu.cn/dblydx_jsxsd/xk/LoginToXk";
-            URLCODE="postNewJwcURL";
-            defalutSystem.setText("新教务系统");
-        } else {
-            Intent intent = new Intent(MainActivity.this, MyActivity.class);
-            startActivity(intent);
-            finish();
+        setContentView(R.layout.activity_my);
+        //检查更新
+        if (checkUpdata()) {
+            showUpdataDialog();
         }
+
+        webView = (WebView) findViewById(R.id.myWebView);
+
+        sp = getSharedPreferences(StartActivity.INFOAPP, MODE_PRIVATE);
+        systemName = sp.getString(StartActivity.SYSTEM, defalutInfo);
+        systemUrl = sp.getString(StartActivity.URL, myURL);
+        if (systemName.equals(defalutInfo)) {
+            Toast.makeText(this, "数据加载错误，请重启应用", Toast.LENGTH_SHORT).show();
+        } else {
+            visitUrl = systemUrl;
+        }
+
+        webView.getSettings().setJavaScriptEnabled(true);
+        webView.getSettings().setBuiltInZoomControls(true);
+        webView.getSettings().setDisplayZoomControls(false);
+        webView.getSettings().setUseWideViewPort(true);
+        webView.getSettings().setLoadWithOverviewMode(true);
+
     }
 
     @Override
@@ -65,59 +74,243 @@ public class MainActivity extends Activity {
     }
 
     @Override
+    protected void onRestart() {
+        super.onRestart();
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
 
-        oldSystem.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                url = "http://jwcweb.nefu.edu.cn/";
-                URLCODE = "oldJwcURL";
-                defalutSystem.setText("旧教务系统");
+        if (cheeckNetWork()) {
+            if (systemName.equals(StartActivity.OLDSYSTEM)) {
+                webView.loadUrl(visitUrl);
+            } else if (systemName.equals(StartActivity.NEWSYSTEM)) {
+                String name = sp.getString(StartActivity.USERNAME, StartActivity.USERNAME);
+                String psw = sp.getString(StartActivity.PASSWORD, StartActivity.PASSWORD);
+                StringBuffer stringBuffer = new StringBuffer();
+                stringBuffer.append(USERNAME).append("=").append(name).append("&").append(PASSWORD).append("=").append(psw);
+                webView.postUrl(visitUrl, EncodingUtils.getBytes(stringBuffer.toString(), "base64"));
+            } else {
+                AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).setTitle("错误").setMessage("数据加载错误，请重启应用!")
+                        .setPositiveButton("是", null).show();
             }
-        });
+        } else {
+            AlertDialog checkNetWork = new AlertDialog.Builder(MainActivity.this).setTitle("连接错误")
+                    .setMessage("网络未连接请检查网络后访问").setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            finish();
+                        }
+                    }).show();
+        }
 
-        newSystem.setOnClickListener(new View.OnClickListener() {
+        webView.setWebViewClient(new WebViewClient() {
             @Override
-            public void onClick(View view) {
-                url = "http://jwcnew.nefu.edu.cn/dblydx_jsxsd/xk/LoginToXk";
-                URLCODE = "postNewJwcURL";
-                defalutSystem.setText("新教务系统");
-            }
-        });
-
-        sureButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                usernameValue = username.getText().toString();
-                passwordValue = password.getText().toString();
-                if (URLCODE.equals("postNewJwcURL") && (usernameValue == null || usernameValue.length() <= 0 || password == null || password.length() <= 0)) {
-                    AlertDialog dialog = new AlertDialog.Builder(MainActivity.this).setTitle("设置信息错误").setMessage("请输入学号与密码")
-                            .setPositiveButton("确认", null).show();
-                    isOK = false;
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                view.setInitialScale(39);
+                if (cheeckNetWork()) {
+                    webView.loadUrl(url);
                 } else {
-                    SharedPreferences.Editor editor = sp.edit();
-                    editor.putString("System_name", URLCODE);
-                    editor.putString("URL", url);
-                    if (URLCODE.equals("postNewJwcURL")) {
+                    AlertDialog checkNetWork = new AlertDialog.Builder(MainActivity.this).setTitle("连接错误")
+                            .setMessage("网络未连接请检查网络后访问").setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    finish();
+                                }
+                            }).show();
 
-                        editor.putString("USERNAME", usernameValue);
-                        editor.putString("PASSWORD", passwordValue);
-                    } else {
-                        editor.putString("USERNAME", "0");
-                        editor.putString("PASSWORD", "0");
-                    }
-                    editor.commit();
-                    isOK = true;
                 }
-                if (isOK) {
-                    Intent intent = new Intent(MainActivity.this, MyActivity.class);
-                    startActivity(intent);
-                    finish();
-                }
+                return true;
+            }
 
+            @Override
+            public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
+                Toast.makeText(MainActivity.this, "连接错误，请检查该链接是否可用", Toast.LENGTH_SHORT).show();
+                if (view.canGoBack()) {
+                    view.goBack();
+                } else {
+                    view.loadUrl("http://www.baidu.com/");
+                    AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).setTitle("提示信息").setMessage("是否要退出应用")
+                            .setNegativeButton("取消", null).setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    finish();
+                                }
+                            }).show();
+                }
+            }
+
+            @Override
+            public void onPageStarted(WebView view, String url, Bitmap favicon) {
+                if (visitUrl.equals(StartActivity.NEWJWCURL) || visitUrl.equals(StartActivity.OLSJWCURL)) {
+                    Toast.makeText(MainActivity.this, "页面加载中", Toast.LENGTH_SHORT).show();
+                }
+                super.onPageStarted(view, url, favicon);
+            }
+
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                if (visitUrl.equals(StartActivity.NEWJWCURL) || visitUrl.equals(StartActivity.OLSJWCURL)) {
+                    Toast.makeText(MainActivity.this, "页面加载完成", Toast.LENGTH_SHORT).show();
+                }
+                super.onPageFinished(view, url);
             }
         });
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
+
+    @Override
+    protected void onDestroy() {
+        //清除Cookie信息
+        CookieSyncManager.createInstance(MainActivity.this);
+        CookieSyncManager.getInstance().startSync();
+        CookieManager.getInstance().removeSessionCookie();
+        super.onDestroy();
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if ((keyCode == KeyEvent.KEYCODE_BACK) && webView.canGoBack()) {
+            webView.goBack();
+            return true;
+        } else if (keyCode == KeyEvent.KEYCODE_BACK && !webView.canGoBack()) {
+            finish();
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+    //菜单选项
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.my, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+        if (id == R.id.action_settings) {
+            //清除Cookie信息
+            CookieSyncManager.createInstance(MainActivity.this);
+            CookieSyncManager.getInstance().startSync();
+            CookieManager.getInstance().removeSessionCookie();
+
+            Intent intent = new Intent(MainActivity.this, MenuActivity.class);
+            intent.putExtra(StartActivity.SYSTEM, systemName);
+            startActivityForResult(intent, 1);
+        } else if (id == R.id.action_exit) {
+            this.finish();
+        } else if (id == R.id.action_oldJwc) {
+            visitUrl = StartActivity.OLSJWCURL;
+            webView.loadUrl(visitUrl);
+        } else if (id == R.id.change) {
+
+            LayoutInflater inflater = getLayoutInflater();
+            View loginView = inflater.inflate(R.layout.changeuser_layout, null);
+            final EditText user = (EditText) loginView.findViewById(R.id.usernameEditText);
+            final EditText psw = (EditText) loginView.findViewById(R.id.passwordEditText);
+
+            AlertDialog dialog = new AlertDialog.Builder(MainActivity.this).setTitle("请输入学号、密码").setView(loginView).setNegativeButton("取消", null).setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    String name, psword;
+                    name = user.getText().toString();
+                    psword = psw.getText().toString();
+                    if (name == null || name.length() <= 0 || psw == null || psw.length() <= 0) {
+                        Toast.makeText(MainActivity.this, "请输入完整的信息！", Toast.LENGTH_SHORT).show();
+                    } else {
+                        StringBuffer stringBuffer = new StringBuffer();
+                        stringBuffer.append(USERNAME).append("=").append(name).append("&").append(PASSWORD).append("=").append(psword);
+                        //清除Cookie信息
+                        CookieSyncManager.createInstance(MainActivity.this);
+                        CookieSyncManager.getInstance().startSync();
+                        CookieManager.getInstance().removeSessionCookie();
+                        //加载页面
+                        webView.postUrl(StartActivity.NEWJWCURL, EncodingUtils.getBytes(stringBuffer.toString(), "base64"));
+                    }
+                }
+            }).show();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode > 0) {
+            Toast.makeText(this, "设置已更改", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, "设置未更改", Toast.LENGTH_SHORT).show();
+        }
+
+        if (resultCode == 1) {
+            systemName = StartActivity.NEWSYSTEM;
+            systemUrl = StartActivity.NEWJWCURL;
+        }
+
+        if (resultCode == 2) {
+            systemName = StartActivity.OLDSYSTEM;
+            systemUrl = StartActivity.OLSJWCURL;
+        }
+        visitUrl=systemUrl;
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putString("url", visitUrl);
+    }
+
+    private boolean cheeckNetWork() {
+        conn = (ConnectivityManager) getSystemService(Activity.CONNECTIVITY_SERVICE);
+        wifi = conn.getNetworkInfo(ConnectivityManager.TYPE_WIFI).isConnected();
+        mobile = conn.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).isConnected();
+        return (wifi || mobile);
+    }
+
+    private boolean checkUpdata() {
+
+        boolean canUpdata = false;
+        SharedPreferences sp = getSharedPreferences(StartActivity.UPDATAAPP, MODE_PRIVATE);
+        if (sp.getBoolean(StartActivity.CANUPDATA, false) && (sp.getInt(StartActivity.SHOWINFO, 2) <= 1)) {
+            canUpdata = true;
+        }
+        return canUpdata;
+    }
+
+    private String getUpdataUrl() {
+
+        String updataUrl = null;
+        SharedPreferences sharedPreferences = getSharedPreferences(StartActivity.UPDATAAPP, MODE_PRIVATE);
+        updataUrl = sharedPreferences.getString(StartActivity.URL, myURL);
+        return updataUrl;
+    }
+
+    private void showUpdataDialog() {
+
+        SharedPreferences sp = getSharedPreferences(StartActivity.UPDATAAPP, MODE_PRIVATE);
+        String infomation = sp.getString(StartActivity.VERSION, "0.0.0") + "\n"
+                + "1. " + sp.getString("one", "Null") + "\n"
+                + "2. " + sp.getString("two", "Null") + "\n"
+                + "3. " + sp.getString("three", "Null") + "\n\n"
+                + "是否更新？";
+
+        AlertDialog dialog = new AlertDialog.Builder(MainActivity.this).setTitle("更新提醒").setMessage(infomation).setNegativeButton("等等", null)
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        String path = getUpdataUrl();
+                        Uri uri = Uri.parse(path);
+                        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                        startActivity(intent);
+                    }
+                }).show();
+    }
 }
