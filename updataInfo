@@ -1,9 +1,9 @@
 ﻿{ 
-    "version":"0.1.3",
-    "url":"https://github.com/david-loman/WebAppliction/raw/master/jwcglxt_nefu.apk",
+    "version":"0.5.3",
+    "url":"http://davidloman.qiniudn.com/jwc%2Fjwcglxt_nefu.apk",
     "info":{
-        "one":"对UI进行了美化。",
-        "two":"程序功能有所调整，方便大家使用。",
-        "three":"加入了检查更新的功能，如果更新就会有提醒。"
+        "one":"修复设置中部分bug",
+        "two":"对引导界面的UI美化",
+        "three":"改善交互体验"
     }
 }

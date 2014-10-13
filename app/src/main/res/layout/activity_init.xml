@@ -63,7 +63,8 @@
         android:layout_below="@+id/infomatiaonLayout"
         android:layout_above="@+id/default_settings_detial"
         android:layout_margin="5dp"
-        android:src="@drawable/init_picture"
+        android:scaleType="fitXY"
+        android:src="@drawable/donglin"
         android:background="#96ffe5f5" />
 
     <TableLayout

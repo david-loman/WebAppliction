@@ -173,7 +173,6 @@ public class StartActivity extends Activity {
             JSONObject jsonObject = new JSONObject(jsonString);
             JSONObject childObject = jsonObject.getJSONObject(INFOMATION);
             versionName=jsonObject.getString(VERSION);
-            editor.putString(VERSION,versionName);
             editor.putString(URL, jsonObject.getString(URL));
             editor.putString("one", childObject.getString("one"));
             editor.putString("two", childObject.getString("two"));
@@ -188,8 +187,13 @@ public class StartActivity extends Activity {
                 editor.putBoolean(CANUPDATA,false);
             }else{
                 editor.putBoolean(CANUPDATA,true);
-                editor.putInt(SHOWINFO, sharedPreferences.getInt(SHOWINFO, 0) + 1);
+                if ( !versionName.equals(sharedPreferences.getString(VERSION,VERSION)) ) {
+                    editor.putInt(SHOWINFO, 0);
+                }else {
+                    editor.putInt(SHOWINFO,sharedPreferences.getInt(SHOWINFO,0)+1);
+                }
             }
+            editor.putString(StartActivity.VERSION,versionName);
             //提交编辑
             editor.commit();
             hasDone = true;

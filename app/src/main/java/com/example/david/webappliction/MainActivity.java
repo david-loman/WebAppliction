@@ -20,6 +20,7 @@ import android.webkit.CookieSyncManager;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import org.apache.http.util.EncodingUtils;
@@ -27,6 +28,7 @@ import org.apache.http.util.EncodingUtils;
 public class MainActivity extends Activity {
 
     private WebView webView;
+    private ProgressBar progressBar;
     private final int requestCode = 1;
     private String USERNAME = "USERNAME";
     private String PASSWORD = "PASSWORD";
@@ -50,10 +52,12 @@ public class MainActivity extends Activity {
         }
 
         webView = (WebView) findViewById(R.id.myWebView);
+        progressBar=(ProgressBar)findViewById(R.id.progressBar);
 
         sp = getSharedPreferences(StartActivity.INFOAPP, MODE_PRIVATE);
         systemName = sp.getString(StartActivity.SYSTEM, defalutInfo);
         systemUrl = sp.getString(StartActivity.URL, myURL);
+
         if (systemName.equals(defalutInfo)) {
             Toast.makeText(this, "数据加载错误，请重启应用", Toast.LENGTH_SHORT).show();
         } else {
@@ -144,7 +148,10 @@ public class MainActivity extends Activity {
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
                 if (visitUrl.equals(StartActivity.NEWJWCURL) || visitUrl.equals(StartActivity.OLSJWCURL)) {
-                    Toast.makeText(MainActivity.this, "页面加载中", Toast.LENGTH_SHORT).show();
+
+                    if ( progressBar.getVisibility() != View.VISIBLE){
+                        progressBar.setVisibility(View.VISIBLE);
+                    }
                 }
                 super.onPageStarted(view, url, favicon);
             }
@@ -152,7 +159,10 @@ public class MainActivity extends Activity {
             @Override
             public void onPageFinished(WebView view, String url) {
                 if (visitUrl.equals(StartActivity.NEWJWCURL) || visitUrl.equals(StartActivity.OLSJWCURL)) {
-                    Toast.makeText(MainActivity.this, "页面加载完成", Toast.LENGTH_SHORT).show();
+
+                    if ( progressBar.getVisibility() == View.VISIBLE){
+                        progressBar.setVisibility(View.GONE);
+                    }
                 }
                 super.onPageFinished(view, url);
             }
@@ -279,7 +289,7 @@ public class MainActivity extends Activity {
 
         boolean canUpdata = false;
         SharedPreferences sp = getSharedPreferences(StartActivity.UPDATAAPP, MODE_PRIVATE);
-        if (sp.getBoolean(StartActivity.CANUPDATA, false) && (sp.getInt(StartActivity.SHOWINFO, 2) <= 1)) {
+        if (sp.getBoolean(StartActivity.CANUPDATA, false) && (sp.getInt(StartActivity.SHOWINFO, 0) < 3)) {
             canUpdata = true;
         }
         return canUpdata;
