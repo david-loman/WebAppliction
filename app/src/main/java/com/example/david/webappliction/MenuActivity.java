@@ -117,7 +117,7 @@ public class MenuActivity extends Activity {
                 Intent sendIntent =new Intent(Intent.ACTION_SEND);
                 sendIntent.setType("text/plain");
                 sendIntent.putExtra(Intent.EXTRA_SUBJECT,"分享");
-                sendIntent.putExtra(Intent.EXTRA_TEXT,"Test for it!");
+                sendIntent.putExtra(Intent.EXTRA_TEXT,"便捷登录教务处，你也可以做到的，应用下载：http://davidloman.net/about/");
                 startActivity(Intent.createChooser(sendIntent,"分享到"));
             }
         });
