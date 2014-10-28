@@ -81,6 +81,19 @@
         android:background="#ffffffff"
         android:layout_below="@+id/developerButton" />
 
+    <Button
+        android:id="@+id/shareButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="left|center_vertical"
+        android:layout_margin="5dp"
+        android:padding="2dp"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:text="分享"
+        android:background="#ffffffff"
+        android:layout_below="@+id/developerButton" />
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"

@@ -23,7 +23,7 @@ public class MenuActivity extends Activity {
 
     private Button commitButton;
     private Button systemButton, userButton;
-    private Button diyButton, devButton, helpButton;
+    private Button diyButton, devButton, helpButton,shareBuuton;
     private Button updataButton;
     private TextView userTextView, systemTextView;
 
@@ -47,6 +47,7 @@ public class MenuActivity extends Activity {
         updataButton = (Button) findViewById(R.id.updataButton);
         devButton = (Button) findViewById(R.id.developerButton);
         helpButton = (Button) findViewById(R.id.helpButton);
+        shareBuuton=(Button)findViewById(R.id.shareButton);
         userTextView = (TextView) findViewById(R.id.selecd_User);
         systemTextView = (TextView) findViewById(R.id.selecd_System);
         Intent intent = getIntent();
@@ -106,6 +107,18 @@ public class MenuActivity extends Activity {
             @Override
             public void onClick(View view) {
                 Toast.makeText(MenuActivity.this, "需要帮助请访问:https://github.com/david-loman/WebAppliction", Toast.LENGTH_LONG).show();
+            }
+        });
+
+        shareBuuton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //调用系统分享功能
+                Intent sendIntent =new Intent(Intent.ACTION_SEND);
+                sendIntent.setType("text/plain");
+                sendIntent.putExtra(Intent.EXTRA_SUBJECT,"分享");
+                sendIntent.putExtra(Intent.EXTRA_TEXT,"Test for it!");
+                startActivity(Intent.createChooser(sendIntent,"分享到"));
             }
         });
 
