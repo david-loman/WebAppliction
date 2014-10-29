@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="开发者： David Lin"
+        android:layout_margin="2dp"
+        android:textStyle="bold"
+        android:textSize="16sp"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="邮箱： linxiangpeng92@gmail.com"
+        android:layout_margin="2dp"
+        android:textStyle="bold"
+        android:textSize="16sp"/>
+
+    <Button
+        android:id="@+id/weibo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="2dp"
+        android:gravity="center"
+        android:background="@android:color/transparent"
+        android:textStyle="bold"
+        android:textSize="16sp"
+        android:text="关注我的微博"/>
+
+    <Button
+        android:id="@+id/zhihu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="2dp"
+        android:gravity="center"
+        android:background="@android:color/transparent"
+        android:textStyle="bold"
+        android:textSize="16sp"
+        android:text="关注我的知乎"/>
+
+    <Button
+        android:id="@+id/zhuye"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="2dp"
+        android:gravity="center"
+        android:background="@android:color/transparent"
+        android:textStyle="bold"
+        android:textSize="16sp"
+        android:text="关注我的主页"/>
+</LinearLayout>

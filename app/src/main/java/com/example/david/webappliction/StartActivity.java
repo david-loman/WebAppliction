@@ -84,7 +84,7 @@ public class StartActivity extends Activity {
 
     private class DownloadThread extends Thread {
 
-        private String url = new String("https://raw.githubusercontent.com/david-loman/WebAppliction/master/updataInfo");
+        private String url = new String("http://jwcglxt.qiniudn.com/updataInfo");
         private boolean hasgetInfo = false;
         private StringBuffer stringBuffer = new StringBuffer();
         private int count = 0;

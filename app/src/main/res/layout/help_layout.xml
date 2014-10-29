@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="2dp"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:text="1.如何退出该应用？"
+        />
+
+    <TextView
+        android:layout_margin="2dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="通过 返回键 或者 菜单 中的 退出 便可以退出应用了"
+        />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="2dp"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:text="2.为什么页面加载了很久都没有反应？"
+        />
+
+    <TextView
+        android:layout_margin="2dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="页面加载的速度受页面本身，网速等影响，当加载页面时间过长时，可以看看网络是否联通，是否是第一次登陆等。也可等待一定时间在使用"
+        />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="2dp"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:text="3.第一次使用时我的账户信息输错了，如何解决？"
+        />
+
+    <TextView
+        android:layout_margin="2dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="通过 设置 中的 系统选择 与 账户信息 可以修改默认登录信息"
+        />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="2dp"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:text="4.我想使用该应用登录又不希望修改默认登录信息？"
+        />
+
+    <TextView
+        android:layout_margin="2dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="新教务系统可以通过菜单中的 切换用户 来实现登录，旧教务系统可以通过菜单中的 旧教务系统 登录"
+        />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="2dp"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:text="5.为什么我安装不了应用？"
+        />
+
+    <TextView
+        android:layout_margin="2dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="如果之前有安装过该应用，请删除已经安装的那个应用再安装！"
+        />
+</LinearLayout>

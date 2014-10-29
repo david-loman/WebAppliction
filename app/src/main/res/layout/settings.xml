@@ -92,12 +92,12 @@
         android:textStyle="bold"
         android:text="分享"
         android:background="#ffffffff"
-        android:layout_below="@+id/developerButton" />
+        android:layout_below="@+id/helpButton" />
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/helpButton"
+        android:layout_below="@+id/shareButton"
         android:layout_margin="5dp"
         android:background="#ffffffff">
 

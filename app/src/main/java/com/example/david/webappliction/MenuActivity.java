@@ -16,6 +16,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.zip.Inflater;
+
 /**
  * Created by David on 2014/8/28.
  */
@@ -99,14 +101,14 @@ public class MenuActivity extends Activity {
         devButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AlertDialog showMsgDialog = new AlertDialog.Builder(MenuActivity.this).setTitle("开发者信息").setMessage("应用地址：https://github.com/david-loman/WebAppliction\n\n联系开发者\n个人网站:http://davidloman.net\nGitHub:https://github.com/david-loman").setPositiveButton("确定", null).show();
+                developer();
             }
         });
 
         helpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(MenuActivity.this, "需要帮助请访问:https://github.com/david-loman/WebAppliction", Toast.LENGTH_LONG).show();
+                help();
             }
         });
 
@@ -117,7 +119,7 @@ public class MenuActivity extends Activity {
                 Intent sendIntent =new Intent(Intent.ACTION_SEND);
                 sendIntent.setType("text/plain");
                 sendIntent.putExtra(Intent.EXTRA_SUBJECT,"分享");
-                sendIntent.putExtra(Intent.EXTRA_TEXT,"便捷登录教务处，你也可以做到的，应用下载：http://davidloman.net/about/");
+                sendIntent.putExtra(Intent.EXTRA_TEXT, "便捷登录教务处，你也可以做到的，应用下载：http://davidloman.net/about/");
                 startActivity(Intent.createChooser(sendIntent,"分享到"));
             }
         });
@@ -271,5 +273,59 @@ public class MenuActivity extends Activity {
         selectSystem = currenSystem;
     }
 
+    private void help (){
+        LayoutInflater inflater=getLayoutInflater();
+        View view=inflater.inflate(R.layout.help_layout,null);
+        AlertDialog dialog =new AlertDialog.Builder(MenuActivity.this)
+                .setTitle("帮助信息").setView(view)
+                .setNegativeButton("更多", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Uri uri = Uri.parse("https://github.com/david-loman/WebAppliction/blob/master/%E5%B8%AE%E5%8A%A9%E6%96%87%E6%A1%A3.md");
+                        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                        startActivity(intent);
+                    }
+                }).setPositiveButton("确定", null).show();
+    }
 
+    private void developer (){
+        Button weiboButton ,zhihuButton,zhuyeButton;
+        LayoutInflater inflater=getLayoutInflater();
+        View view=inflater.inflate(R.layout.dev_layout,null);
+        weiboButton=(Button)view.findViewById(R.id.weibo);
+        zhihuButton=(Button)view.findViewById(R.id.zhihu);
+        zhuyeButton=(Button)view.findViewById(R.id.zhuye);
+
+        AlertDialog dialog=new AlertDialog.Builder(MenuActivity.this)
+                .setTitle("开发者信息").setView(view).setPositiveButton("确定",null)
+                .show();
+
+        weiboButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Uri uri = Uri.parse("http://weibo.com/linxiangpeng1992");
+                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                startActivity(intent);
+            }
+        });
+
+
+        zhihuButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Uri uri = Uri.parse("http://www.zhihu.com/people/david-lin-92");
+                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                startActivity(intent);
+            }
+        });
+
+        zhuyeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Uri uri = Uri.parse("http://davidloman.net");
+                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                startActivity(intent);
+            }
+        });
+    }
 }
