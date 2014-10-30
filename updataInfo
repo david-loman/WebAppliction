@@ -1,9 +1,0 @@
-﻿{ 
-    "version":"0.7.1",
-    "url":"http://jwcglxt.qiniudn.com/jwcglxt_nefu_v.0.7.1.apk",
-    "info":{
-        "one":"将应用默认安装在SD卡中，节省内部存储空间",
-        "two":"添加基于系统的分享功能，可以更方便的分享该应用",
-        "three":"优化了系统UI"
-    }
-}

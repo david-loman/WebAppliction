@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.InputType;
+import android.text.method.HideReturnsTransformationMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +18,13 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.zip.Inflater;
 
 /**
@@ -25,7 +34,7 @@ public class MenuActivity extends Activity {
 
     private Button commitButton;
     private Button systemButton, userButton;
-    private Button diyButton, devButton, helpButton,shareBuuton;
+    private Button diyButton, devButton, helpButton, shareBuuton;
     private Button updataButton;
     private TextView userTextView, systemTextView;
 
@@ -49,7 +58,7 @@ public class MenuActivity extends Activity {
         updataButton = (Button) findViewById(R.id.updataButton);
         devButton = (Button) findViewById(R.id.developerButton);
         helpButton = (Button) findViewById(R.id.helpButton);
-        shareBuuton=(Button)findViewById(R.id.shareButton);
+        shareBuuton = (Button) findViewById(R.id.shareButton);
         userTextView = (TextView) findViewById(R.id.selecd_User);
         systemTextView = (TextView) findViewById(R.id.selecd_System);
         Intent intent = getIntent();
@@ -83,7 +92,7 @@ public class MenuActivity extends Activity {
         diyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(MenuActivity.this, "该功能未实现!", Toast.LENGTH_SHORT).show();
+                DIY();
             }
         });
 
@@ -105,6 +114,19 @@ public class MenuActivity extends Activity {
             }
         });
 
+        devButton.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+
+                AlertDialog dialog = new AlertDialog.Builder(MenuActivity.this)
+                        .setTitle("致敬").setMessage("感谢的图书馆A区四楼的那位女生，正是你的存在，让我能够将这个项目坚持下来，谢谢你")
+                        .setPositiveButton("Good Luck", null)
+                        .show();
+
+                return true;
+            }
+        });
+
         helpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -116,11 +138,11 @@ public class MenuActivity extends Activity {
             @Override
             public void onClick(View v) {
                 //调用系统分享功能
-                Intent sendIntent =new Intent(Intent.ACTION_SEND);
+                Intent sendIntent = new Intent(Intent.ACTION_SEND);
                 sendIntent.setType("text/plain");
-                sendIntent.putExtra(Intent.EXTRA_SUBJECT,"分享");
+                sendIntent.putExtra(Intent.EXTRA_SUBJECT, "分享");
                 sendIntent.putExtra(Intent.EXTRA_TEXT, "便捷登录教务处，你也可以做到的，应用下载：http://davidloman.net/about/");
-                startActivity(Intent.createChooser(sendIntent,"分享到"));
+                startActivity(Intent.createChooser(sendIntent, "分享到"));
             }
         });
 
@@ -240,10 +262,10 @@ public class MenuActivity extends Activity {
             }
         }
         if (selectSystem.equals(StartActivity.NEWSYSTEM)) {
-           if ( !sp.getString(StartActivity.USERNAME,StartActivity.USERNAME).equals(userTextView.getText().toString()) ){
-               editor.putString(StartActivity.USERNAME,userTextView.getText().toString());
-               editor.putString(StartActivity.PASSWORD,psword);
-           }
+            if (!sp.getString(StartActivity.USERNAME, StartActivity.USERNAME).equals(userTextView.getText().toString())) {
+                editor.putString(StartActivity.USERNAME, userTextView.getText().toString());
+                editor.putString(StartActivity.PASSWORD, psword);
+            }
         }
         editor.commit();
         Intent intent = new Intent(MenuActivity.this, MainActivity.class);
@@ -273,10 +295,10 @@ public class MenuActivity extends Activity {
         selectSystem = currenSystem;
     }
 
-    private void help (){
-        LayoutInflater inflater=getLayoutInflater();
-        View view=inflater.inflate(R.layout.help_layout,null);
-        AlertDialog dialog =new AlertDialog.Builder(MenuActivity.this)
+    private void help() {
+        LayoutInflater inflater = getLayoutInflater();
+        View view = inflater.inflate(R.layout.help_layout, null);
+        AlertDialog dialog = new AlertDialog.Builder(MenuActivity.this)
                 .setTitle("帮助信息").setView(view)
                 .setNegativeButton("更多", new DialogInterface.OnClickListener() {
                     @Override
@@ -288,16 +310,16 @@ public class MenuActivity extends Activity {
                 }).setPositiveButton("确定", null).show();
     }
 
-    private void developer (){
-        Button weiboButton ,zhihuButton,zhuyeButton;
-        LayoutInflater inflater=getLayoutInflater();
-        View view=inflater.inflate(R.layout.dev_layout,null);
-        weiboButton=(Button)view.findViewById(R.id.weibo);
-        zhihuButton=(Button)view.findViewById(R.id.zhihu);
-        zhuyeButton=(Button)view.findViewById(R.id.zhuye);
+    private void developer() {
+        Button weiboButton, zhihuButton, zhuyeButton;
+        LayoutInflater inflater = getLayoutInflater();
+        View view = inflater.inflate(R.layout.dev_layout, null);
+        weiboButton = (Button) view.findViewById(R.id.weibo);
+        zhihuButton = (Button) view.findViewById(R.id.zhihu);
+        zhuyeButton = (Button) view.findViewById(R.id.zhuye);
 
-        AlertDialog dialog=new AlertDialog.Builder(MenuActivity.this)
-                .setTitle("开发者信息").setView(view).setPositiveButton("确定",null)
+        AlertDialog dialog = new AlertDialog.Builder(MenuActivity.this)
+                .setTitle("开发者信息").setView(view).setPositiveButton("确定", null)
                 .show();
 
         weiboButton.setOnClickListener(new View.OnClickListener() {
@@ -327,5 +349,97 @@ public class MenuActivity extends Activity {
                 startActivity(intent);
             }
         });
+    }
+
+    private void DIY() {
+        LayoutInflater inflater = getLayoutInflater();
+        View view = inflater.inflate(R.layout.changeuser_layout, null);
+        TextView name = (TextView) view.findViewById(R.id.usernameTextView);
+        final TextView url = (TextView) view.findViewById(R.id.passwordTextView);
+        final EditText nameValue = (EditText) view.findViewById(R.id.usernameEditText);
+        final EditText urlValue = (EditText) view.findViewById(R.id.passwordEditText);
+        //改名
+        name.setText("网站名称");
+        url.setText("网站地址");
+        //换面
+        nameValue.setHint("请输入网站名称");
+        nameValue.setInputType(InputType.TYPE_CLASS_TEXT);
+        urlValue.setHint("请输入网站地址");
+        urlValue.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+        //显示
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setTitle("自定义添加")
+                .setView(view)
+                .setNegativeButton("取消", null)
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        encodeJSONObject(nameValue.getText().toString(), urlValue.getText().toString(), null, null);
+                    }
+                }).show();
+
+    }
+
+    private void encodeJSONObject(String arg0, String arg1, String arg2, String arg3) {
+        StringBuilder stringBuilder = new StringBuilder();
+        SharedPreferences sp = getSharedPreferences(StartActivity.APPWEBSITE, MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+
+        List<Map<String, String>> list = getWebsite();
+        Map<String, String> map = new HashMap<String, String>();
+        map.put(StartActivity.NAME, arg0);
+        map.put(StartActivity.URL, arg1);
+        map.put(StartActivity.USERNAME, "null");
+        map.put(StartActivity.PASSWORD, "null");
+        list.add(map);
+
+        stringBuilder.append("{ \"" + StartActivity.LENTH + "\":" + String.valueOf(list.size()) + ",");
+        stringBuilder.append("\"" + StartActivity.WEBSITE + "\"" + ": [ ");
+        for (int i = 0; i < list.size(); i++) {
+            stringBuilder.append("{");
+            stringBuilder.append("\"" + StartActivity.NAME + "\":\"" + list.get(i).get(StartActivity.NAME).toString() + "\",");
+            stringBuilder.append("\"" + StartActivity.URL + "\":\"" + list.get(i).get(StartActivity.URL).toString() + "\",");
+            stringBuilder.append("\"" + StartActivity.USERNAME + "\":\"null\" ,");
+            stringBuilder.append("\"" + StartActivity.PASSWORD + "\":\"null\"");
+            stringBuilder.append("}");
+            if (i != (list.size() - 1)) {
+                stringBuilder.append(" , ");
+            }
+        }
+        stringBuilder.append("] }");
+        editor.putString(StartActivity.INFOMATION, stringBuilder.toString());
+        editor.commit();
+    }
+
+    private List<Map<String, String>> getWebsite() {
+        List<Map<String, String>> list = new ArrayList<Map<String, String>>();
+        SharedPreferences sp = getSharedPreferences(StartActivity.APPWEBSITE, MODE_PRIVATE);
+        String json = sp.getString(StartActivity.INFOMATION, StartActivity.INFOMATION);
+        if (json.equals(StartActivity.INFOMATION)) {
+            Toast.makeText(this, "数据加载错误", Toast.LENGTH_SHORT).show();
+        } else {
+
+            try {
+                JSONObject jsonObject = new JSONObject(json);
+                int len = jsonObject.getInt(StartActivity.LENTH);
+                JSONArray jsonArray = jsonObject.getJSONArray(StartActivity.WEBSITE);
+                for (int i = 0; i < len; i++) {
+
+                    JSONObject childJsonObject = jsonArray.getJSONObject(i);
+                    Map<String, String> map = new HashMap<String, String>();
+                    map.put(StartActivity.NAME, childJsonObject.getString(StartActivity.NAME));
+                    map.put(StartActivity.URL, childJsonObject.getString(StartActivity.URL));
+                    map.put(StartActivity.USERNAME, childJsonObject.getString(StartActivity.USERNAME));
+                    map.put(StartActivity.PASSWORD, childJsonObject.getString(StartActivity.PASSWORD));
+
+                    list.add(map);
+                    Log.e("Main", "name: " + map.get(StartActivity.NAME).toString());
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        }
+        return list;
     }
 }

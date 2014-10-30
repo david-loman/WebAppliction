@@ -19,11 +19,22 @@ import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
 import org.apache.http.util.EncodingUtils;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.lang.annotation.Target;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class MainActivity extends Activity {
 
@@ -52,7 +63,7 @@ public class MainActivity extends Activity {
         }
 
         webView = (WebView) findViewById(R.id.myWebView);
-        progressBar=(ProgressBar)findViewById(R.id.progressBar);
+        progressBar = (ProgressBar) findViewById(R.id.progressBar);
 
         sp = getSharedPreferences(StartActivity.INFOAPP, MODE_PRIVATE);
         systemName = sp.getString(StartActivity.SYSTEM, defalutInfo);
@@ -147,22 +158,16 @@ public class MainActivity extends Activity {
 
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
-                if (visitUrl.equals(StartActivity.NEWJWCURL) || visitUrl.equals(StartActivity.OLSJWCURL)) {
-
-                    if ( progressBar.getVisibility() != View.VISIBLE){
-                        progressBar.setVisibility(View.VISIBLE);
-                    }
+                if (progressBar.getVisibility() != View.VISIBLE) {
+                    progressBar.setVisibility(View.VISIBLE);
                 }
                 super.onPageStarted(view, url, favicon);
             }
 
             @Override
             public void onPageFinished(WebView view, String url) {
-                if (visitUrl.equals(StartActivity.NEWJWCURL) || visitUrl.equals(StartActivity.OLSJWCURL)) {
-
-                    if ( progressBar.getVisibility() == View.VISIBLE){
-                        progressBar.setVisibility(View.GONE);
-                    }
+                if (progressBar.getVisibility() == View.VISIBLE) {
+                    progressBar.setVisibility(View.GONE);
                 }
                 super.onPageFinished(view, url);
             }
@@ -249,6 +254,43 @@ public class MainActivity extends Activity {
                     }
                 }
             }).show();
+        } else if (id == R.id.action_website) {
+            //获取ListView
+            LayoutInflater inflater = getLayoutInflater();
+            View view = inflater.inflate(R.layout.websitelist, null);
+            ListView listView = (ListView) view.findViewById(R.id.website_list);
+            //演示专用数据
+            final List<Map<String, String>> list = getWebsite();
+//            Map<String,String> map=new HashMap<String, String>();
+//
+//            map.put("name","林大教务处");
+//            map.put("url","http://jwc.nefu.edu.cn/");
+//            map.put("usename","null");
+//            map.put("password","null");
+//
+//            list.add(map);
+            if (list == null) {
+                Toast.makeText(this, "数据加载错误", Toast.LENGTH_SHORT).show();
+            } else {
+                //装填数据
+                SimpleAdapter adapter = new SimpleAdapter(this, list, R.layout.listitem, new String[]{StartActivity.NAME}, new int[]{R.id.item_website});
+                listView.setAdapter(adapter);
+                //弹框
+                AlertDialog dialog = new AlertDialog.Builder(this)
+                        .setTitle("我的网站").setView(view)
+                        .setNegativeButton("取消", null)
+                        .setPositiveButton("确定", null)
+                        .show();
+            }
+            //点击有惊喜
+            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    visitUrl = list.get(position).get("url");
+                    webView.loadUrl(visitUrl);
+                }
+            });
+
         }
         return super.onOptionsItemSelected(item);
     }
@@ -270,7 +312,7 @@ public class MainActivity extends Activity {
             systemName = StartActivity.OLDSYSTEM;
             systemUrl = StartActivity.OLSJWCURL;
         }
-        visitUrl=systemUrl;
+        visitUrl = systemUrl;
     }
 
     @Override
@@ -322,5 +364,36 @@ public class MainActivity extends Activity {
                         startActivity(intent);
                     }
                 }).show();
+    }
+
+    private List<Map<String, String>> getWebsite() {
+        List<Map<String, String>> list = new ArrayList<Map<String, String>>();
+        SharedPreferences sp = getSharedPreferences(StartActivity.APPWEBSITE, MODE_PRIVATE);
+        String json = sp.getString(StartActivity.INFOMATION, StartActivity.INFOMATION);
+        if (json.equals(StartActivity.INFOMATION)) {
+            Toast.makeText(this, "数据加载错误", Toast.LENGTH_SHORT).show();
+        } else {
+
+            try {
+                JSONObject jsonObject = new JSONObject(json);
+                int len = jsonObject.getInt(StartActivity.LENTH);
+                JSONArray jsonArray = jsonObject.getJSONArray(StartActivity.WEBSITE);
+                for (int i = 0; i < len; i++) {
+
+                    JSONObject childJsonObject = jsonArray.getJSONObject(i);
+                    Map<String, String> map = new HashMap<String, String>();
+                    map.put(StartActivity.NAME, childJsonObject.getString(StartActivity.NAME));
+                    map.put(StartActivity.URL, childJsonObject.getString(StartActivity.URL));
+                    map.put(StartActivity.USERNAME, childJsonObject.getString(StartActivity.USERNAME));
+                    map.put(StartActivity.PASSWORD, childJsonObject.getString(StartActivity.PASSWORD));
+
+                    list.add(map);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        }
+        return list;
     }
 }

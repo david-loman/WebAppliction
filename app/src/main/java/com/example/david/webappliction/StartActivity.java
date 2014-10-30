@@ -35,7 +35,11 @@ public class StartActivity extends Activity {
     public static String INFOAPP = "app_info";
     public static String USERNAME = "username";
     public static String PASSWORD = "password";
-    public static  String CANUPDATA ="canUpdata";
+    public static String CANUPDATA ="canUpdata";
+    public static String APPWEBSITE ="app_website";
+    public static String LENTH ="len";
+    public static String WEBSITE="website";
+    public static String NAME="name";
 
 
 
@@ -43,6 +47,8 @@ public class StartActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout);
+        //预载自定义网站
+        initWebsite();
         //获取数据
         getData();
 
@@ -234,4 +240,19 @@ public class StartActivity extends Activity {
         startActivity(intent);
         finish();
     }
+
+    private void initWebsite (){
+        SharedPreferences sp=getSharedPreferences(APPWEBSITE,MODE_PRIVATE);
+        SharedPreferences.Editor editor=sp.edit();
+        //判断数据是否输入
+        if (sp.getString(INFOMATION,INFOMATION).equals(INFOMATION)){
+            String initData="{ \"len\" : 3 , \"website\" : [ {\"name\": \"东北林业大学\",\"url\":\"http://www.nefu.edu.cn/\" ,\"username\":\"null\" ,\"password\": \"null\"} ,{\"name\": \"林大教务处\",\"url\":\"http://jwc.nefu.edu.cn/\" ,\"username\":\"null\" ,\"password\": \"null\"} ,{\"name\": \"百度一下\",\"url\":\"http://www.baidu.com\" ,\"username\":\"null\" ,\"password\": \"null\"}  ] }";
+            editor.putString(INFOMATION,initData);
+            editor.commit();
+        }
+
+        editor=null;
+        sp=null;
+    }
+
 }
