@@ -17,6 +17,8 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import DataFactory.DataHelper;
+
 /**
  * Created by David on 2014/10/9.
  */
@@ -40,8 +42,7 @@ public class StartActivity extends Activity {
     public static String LENTH ="len";
     public static String WEBSITE="website";
     public static String NAME="name";
-
-
+    public DataHelper dataHelper=new DataHelper(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -179,10 +180,14 @@ public class StartActivity extends Activity {
             JSONObject jsonObject = new JSONObject(jsonString);
             JSONObject childObject = jsonObject.getJSONObject(INFOMATION);
             versionName=jsonObject.getString(VERSION);
-            editor.putString(URL, jsonObject.getString(URL));
-            editor.putString("one", childObject.getString("one"));
-            editor.putString("two", childObject.getString("two"));
-            editor.putString("three", childObject.getString("three"));
+            dataHelper.setSharedPreferencesValue(UPDATAAPP,URL,jsonObject.getString(URL));
+            dataHelper.setSharedPreferencesValue(UPDATAAPP,dataHelper.ONE,childObject.getString(dataHelper.ONE));
+            dataHelper.setSharedPreferencesValue(UPDATAAPP,dataHelper.TWO,childObject.getString(dataHelper.TWO));
+            dataHelper.setSharedPreferencesValue(UPDATAAPP,dataHelper.THREE,childObject.getString(dataHelper.THREE));
+//            editor.putString(URL, jsonObject.getString(URL));
+//            editor.putString("one", childObject.getString("one"));
+//            editor.putString("two", childObject.getString("two"));
+//            editor.putString("three", childObject.getString("three"));
 
             //获取本应用版本名称
             PackageManager pm = getPackageManager();
