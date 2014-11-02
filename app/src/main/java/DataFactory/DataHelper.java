@@ -15,12 +15,13 @@ public class DataHelper {
     //网络请求数据
     private final String NEWJWCURL = "http://jwcnew.nefu.edu.cn/dblydx_jsxsd/xk/LoginToXk";
     private final String OLSJWCURL = "http://jwcweb.nefu.edu.cn/";
-    private final String MYWEIBO = "";
-    private final String MYZHIHU ="";
-    private final String MYZHUYE ="";
-    private final String UPDATAINFOURL="";
-    private final String APPLICATIONINFOURL="";
-    private final String DATAINFOURL ="";
+    private final String MYWEIBO = "http://weibo.com/linxiangpeng1992";
+    private final String MYZHIHU ="http://www.zhihu.com/people/david-lin-92";
+    private final String MYZHUYE ="http://davidloman.net";
+    private final String UPDATASTATUSURL="http://jwcglxt.qiniudn.com/updataStatus";
+    private final String APPLICATIONINFOURL="http://jwcglxt.qiniudn.com/applictionInfo";
+    private final String DATAINFOURL ="http://jwcglxt.qiniudn.com/dataInfo";
+    private final String updataInfo =null;
     //普通数据
     public final String OLDSYSTEM = "旧教务系统";
     public final String NEWSYSTEM = "新教务系统";
@@ -59,7 +60,7 @@ public class DataHelper {
         sharedPreferences=null;
     }
 
-    public void setSharedPreferencesValues (String sharedPreferencesName,HashMap<String,String> data){
+    public void setSharedPreferencesValues (String sharedPreferencesName,Map<String,String> data){
         //获得编辑状态
         sharedPreferences=context.getSharedPreferences(sharedPreferencesName,Context.MODE_PRIVATE);
         SharedPreferences.Editor editor=sharedPreferences.edit();
@@ -89,6 +90,12 @@ public class DataHelper {
     public String getSharedPreferencesValue (String sharedPreferencesName,String sharedPreferencesKey){
         sharedPreferences=context.getSharedPreferences(sharedPreferencesName,Context.MODE_PRIVATE);
         String value=sharedPreferences.getString(sharedPreferencesKey,sharedPreferencesKey);
+        if (value.equals(COUNT)){
+            value=String.valueOf(0);
+        }
+        if (value.equals(MYWEBSITE)){
+            value="{ \"len\" : 0 , \"mywebsite\" :[]  }";
+        }
         sharedPreferences=null;
         return value;
     }
@@ -118,6 +125,15 @@ public class DataHelper {
         return data;
     }
 
+    public void deleteSharedPreferences (String  sharedPreferencesName){
+        sharedPreferences=context.getSharedPreferences(sharedPreferencesName,Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor =sharedPreferences.edit();
+        editor.clear();
+        editor.commit();
+        editor=null;
+        sharedPreferences=null;
+    }
+
     public String getNEWJWCURL (){
         return NEWJWCURL;
     }
@@ -138,8 +154,8 @@ public class DataHelper {
         return MYZHUYE;
     }
 
-    public String getUPDATAINFOURL() {
-        return UPDATAINFOURL;
+    public String getUPDATASTATUSURL() {
+        return UPDATASTATUSURL;
     }
 
     public String getAPPLICATIONINFOURL() {
@@ -148,5 +164,15 @@ public class DataHelper {
 
     public String getDATAINFOURL() {
         return DATAINFOURL;
+    }
+
+    public String getUpdataInfo (){
+
+        String information = getSharedPreferencesValue(APPUPDATA,VERSION) + "\n"
+                + "1. " + getSharedPreferencesValue(APPUPDATA,ONE) +"\n"
+                + "2. " + getSharedPreferencesValue(APPUPDATA,TWO) + "\n"
+                + "3. " + getSharedPreferencesValue(APPUPDATA,THREE) + "\n\n"
+                + "是否更新？";
+        return information;
     }
 }

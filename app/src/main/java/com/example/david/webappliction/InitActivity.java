@@ -14,14 +14,19 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import DataFactory.DataHelper;
+
 /**
  * Created by David on 2014/9/9.
  */
 public class InitActivity extends Activity {
 
-    private SharedPreferences sp = null;
     private Button oldSystem = null;
     private Button newSystem = null;
+    private DataHelper dataHelper=new DataHelper(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,14 +44,11 @@ public class InitActivity extends Activity {
 
     @Override
     protected void onResume() {
+
         oldSystem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                SharedPreferences sp = getSharedPreferences(StartActivity.INFOAPP, MODE_PRIVATE);
-                SharedPreferences.Editor editor = sp.edit();
-                editor.putString(StartActivity.SYSTEM, StartActivity.OLDSYSTEM);
-                editor.putString(StartActivity.URL, StartActivity.OLSJWCURL);
-                editor.commit();
+                app_loginSP(dataHelper.OLDSYSTEM,dataHelper.getOLSJWCURL(),null,null);
                 gotoNext();
             }
         });
@@ -61,6 +63,7 @@ public class InitActivity extends Activity {
 
     }
 
+    //完善登录信息
     private void showInputDialog() {
         LayoutInflater inflater = getLayoutInflater();
         View view = inflater.inflate(R.layout.changeuser_layout, null);
@@ -72,15 +75,7 @@ public class InitActivity extends Activity {
                 String username = userEditText.getText().toString();
                 String password = passEditText.getText().toString();
                 if (username != null && username.length() > 0 && password.length() > 0) {
-                    //更新app_info
-                    SharedPreferences sharedPreferences = getSharedPreferences(StartActivity.INFOAPP, MODE_PRIVATE);
-                    SharedPreferences.Editor editor = sharedPreferences.edit();
-                    editor.putString(StartActivity.SYSTEM, StartActivity.NEWSYSTEM);
-                    editor.putString(StartActivity.URL, StartActivity.NEWJWCURL);
-                    editor.putString(StartActivity.USERNAME, username);
-                    editor.putString(StartActivity.PASSWORD, password);
-                    editor.commit();
-                    //打开相关网站
+                    app_loginSP(dataHelper.NEWSYSTEM,dataHelper.getNEWJWCURL(),username,password);
                     gotoNext();
                 } else {
                     Toast.makeText(InitActivity.this, "你是在逗我吗？", Toast.LENGTH_SHORT).show();
@@ -89,6 +84,17 @@ public class InitActivity extends Activity {
         }).show();
     }
 
+    //更新sharedPreferences: app_login
+    private void app_loginSP (String system,String url,String username,String password){
+        Map<String,String> data=new HashMap<String, String>();
+        data.put(dataHelper.SYSTEM,system);
+        data.put(dataHelper.URL,url);
+        data.put(dataHelper.USERNAME,username);
+        data.put(dataHelper.PASSWORD,password);
+        dataHelper.setSharedPreferencesValues(dataHelper.APPLOGIN,data);
+    }
+
+    //跳转到下一Activity
     private void gotoNext() {
         Intent intent = new Intent(InitActivity.this, MainActivity.class);
         startActivity(intent);

@@ -4,24 +4,22 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.InputType;
 import android.text.method.HideReturnsTransformationMethod;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-import org.json.JSONArray;
-import org.json.JSONObject;
-import java.util.ArrayList;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import DataFactory.DataHelper;
+import DataFactory.JsonHelper;
 
 /**
  * Created by David on 2014/8/28.
@@ -38,6 +36,7 @@ public class MenuActivity extends Activity {
     private String currenSystem = null;
     private String selectSystem = null;
     private String psword = null;
+    private DataHelper dataHelper = new DataHelper(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,7 +91,7 @@ public class MenuActivity extends Activity {
         updataButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (checkUpadata()) {
+                if (Integer.parseInt(dataHelper.getSharedPreferencesValue(dataHelper.APPUPDATA, dataHelper.COUNT)) != 0) {
                     updata();
                 } else {
                     AlertDialog dialog = new AlertDialog.Builder(MenuActivity.this).setTitle("更新提醒").setMessage("已经是最高版本").setPositiveButton("确定", null).show();
@@ -160,11 +159,11 @@ public class MenuActivity extends Activity {
                 .setPositiveButton("修改", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        if (selectSystem.equals(StartActivity.OLDSYSTEM)) {
-                            selectSystem = StartActivity.NEWSYSTEM;
+                        if (selectSystem.equals(dataHelper.OLDSYSTEM)) {
+                            selectSystem = dataHelper.NEWSYSTEM;
                             requestCode = 1;
                         } else {
-                            selectSystem = StartActivity.OLDSYSTEM;
+                            selectSystem = dataHelper.OLDSYSTEM;
                             userTextView.setText("");
                             requestCode = 2;
                         }
@@ -176,16 +175,15 @@ public class MenuActivity extends Activity {
     }
 
     private void changeUser() {
-        final SharedPreferences sp = getSharedPreferences(StartActivity.INFOAPP, MODE_PRIVATE);
-        if (selectSystem.equals(StartActivity.NEWSYSTEM)) {
+        if (selectSystem.equals(dataHelper.NEWSYSTEM)) {
             LayoutInflater inflater = getLayoutInflater();
             View view = inflater.inflate(R.layout.changeuser_layout, null);
             final EditText user = (EditText) view.findViewById(R.id.usernameEditText);
             final EditText psw = (EditText) view.findViewById(R.id.passwordEditText);
-            if (currenSystem.equals(StartActivity.NEWSYSTEM)) {
-                String nameS = sp.getString(StartActivity.USERNAME, StartActivity.USERNAME);
-                String pswS = sp.getString(StartActivity.PASSWORD, StartActivity.PASSWORD);
-                if (nameS.equals(StartActivity.USERNAME)) {
+            if (currenSystem.equals(dataHelper.NEWSYSTEM)) {
+                String nameS = dataHelper.getSharedPreferencesValue(dataHelper.APPLOGIN, dataHelper.USERNAME);
+                String pswS = dataHelper.getSharedPreferencesValue(dataHelper.APPLOGIN, dataHelper.PASSWORD);
+                if (nameS.equals(dataHelper.USERNAME)) {
                     nameS = "null";
                 }
                 user.setText(nameS);
@@ -215,52 +213,35 @@ public class MenuActivity extends Activity {
         }
     }
 
-    private boolean checkUpadata() {
-        boolean canUpdata = false;
-        SharedPreferences sp = getSharedPreferences(StartActivity.UPDATAAPP, MODE_PRIVATE);
-        canUpdata = sp.getBoolean(StartActivity.CANUPDATA, false);
-        return canUpdata;
-    }
-
     private void updata() {
 
-        SharedPreferences sp = getSharedPreferences(StartActivity.UPDATAAPP, MODE_PRIVATE);
-        final String path = sp.getString(StartActivity.URL, StartActivity.URL);
-        String infomation = sp.getString(StartActivity.VERSION, "0.0.0") + "\n"
-                + "1. " + sp.getString("one", "Null") + "\n"
-                + "2. " + sp.getString("two", "Null") + "\n"
-                + "3. " + sp.getString("three", "Null") + "\n\n"
-                + "是否更新？";
+        final String path = dataHelper.getSharedPreferencesValue(dataHelper.APPUPDATA, dataHelper.URL);
 
-        AlertDialog dialog = new AlertDialog.Builder(MenuActivity.this).setTitle("更新提醒").setMessage(infomation).setNegativeButton("等等", null)
+        AlertDialog dialog = new AlertDialog.Builder(MenuActivity.this).setTitle("更新提醒").setMessage(dataHelper.getUpdataInfo()).setNegativeButton("等等", null)
                 .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        Uri uri = Uri.parse(path);
-                        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-                        startActivity(intent);
+                        visit(path);
                     }
                 }).show();
     }
 
     private void go_back() {
-        SharedPreferences sp = getSharedPreferences(StartActivity.INFOAPP, MODE_PRIVATE);
-        SharedPreferences.Editor editor = sp.edit();
         if (!currenSystem.equals(selectSystem)) {
-            editor.putString(StartActivity.SYSTEM, selectSystem);
-            if (selectSystem.equals(StartActivity.NEWSYSTEM)) {
-                editor.putString(StartActivity.URL, StartActivity.NEWJWCURL);
+            dataHelper.setSharedPreferencesValue(dataHelper.APPLOGIN, dataHelper.SYSTEM, selectSystem);
+            if (selectSystem.equals(dataHelper.NEWSYSTEM)) {
+                dataHelper.setSharedPreferencesValue(dataHelper.APPLOGIN, dataHelper.URL, dataHelper.getNEWJWCURL());
             } else {
-                editor.putString(StartActivity.URL, StartActivity.OLSJWCURL);
+                dataHelper.setSharedPreferencesValue(dataHelper.APPLOGIN, dataHelper.URL, dataHelper.getOLSJWCURL());
             }
         }
-        if (selectSystem.equals(StartActivity.NEWSYSTEM)) {
-            if (!sp.getString(StartActivity.USERNAME, StartActivity.USERNAME).equals(userTextView.getText().toString())) {
-                editor.putString(StartActivity.USERNAME, userTextView.getText().toString());
-                editor.putString(StartActivity.PASSWORD, psword);
+        if (selectSystem.equals(dataHelper.NEWSYSTEM)) {
+            if (!(dataHelper.getSharedPreferencesValue(dataHelper.APPLOGIN, dataHelper.USERNAME)).equals(userTextView.getText().toString())) {
+                dataHelper.setSharedPreferencesValue(dataHelper.APPLOGIN, dataHelper.USERNAME, userTextView.getText().toString());
+                dataHelper.setSharedPreferencesValue(dataHelper.APPLOGIN, dataHelper.PASSWORD, psword);
             }
         }
-        editor.commit();
+
         Intent intent = new Intent(MenuActivity.this, MainActivity.class);
         setResult(requestCode, intent);
         finish();
@@ -268,10 +249,9 @@ public class MenuActivity extends Activity {
 
     private void showInfo() {
 
-        if (selectSystem.equals(StartActivity.NEWSYSTEM)) {
-            SharedPreferences sp = getSharedPreferences(StartActivity.INFOAPP, MODE_PRIVATE);
-            String name = sp.getString(StartActivity.USERNAME, StartActivity.USERNAME);
-            if (name.equals(StartActivity.USERNAME)) {
+        if (selectSystem.equals(dataHelper.NEWSYSTEM)) {
+            String name = dataHelper.getSharedPreferencesValue(dataHelper.APPLOGIN, dataHelper.USERNAME);
+            if (name.equals(dataHelper.USERNAME)) {
                 name = "null";
             }
             systemTextView.setText(selectSystem);
@@ -284,7 +264,7 @@ public class MenuActivity extends Activity {
     }
 
     private void init(Intent intent) {
-        currenSystem = intent.getStringExtra(StartActivity.SYSTEM);
+        currenSystem = intent.getStringExtra(dataHelper.SYSTEM);
         selectSystem = currenSystem;
     }
 
@@ -306,7 +286,7 @@ public class MenuActivity extends Activity {
     private void developer() {
         Button weiboButton, zhihuButton, zhuyeButton;
         LayoutInflater inflater = getLayoutInflater();
-        View view = inflater.inflate(R.layout.dev_layout, null);
+        final View view = inflater.inflate(R.layout.dev_layout, null);
         weiboButton = (Button) view.findViewById(R.id.weibo);
         zhihuButton = (Button) view.findViewById(R.id.zhihu);
         zhuyeButton = (Button) view.findViewById(R.id.zhuye);
@@ -318,9 +298,7 @@ public class MenuActivity extends Activity {
         weiboButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Uri uri = Uri.parse("http://weibo.com/linxiangpeng1992");
-                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-                startActivity(intent);
+                visit(dataHelper.getMYWEIBO());
             }
         });
 
@@ -328,26 +306,24 @@ public class MenuActivity extends Activity {
         zhihuButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Uri uri = Uri.parse("http://www.zhihu.com/people/david-lin-92");
-                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-                startActivity(intent);
+                visit(dataHelper.getMYZHIHU());
             }
         });
 
         zhuyeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Uri uri = Uri.parse("http://davidloman.net");
-                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-                startActivity(intent);
+                visit(dataHelper.getMYZHUYE());
             }
         });
     }
 
+    //自定义添加网址
     private void DIY() {
         LayoutInflater inflater = getLayoutInflater();
         View view = inflater.inflate(R.layout.changeuser_layout, null);
         TextView name = (TextView) view.findViewById(R.id.usernameTextView);
+        final JsonHelper jsonHelper = new JsonHelper();
         final TextView url = (TextView) view.findViewById(R.id.passwordTextView);
         final EditText nameValue = (EditText) view.findViewById(R.id.usernameEditText);
         final EditText urlValue = (EditText) view.findViewById(R.id.passwordEditText);
@@ -367,72 +343,28 @@ public class MenuActivity extends Activity {
                 .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        encodeJSONObject(nameValue.getText().toString(), urlValue.getText().toString(), null, null);
+                        Map<String, String> map = new HashMap<String, String>();
+                        List<Map<String, String>> list = jsonHelper.parseWebsiteJson(dataHelper.getSharedPreferencesValue(dataHelper.APPWEBSITE, dataHelper.MYWEBSITE), dataHelper.MYWEBSITE);
+                        if (nameValue.getText().toString().length() <= 0 || url.getText().toString().length() <= 0) {
+                            Toast.makeText(MenuActivity.this,"数据无效",Toast.LENGTH_LONG).show();
+                        }else{
+                            map.put(jsonHelper.NAME, nameValue.getText().toString());
+                            map.put(jsonHelper.URL, urlValue.getText().toString());
+                            map.put(dataHelper.USERNAME, null);
+                            map.put(dataHelper.PASSWORD, null);
+                            list.add(map);
+                            dataHelper.setSharedPreferencesValue(dataHelper.APPWEBSITE, dataHelper.MYWEBSITE, jsonHelper.convertWebsiteJson(list, dataHelper.MYWEBSITE));
+                        }
                     }
                 }).show();
 
     }
 
-    private void encodeJSONObject(String arg0, String arg1, String arg2, String arg3) {
-        StringBuilder stringBuilder = new StringBuilder();
-        SharedPreferences sp = getSharedPreferences(StartActivity.APPWEBSITE, MODE_PRIVATE);
-        SharedPreferences.Editor editor = sp.edit();
-
-        List<Map<String, String>> list = getWebsite();
-        Map<String, String> map = new HashMap<String, String>();
-        map.put(StartActivity.NAME, arg0);
-        map.put(StartActivity.URL, arg1);
-        map.put(StartActivity.USERNAME, "null");
-        map.put(StartActivity.PASSWORD, "null");
-        list.add(map);
-
-        stringBuilder.append("{ \"" + StartActivity.LENTH + "\":" + String.valueOf(list.size()) + ",");
-        stringBuilder.append("\"" + StartActivity.WEBSITE + "\"" + ": [ ");
-        for (int i = 0; i < list.size(); i++) {
-            stringBuilder.append("{");
-            stringBuilder.append("\"" + StartActivity.NAME + "\":\"" + list.get(i).get(StartActivity.NAME).toString() + "\",");
-            stringBuilder.append("\"" + StartActivity.URL + "\":\"" + list.get(i).get(StartActivity.URL).toString() + "\",");
-            stringBuilder.append("\"" + StartActivity.USERNAME + "\":\"null\" ,");
-            stringBuilder.append("\"" + StartActivity.PASSWORD + "\":\"null\"");
-            stringBuilder.append("}");
-            if (i != (list.size() - 1)) {
-                stringBuilder.append(" , ");
-            }
-        }
-        stringBuilder.append("] }");
-        editor.putString(StartActivity.INFOMATION, stringBuilder.toString());
-        editor.commit();
+    //了解我的资讯
+    private void visit (String url){
+        Uri uri = Uri.parse(url);
+        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+        startActivity(intent);
     }
 
-    private List<Map<String, String>> getWebsite() {
-        List<Map<String, String>> list = new ArrayList<Map<String, String>>();
-        SharedPreferences sp = getSharedPreferences(StartActivity.APPWEBSITE, MODE_PRIVATE);
-        String json = sp.getString(StartActivity.INFOMATION, StartActivity.INFOMATION);
-        if (json.equals(StartActivity.INFOMATION)) {
-            Toast.makeText(this, "数据加载错误", Toast.LENGTH_SHORT).show();
-        } else {
-
-            try {
-                JSONObject jsonObject = new JSONObject(json);
-                int len = jsonObject.getInt(StartActivity.LENTH);
-                JSONArray jsonArray = jsonObject.getJSONArray(StartActivity.WEBSITE);
-                for (int i = 0; i < len; i++) {
-
-                    JSONObject childJsonObject = jsonArray.getJSONObject(i);
-                    Map<String, String> map = new HashMap<String, String>();
-                    map.put(StartActivity.NAME, childJsonObject.getString(StartActivity.NAME));
-                    map.put(StartActivity.URL, childJsonObject.getString(StartActivity.URL));
-                    map.put(StartActivity.USERNAME, childJsonObject.getString(StartActivity.USERNAME));
-                    map.put(StartActivity.PASSWORD, childJsonObject.getString(StartActivity.PASSWORD));
-
-                    list.add(map);
-                    Log.e("Main", "name: " + map.get(StartActivity.NAME).toString());
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-        }
-        return list;
-    }
 }

@@ -25,30 +25,30 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.SimpleAdapter;
 import android.widget.Toast;
+
 import org.apache.http.util.EncodingUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import DataFactory.DataHelper;
+import DataFactory.JsonHelper;
+import NetWork.QucikConnection;
+
 public class MainActivity extends Activity {
 
     private WebView webView;
     private ProgressBar progressBar;
-    private final int requestCode = 1;
-    private String USERNAME = "USERNAME";
-    private String PASSWORD = "PASSWORD";
-    private String systemUrl = null;
+    private final String USERNAME = "USERNAME";
+    private final String PASSWORD = "PASSWORD";
     private String systemName = null;
-    private String visitUrl = null;
-    private ConnectivityManager conn;
-    private SharedPreferences sp;
-    private boolean wifi;
-    private boolean mobile;
-    private String defalutInfo = "hello";
-    private String myURL = "http://davidloman.net";
+    private DataHelper dataHelper = new DataHelper(this);
+    private JsonHelper jsonHelper = new JsonHelper();
+    private QucikConnection qucikConnection=new QucikConnection(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,21 +56,20 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_my);
         //检查更新
         if (checkUpdata()) {
+            dataHelper.deleteSharedPreferences("app_info");
             showUpdataDialog();
+
         }
 
         webView = (WebView) findViewById(R.id.myWebView);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
 
-        sp = getSharedPreferences(StartActivity.INFOAPP, MODE_PRIVATE);
-        systemName = sp.getString(StartActivity.SYSTEM, defalutInfo);
-        systemUrl = sp.getString(StartActivity.URL, myURL);
+        systemName = dataHelper.getSharedPreferencesValue(dataHelper.APPLOGIN, dataHelper.SYSTEM);
 
-        if (systemName.equals(defalutInfo)) {
+        if (systemName.equals(dataHelper.SYSTEM)) {
             Toast.makeText(this, "数据加载错误，请重启应用", Toast.LENGTH_SHORT).show();
-        } else {
-            visitUrl = systemUrl;
         }
+
         //webView初始化
         webView.getSettings().setJavaScriptEnabled(true);
         webView.getSettings().setBuiltInZoomControls(true);
@@ -94,19 +93,8 @@ public class MainActivity extends Activity {
     protected void onResume() {
         super.onResume();
 
-        if (cheeckNetWork()) {
-            if (systemName.equals(StartActivity.OLDSYSTEM)) {
-                webView.loadUrl(visitUrl);
-            } else if (systemName.equals(StartActivity.NEWSYSTEM)) {
-                String name = sp.getString(StartActivity.USERNAME, StartActivity.USERNAME);
-                String psw = sp.getString(StartActivity.PASSWORD, StartActivity.PASSWORD);
-                StringBuffer stringBuffer = new StringBuffer();
-                stringBuffer.append(USERNAME).append("=").append(name).append("&").append(PASSWORD).append("=").append(psw);
-                webView.postUrl(visitUrl, EncodingUtils.getBytes(stringBuffer.toString(), "base64"));
-            } else {
-                AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).setTitle("错误").setMessage("数据加载错误，请重启应用!")
-                        .setPositiveButton("是", null).show();
-            }
+        if (qucikConnection.checkNetwork()) {
+            login(systemName,dataHelper.getSharedPreferencesValue(dataHelper.APPLOGIN,dataHelper.USERNAME),dataHelper.getSharedPreferencesValue(dataHelper.APPLOGIN,dataHelper.PASSWORD));
         } else {
             AlertDialog checkNetWork = new AlertDialog.Builder(MainActivity.this).setTitle("连接错误")
                     .setMessage("网络未连接请检查网络后访问").setPositiveButton("确定", new DialogInterface.OnClickListener() {
@@ -121,7 +109,7 @@ public class MainActivity extends Activity {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 view.setInitialScale(39);
-                if (cheeckNetWork()) {
+                if (qucikConnection.checkNetwork()) {
                     webView.loadUrl(url);
                 } else {
                     AlertDialog checkNetWork = new AlertDialog.Builder(MainActivity.this).setTitle("连接错误")
@@ -178,10 +166,7 @@ public class MainActivity extends Activity {
 
     @Override
     protected void onDestroy() {
-        //清除Cookie信息
-        CookieSyncManager.createInstance(MainActivity.this);
-        CookieSyncManager.getInstance().startSync();
-        CookieManager.getInstance().removeSessionCookie();
+        clearCookies();
         super.onDestroy();
     }
 
@@ -211,19 +196,15 @@ public class MainActivity extends Activity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == R.id.action_settings) {
-            //清除Cookie信息
-            CookieSyncManager.createInstance(MainActivity.this);
-            CookieSyncManager.getInstance().startSync();
-            CookieManager.getInstance().removeSessionCookie();
+            clearCookies();
 
             Intent intent = new Intent(MainActivity.this, MenuActivity.class);
-            intent.putExtra(StartActivity.SYSTEM, systemName);
+            intent.putExtra(dataHelper.SYSTEM, systemName);
             startActivityForResult(intent, 1);
         } else if (id == R.id.action_exit) {
             this.finish();
         } else if (id == R.id.action_oldJwc) {
-            visitUrl = StartActivity.OLSJWCURL;
-            webView.loadUrl(visitUrl);
+            login(dataHelper.OLDSYSTEM,null,null);
         } else if (id == R.id.change) {
 
             LayoutInflater inflater = getLayoutInflater();
@@ -240,14 +221,9 @@ public class MainActivity extends Activity {
                     if (name == null || name.length() <= 0 || psw == null || psw.length() <= 0) {
                         Toast.makeText(MainActivity.this, "请输入完整的信息！", Toast.LENGTH_SHORT).show();
                     } else {
-                        StringBuffer stringBuffer = new StringBuffer();
-                        stringBuffer.append(USERNAME).append("=").append(name).append("&").append(PASSWORD).append("=").append(psword);
-                        //清除Cookie信息
-                        CookieSyncManager.createInstance(MainActivity.this);
-                        CookieSyncManager.getInstance().startSync();
-                        CookieManager.getInstance().removeSessionCookie();
+                        clearCookies();
                         //加载页面
-                        webView.postUrl(StartActivity.NEWJWCURL, EncodingUtils.getBytes(stringBuffer.toString(), "base64"));
+                        login(dataHelper.NEWSYSTEM,name,psword);
                     }
                 }
             }).show();
@@ -269,24 +245,26 @@ public class MainActivity extends Activity {
             if (list == null) {
                 Toast.makeText(this, "数据加载错误", Toast.LENGTH_SHORT).show();
             } else {
+                String url=null;
                 //装填数据
-                SimpleAdapter adapter = new SimpleAdapter(this, list, R.layout.listitem, new String[]{StartActivity.NAME}, new int[]{R.id.item_website});
+                SimpleAdapter adapter = new SimpleAdapter(this, list, R.layout.listitem, new String[]{jsonHelper.NAME}, new int[]{R.id.item_website});
                 listView.setAdapter(adapter);
                 //弹框
-                AlertDialog dialog = new AlertDialog.Builder(this)
+                final AlertDialog dialog = new AlertDialog.Builder(this)
                         .setTitle("我的网站").setView(view)
                         .setNegativeButton("取消", null)
-                        .setPositiveButton("确定", null)
                         .show();
+
+                //点击有惊喜
+                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        dialog.cancel();
+                        webView.loadUrl(list.get(position).get(dataHelper.URL));
+                    }
+                });
             }
-            //点击有惊喜
-            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    visitUrl = list.get(position).get("url");
-                    webView.loadUrl(visitUrl);
-                }
-            });
+
 
         }
         return super.onOptionsItemSelected(item);
@@ -301,95 +279,78 @@ public class MainActivity extends Activity {
         }
 
         if (resultCode == 1) {
-            systemName = StartActivity.NEWSYSTEM;
-            systemUrl = StartActivity.NEWJWCURL;
+            systemName = dataHelper.NEWSYSTEM;
         }
 
         if (resultCode == 2) {
-            systemName = StartActivity.OLDSYSTEM;
-            systemUrl = StartActivity.OLSJWCURL;
+            systemName = dataHelper.OLDSYSTEM;
         }
-        visitUrl = systemUrl;
     }
 
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        outState.putString("url", visitUrl);
-    }
-
-    private boolean cheeckNetWork() {
-        conn = (ConnectivityManager) getSystemService(Activity.CONNECTIVITY_SERVICE);
-        wifi = conn.getNetworkInfo(ConnectivityManager.TYPE_WIFI).isConnected();
-        mobile = conn.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).isConnected();
-        return (wifi || mobile);
-    }
-
+    //是否可以更新
     private boolean checkUpdata() {
-
         boolean canUpdata = false;
-        SharedPreferences sp = getSharedPreferences(StartActivity.UPDATAAPP, MODE_PRIVATE);
-        if (sp.getBoolean(StartActivity.CANUPDATA, false) && (sp.getInt(StartActivity.SHOWINFO, 0) < 3)) {
+        int count = Integer.parseInt(dataHelper.getSharedPreferencesValue(dataHelper.APPUPDATA,dataHelper.COUNT));
+        if (count > 0 && count < 4) {
             canUpdata = true;
         }
         return canUpdata;
     }
 
-    private String getUpdataUrl() {
-
-        String updataUrl = null;
-        SharedPreferences sharedPreferences = getSharedPreferences(StartActivity.UPDATAAPP, MODE_PRIVATE);
-        updataUrl = sharedPreferences.getString(StartActivity.URL, myURL);
-        return updataUrl;
-    }
-
+    //负责提醒更新
     private void showUpdataDialog() {
 
-        SharedPreferences sp = getSharedPreferences(StartActivity.UPDATAAPP, MODE_PRIVATE);
-        String infomation = sp.getString(StartActivity.VERSION, "0.0.0") + "\n"
-                + "1. " + sp.getString("one", "Null") + "\n"
-                + "2. " + sp.getString("two", "Null") + "\n"
-                + "3. " + sp.getString("three", "Null") + "\n\n"
-                + "是否更新？";
-
-        AlertDialog dialog = new AlertDialog.Builder(MainActivity.this).setTitle("更新提醒").setMessage(infomation).setNegativeButton("等等", null)
+        AlertDialog dialog = new AlertDialog.Builder(MainActivity.this).setTitle("更新提醒").setMessage(dataHelper.getUpdataInfo()).setNegativeButton("等等", null)
                 .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        String path = getUpdataUrl();
+                        //需要更换成新的下载管理方式
+                        String path = dataHelper.getSharedPreferencesValue(dataHelper.APPUPDATA, dataHelper.URL);
                         Uri uri = Uri.parse(path);
                         Intent intent = new Intent(Intent.ACTION_VIEW, uri);
                         startActivity(intent);
                     }
                 }).show();
+        //更新 count值
+        int tmp=Integer.parseInt(dataHelper.getSharedPreferencesValue(dataHelper.APPUPDATA,dataHelper.COUNT));
+        tmp++;
+        dataHelper.setSharedPreferencesValue(dataHelper.APPUPDATA,dataHelper.COUNT,String.valueOf(tmp));
+    }
+
+    //访问教务管理系统
+    private void login (String system,String username,String password){
+        if (system.equals(dataHelper.OLDSYSTEM)){
+            webView.loadUrl(dataHelper.getOLSJWCURL());
+        }else {
+            StringBuilder stringBuilder=new StringBuilder();
+            stringBuilder.append(USERNAME).append("=").append(username).append("&").append(PASSWORD).append("=").append(password);
+            webView.postUrl(dataHelper.getNEWJWCURL(), EncodingUtils.getBytes(stringBuilder.toString(), "base64"));
+            stringBuilder=null;
+        }
+    }
+
+    //清除 Cookie
+    private void clearCookies (){
+        CookieSyncManager.createInstance(MainActivity.this);
+        CookieSyncManager.getInstance().startSync();
+        CookieManager.getInstance().removeSessionCookie();
     }
 
     private List<Map<String, String>> getWebsite() {
         List<Map<String, String>> list = new ArrayList<Map<String, String>>();
-        SharedPreferences sp = getSharedPreferences(StartActivity.APPWEBSITE, MODE_PRIVATE);
-        String json = sp.getString(StartActivity.INFOMATION, StartActivity.INFOMATION);
-        if (json.equals(StartActivity.INFOMATION)) {
+        if (dataHelper.getSharedPreferencesValue(dataHelper.APPWEBSITE,dataHelper.DEFAULTWEBSITE).equals(dataHelper.DEFAULTWEBSITE)) {
             Toast.makeText(this, "数据加载错误", Toast.LENGTH_SHORT).show();
-        } else {
-
-            try {
-                JSONObject jsonObject = new JSONObject(json);
-                int len = jsonObject.getInt(StartActivity.LENTH);
-                JSONArray jsonArray = jsonObject.getJSONArray(StartActivity.WEBSITE);
-                for (int i = 0; i < len; i++) {
-
-                    JSONObject childJsonObject = jsonArray.getJSONObject(i);
-                    Map<String, String> map = new HashMap<String, String>();
-                    map.put(StartActivity.NAME, childJsonObject.getString(StartActivity.NAME));
-                    map.put(StartActivity.URL, childJsonObject.getString(StartActivity.URL));
-                    map.put(StartActivity.USERNAME, childJsonObject.getString(StartActivity.USERNAME));
-                    map.put(StartActivity.PASSWORD, childJsonObject.getString(StartActivity.PASSWORD));
-
-                    list.add(map);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
+        } else{
+            List<Map<String,String>> tmp=jsonHelper.parseWebsiteJson(dataHelper.getSharedPreferencesValue(dataHelper.APPWEBSITE,dataHelper.DEFAULTWEBSITE),dataHelper.DEFAULTWEBSITE);
+            for (int i=0;i<tmp.size();i++){
+                list.add(tmp.get(i));
             }
-
+            if (!dataHelper.getSharedPreferencesValue(dataHelper.APPWEBSITE,dataHelper.MYWEBSITE).equals(dataHelper.MYWEBSITE)){
+                tmp=jsonHelper.parseWebsiteJson(dataHelper.getSharedPreferencesValue(dataHelper.APPWEBSITE,dataHelper.MYWEBSITE),dataHelper.MYWEBSITE);
+                for (int i=0;i<tmp.size();i++){
+                    list.add(tmp.get(i));
+                }
+            }
         }
         return list;
     }
