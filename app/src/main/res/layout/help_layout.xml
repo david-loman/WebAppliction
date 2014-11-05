@@ -33,7 +33,7 @@
         android:layout_margin="2dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="页面加载的速度受页面本身，网速等影响，当加载页面时间过长时，可以看看网络是否联通，是否是第一次登陆等。也可等待一定时间在使用"
+        android:text="页面加载的速度受页面本身，网速等影响，当加载页面时间过长时，可以看看网络是否联通，是否是第一次登陆等。也可等待一定时间再使用"
         />
 
     <TextView

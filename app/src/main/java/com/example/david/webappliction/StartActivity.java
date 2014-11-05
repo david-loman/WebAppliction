@@ -118,9 +118,7 @@ public class StartActivity extends Activity {
                     sendMsg(2,result);
                 }
             }
-            //结束 Activity
             sendMsg(0,null);
-
         }
     }
 

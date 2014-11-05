@@ -23,7 +23,6 @@
     <string name="changes">切换用户</string>
     <string name="user">用户名：</string>
     <string name="psw">密码：</string>
-    <string name="reflash">刷新</string>
     <string name="diy">自定义添加</string>
     <string name="developer">开发者</string>
     <string name="help">帮助</string>
