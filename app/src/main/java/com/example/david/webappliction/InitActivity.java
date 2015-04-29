@@ -33,8 +33,8 @@ public class InitActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_init);
 
-        oldSystem = (Button) findViewById(R.id.oldsystem);
-        newSystem = (Button) findViewById(R.id.newsystem);
+//        oldSystem = (Button) findViewById(R.id.oldsystem);
+//        newSystem = (Button) findViewById(R.id.newsystem);
     }
 
     @Override
