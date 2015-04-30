@@ -1,22 +1,11 @@
-package com.example.david.webappliction;
+package com.nefu.david.webappliction;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.os.Message;
-import android.util.Log;
-import android.widget.Toast;
-
-import org.json.JSONObject;
-
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.HashMap;
 
 import DataFactory.DataHelper;
 import DataFactory.JsonHelper;

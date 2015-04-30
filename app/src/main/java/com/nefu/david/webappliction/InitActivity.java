@@ -1,17 +1,14 @@
-package com.example.david.webappliction;
+package com.nefu.david.webappliction;
 
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.HashMap;
@@ -44,22 +41,6 @@ public class InitActivity extends Activity {
 
     @Override
     protected void onResume() {
-
-        oldSystem.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                app_loginSP(dataHelper.OLDSYSTEM,dataHelper.getOLSJWCURL(),null,null);
-                gotoNext();
-            }
-        });
-
-        newSystem.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showInputDialog();
-            }
-        });
-        super.onResume();
 
     }
 

@@ -1,4 +1,4 @@
-package com.example.david.webappliction;
+package com.nefu.david.webappliction;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

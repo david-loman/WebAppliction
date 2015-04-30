@@ -13,7 +13,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.example.david.webappliction.R;
+import com.nefu.david.webappliction.R;
 
 /**
  * Created by David on 2014/10/31.
