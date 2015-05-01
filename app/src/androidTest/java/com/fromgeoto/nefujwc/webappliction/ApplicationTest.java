@@ -1,4 +1,4 @@
-package com.nefu.david.webappliction;
+package com.fromgeoto.nefujwc.webappliction;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

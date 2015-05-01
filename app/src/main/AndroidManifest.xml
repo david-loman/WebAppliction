@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.nefu.david.webappliction"
+    package="com.fromgeoto.nefujwc.webappliction"
     android:installLocation="preferExternal">
 
     <uses-permission android:name="android.permission.INTERNET"/>
@@ -13,7 +13,7 @@
         android:theme="@style/AppTheme" >
         
         <activity
-            android:name="com.nefu.david.webappliction.StartActivity"
+            android:name="com.fromgeoto.nefujwc.webappliction.StartActivity"
             android:theme="@android:style/Theme.NoTitleBar"
             android:label="@string/app_name" >
             <intent-filter>
@@ -22,9 +22,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.nefu.david.webappliction.MainActivity"/>
-        <activity android:name="com.nefu.david.webappliction.MenuActivity"/>
-        <activity android:name="com.nefu.david.webappliction.InitActivity"/>
+        <activity android:name="com.fromgeoto.nefujwc.webappliction.MainActivity"/>
+        <activity android:name="com.fromgeoto.nefujwc.webappliction.MenuActivity"/>
+        <activity android:name="com.fromgeoto.nefujwc.webappliction.InitActivity"/>
     </application>
 
 </manifest>
