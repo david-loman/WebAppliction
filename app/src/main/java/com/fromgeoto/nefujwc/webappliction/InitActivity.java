@@ -1,11 +1,8 @@
 package com.fromgeoto.nefujwc.webappliction;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -21,8 +18,8 @@ import DataFactory.DataHelper;
  */
 public class InitActivity extends Activity {
 
-    private Button oldSystem = null;
-    private Button newSystem = null;
+    private EditText usernameEditText , passwordEditText;
+    private Button loginButton , resetButton;
     private DataHelper dataHelper=new DataHelper(this);
 
     @Override
@@ -30,8 +27,7 @@ public class InitActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_init);
 
-//        oldSystem = (Button) findViewById(R.id.oldsystem);
-//        newSystem = (Button) findViewById(R.id.newsystem);
+        initView();
     }
 
     @Override
@@ -41,28 +37,33 @@ public class InitActivity extends Activity {
 
     @Override
     protected void onResume() {
+        super.onResume();
+        loginButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                checkLogin();
+            }
+        });
 
+        resetButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                usernameEditText.setText("");
+                passwordEditText.setText("");
+            }
+        });
     }
 
     //完善登录信息
-    private void showInputDialog() {
-        LayoutInflater inflater = getLayoutInflater();
-        View view = inflater.inflate(R.layout.changeuser_layout, null);
-        final EditText userEditText = (EditText) view.findViewById(R.id.usernameEditText);
-        final EditText passEditText = (EditText) view.findViewById(R.id.passwordEditText);
-        AlertDialog dialog = new AlertDialog.Builder(InitActivity.this).setTitle("请输入您的信息").setView(view).setNegativeButton("等等", null).setPositiveButton("确认", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                String username = userEditText.getText().toString();
-                String password = passEditText.getText().toString();
-                if (username != null && username.length() > 0 && password.length() > 0) {
-                    app_loginSP(dataHelper.NEWSYSTEM,dataHelper.getNEWJWCURL(),username,password);
-                    gotoNext();
-                } else {
-                    Toast.makeText(InitActivity.this, "你是在逗我吗？", Toast.LENGTH_SHORT).show();
-                }
-            }
-        }).show();
+    private void checkLogin (){
+        String username = usernameEditText.getText().toString();
+        String password = passwordEditText.getText().toString();
+        if (username != null && username.length() > 0 && password.length() > 0) {
+            app_loginSP(dataHelper.NEWSYSTEM,dataHelper.getNEWJWCURL(),username,password);
+            gotoNext();
+        } else {
+            Toast.makeText(InitActivity.this, "你是在逗我吗？", Toast.LENGTH_SHORT).show();
+        }
     }
 
     //更新sharedPreferences: app_login
@@ -80,5 +81,14 @@ public class InitActivity extends Activity {
         Intent intent = new Intent(InitActivity.this, MainActivity.class);
         startActivity(intent);
         finish();
+    }
+
+    private void initView(){
+        usernameEditText = (EditText)findViewById(R.id.usernameEditText);
+        passwordEditText= (EditText)findViewById(R.id.passwordEditText);
+        loginButton =(Button)findViewById(R.id.loginButton);
+        loginButton.setText("登录");
+        resetButton=(Button)findViewById(R.id.cancelButton);
+        resetButton.setText("重置");
     }
 }

@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -27,7 +28,7 @@ import DataFactory.JsonHelper;
 import DrawItem.DrawDialog;
 import NetWork.QucikConnection;
 
-public class MainActivity extends Activity {
+public class MainActivity extends ActionBarActivity {
 
     private WebView webView;
     private ProgressBar progressBar;

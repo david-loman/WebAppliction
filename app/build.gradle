@@ -4,7 +4,7 @@ android {
     compileSdkVersion 22
     buildToolsVersion '22.0.1'
     defaultConfig {
-        applicationId 'com.example.david.webappliction'
+        applicationId 'com.fromgeoto.nefujwc.webappliction'
         minSdkVersion 9
         targetSdkVersion 21
         versionCode 1

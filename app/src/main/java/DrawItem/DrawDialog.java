@@ -138,35 +138,35 @@ public class DrawDialog {
     }
 
     public EditText getEditText1(int res) {
-        return (EditText) getView(res).findViewById(R.id.usernameEditText);
+        return (EditText) getView(res).findViewById(R.id.usernamedEditText);
     }
 
     public EditText getEditText1() {
-        return (EditText) view.findViewById(R.id.usernameEditText);
+        return (EditText) view.findViewById(R.id.usernamedEditText);
     }
 
     public EditText getEditText2(int res) {
-        return (EditText) getView(res).findViewById(R.id.passwordEditText);
+        return (EditText) getView(res).findViewById(R.id.passwordedEditText);
     }
 
     public EditText getEditText2() {
-        return (EditText) view.findViewById(R.id.passwordEditText);
+        return (EditText) view.findViewById(R.id.passwordedEditText);
     }
 
     public TextView getTextView1(int res) {
-        return (TextView) getView(res).findViewById(R.id.usernameTextView);
+        return (TextView) getView(res).findViewById(R.id.usernamedTextView);
     }
 
     public TextView getTextView1() {
-        return (TextView) view.findViewById(R.id.usernameTextView);
+        return (TextView) view.findViewById(R.id.usernamedTextView);
     }
 
     public TextView getTextView2(int res) {
-        return (TextView) getView(res).findViewById(R.id.passwordTextView);
+        return (TextView) getView(res).findViewById(R.id.passwordedTextView);
     }
 
     public TextView getTextView2() {
-        return (TextView) view.findViewById(R.id.passwordTextView);
+        return (TextView) view.findViewById(R.id.passwordedTextView);
     }
 
     public ListView getListview() {

@@ -1,11 +1,14 @@
 package com.fromgeoto.nefujwc.webappliction;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Message;
+import android.text.TextUtils;
+import android.util.Log;
 
 import DataFactory.DataHelper;
 import DataFactory.JsonHelper;

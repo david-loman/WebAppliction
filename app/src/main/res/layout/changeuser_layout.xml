@@ -6,14 +6,14 @@
 
     <TableRow>
         <TextView
-            android:id="@+id/usernameTextView"
+            android:id="@+id/usernamedTextView"
             android:gravity="right|center_vertical"
             android:layout_margin="3dp"
             android:padding="3dp"
             android:text="@string/user"
             />
         <EditText
-            android:id="@+id/usernameEditText"
+            android:id="@+id/usernamedEditText"
             android:hint="@string/usrname"
             android:inputType="number"
             android:imeOptions="actionNext"
@@ -21,14 +21,14 @@
     </TableRow>
     <TableRow>
         <TextView
-            android:id="@+id/passwordTextView"
+            android:id="@+id/passwordedTextView"
             android:gravity="right|center_vertical"
             android:layout_margin="3dp"
             android:padding="3dp"
             android:text="@string/psw"
             />
         <EditText
-            android:id="@+id/passwordEditText"
+            android:id="@+id/passwordedEditText"
             android:hint="@string/password"
             android:password="true"
             android:imeOptions="actionGo"
