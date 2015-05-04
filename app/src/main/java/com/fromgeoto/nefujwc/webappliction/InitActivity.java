@@ -45,7 +45,7 @@ public class InitActivity extends Activity {
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                checkLogin();
+                login();
             }
         });
 
@@ -65,17 +65,20 @@ public class InitActivity extends Activity {
         MobclickAgent.onPause(this);
     }
 
-    //完善登录信息
-    private void checkLogin (){
+    //登录
+    private void login (){
         String username = usernameEditText.getText().toString();
         String password = passwordEditText.getText().toString();
-        if (username != null && username.length() > 0 && password.length() > 0) {
+        if (checkLogin(username,password)) {
             app_loginSP(dataHelper.NEWSYSTEM,dataHelper.getNEWJWCURL(),username,password);
+            downloadIcon (username);
             gotoNext();
         } else {
-            Toast.makeText(InitActivity.this, "你是在逗我吗？", Toast.LENGTH_SHORT).show();
+            Toast.makeText(InitActivity.this, "无法登录，请检查用户名与密码", Toast.LENGTH_SHORT).show();
             MobclickAgent.onEvent(InitActivity.this,"login_error");
         }
+        username=null;
+        password=null;
     }
 
     //更新sharedPreferences: app_login
@@ -93,6 +96,15 @@ public class InitActivity extends Activity {
         Intent intent = new Intent(InitActivity.this, MainActivity.class);
         startActivity(intent);
         finish();
+    }
+
+    private boolean checkLogin (String user,String pasw){
+
+        return false;
+    }
+
+    private void downloadIcon (String user){
+
     }
 
     private void initView(){

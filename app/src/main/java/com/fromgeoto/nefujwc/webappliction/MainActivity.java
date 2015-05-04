@@ -1,6 +1,5 @@
 package com.fromgeoto.nefujwc.webappliction;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -52,7 +51,6 @@ public class MainActivity extends ActionBarActivity {
         if (checkUpdata()) {
             dataHelper.deleteSharedPreferences("app_info");
             showUpdataDialog();
-
         }
 
         webView = (WebView) findViewById(R.id.myWebView);

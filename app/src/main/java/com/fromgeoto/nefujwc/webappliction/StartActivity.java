@@ -1,14 +1,13 @@
 package com.fromgeoto.nefujwc.webappliction;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.media.Image;
 import android.os.Bundle;
 import android.os.Message;
-import android.text.TextUtils;
-import android.util.Log;
+import android.widget.ImageView;
 
 import com.umeng.analytics.MobclickAgent;
 
@@ -23,14 +22,16 @@ public class StartActivity extends Activity {
 
     private DataHelper dataHelper = new DataHelper(this);
     private JsonHelper jsonHelper = new JsonHelper();
+    private ImageView addImageView ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.layout);
         //获取数据
         getData();
 
+        setContentView(R.layout.layout);
+        addImageView = (ImageView) findViewById(R.id.welcome);
     }
 
     @Override
