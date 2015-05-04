@@ -5,18 +5,6 @@
     android:background="#ffcfcfcf">
 
     <Button
-        android:id="@+id/select_system"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="left|center_vertical"
-        android:layout_margin="5dp"
-        android:padding="2dp"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:text="@string/systemSeleciton"
-        android:background="#ffffffff" />
-
-    <Button
         android:id="@+id/user_count"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -26,8 +14,7 @@
         android:textSize="18sp"
         android:textStyle="bold"
         android:text="@string/userinfo"
-        android:background="#ffffffff"
-        android:layout_below="@+id/select_system" />
+        android:background="#ffffffff" />
 
     <Button
         android:id="@+id/diyButton"

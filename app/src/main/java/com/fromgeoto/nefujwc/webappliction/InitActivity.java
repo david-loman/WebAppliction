@@ -6,7 +6,10 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
+
+import com.umeng.analytics.MobclickAgent;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,6 +23,7 @@ public class InitActivity extends Activity {
 
     private EditText usernameEditText , passwordEditText;
     private Button loginButton , resetButton;
+    private ImageView iconView;
     private DataHelper dataHelper=new DataHelper(this);
 
     @Override
@@ -52,6 +56,13 @@ public class InitActivity extends Activity {
                 passwordEditText.setText("");
             }
         });
+        MobclickAgent.onResume(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        MobclickAgent.onPause(this);
     }
 
     //完善登录信息
@@ -63,6 +74,7 @@ public class InitActivity extends Activity {
             gotoNext();
         } else {
             Toast.makeText(InitActivity.this, "你是在逗我吗？", Toast.LENGTH_SHORT).show();
+            MobclickAgent.onEvent(InitActivity.this,"login_error");
         }
     }
 
@@ -90,5 +102,7 @@ public class InitActivity extends Activity {
         loginButton.setText("登录");
         resetButton=(Button)findViewById(R.id.cancelButton);
         resetButton.setText("重置");
+        iconView = (ImageView)findViewById(R.id.iconImageView);
+        iconView.setVisibility(View.INVISIBLE);
     }
 }

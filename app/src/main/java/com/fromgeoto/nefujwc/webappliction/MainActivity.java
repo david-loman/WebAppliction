@@ -19,8 +19,12 @@ import android.widget.AdapterView;
 import android.widget.ProgressBar;
 import android.widget.SimpleAdapter;
 import android.widget.Toast;
+
+import com.umeng.analytics.MobclickAgent;
+
 import org.apache.http.util.EncodingUtils;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import DataFactory.DataHelper;
@@ -82,7 +86,7 @@ public class MainActivity extends ActionBarActivity {
     @Override
     protected void onResume() {
         super.onResume();
-
+        MobclickAgent.onResume(this);
         if (qucikConnection.checkNetwork()) {
             login(systemName, dataHelper.getSharedPreferencesValue(dataHelper.APPLOGIN, dataHelper.USERNAME), dataHelper.getSharedPreferencesValue(dataHelper.APPLOGIN, dataHelper.PASSWORD));
         } else {
@@ -94,6 +98,9 @@ public class MainActivity extends ActionBarActivity {
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 view.setInitialScale(39);
                 if (qucikConnection.checkNetwork()) {
+                    HashMap<String,String> map =new HashMap<String, String>();
+                    map.put("website",url);
+                    MobclickAgent.onEvent(MainActivity.this,"visit_ok",map);
                     webView.loadUrl(url);
                 } else {
                     drawDialog.getErrorDialog("网络错误", drawDialog.NetWorkError, drawDialog.exitListener());
@@ -105,6 +112,10 @@ public class MainActivity extends ActionBarActivity {
             public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
                 Toast.makeText(MainActivity.this, "连接错误，请检查该链接是否可用", Toast.LENGTH_SHORT).show();
                 view.loadUrl("http://www.baidu.com/");
+                HashMap<String,String> map = new HashMap<String, String>();
+                map.put("errorCode",String.valueOf(errorCode));
+                map.put("description",description);
+                MobclickAgent.onEvent(MainActivity.this, "visit_error", map);
             }
 
             @Override
@@ -128,6 +139,7 @@ public class MainActivity extends ActionBarActivity {
     @Override
     protected void onPause() {
         super.onPause();
+        MobclickAgent.onPause(this);
     }
 
     @Override
@@ -167,11 +179,10 @@ public class MainActivity extends ActionBarActivity {
             intent.putExtra(dataHelper.SYSTEM, systemName);
             startActivityForResult(intent, 1);
         } else if (id == R.id.action_exit) {
+            MobclickAgent.onKillProcess(this);
             this.finish();
-        } else if (id == R.id.action_oldJwc) {
-            login(dataHelper.OLDSYSTEM, null, null);
         } else if (id == R.id.change) {
-            drawDialog.getInputDialog("切换用户",drawDialog.getView(R.layout.changeuser_layout),changeListener());
+            drawDialog.getInputDialog("切换用户", drawDialog.getView(R.layout.changeuser_layout), changeListener());
         } else if (id == R.id.action_website) {
             //获取数据
             final List<Map<String, String>> list = getWebsite();
@@ -189,6 +200,7 @@ public class MainActivity extends ActionBarActivity {
                 drawDialog.getListview().setOnItemLongClickListener(deleteListener(list));
             }
         }else  if (id ==R.id.action_share){
+            MobclickAgent.onEvent(this,"share_appliction");
             share();
         }
         return super.onOptionsItemSelected(item);
@@ -280,10 +292,12 @@ public class MainActivity extends ActionBarActivity {
                 psw = drawDialog.getEditText2().getText().toString();
                 if (name == null || name.length() <= 0 || psw == null || psw.length() <= 0) {
                     Toast.makeText(MainActivity.this, "请输入完整的信息！", Toast.LENGTH_SHORT).show();
+                    MobclickAgent.onEvent(MainActivity.this,"login_error");
                 } else {
                     clearCookies();
                     //加载页面
                     login(dataHelper.NEWSYSTEM, name, psw);
+                    MobclickAgent.onEvent(MainActivity.this,"geust_session");
                 }
             }
         };

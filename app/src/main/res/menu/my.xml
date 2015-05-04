@@ -13,14 +13,9 @@
         android:title="切换用户"
         android:orderInCategory="100" />
     <item
-        android:id="@+id/action_oldJwc"
-        android:title="@string/oldsystem"
-        android:orderInCategory="100" />
-    <item
         android:id="@+id/action_website"
         android:title="我的网站"
-        android:orderInCategory="100"
-        />
+        android:orderInCategory="100" />
     <item
         android:id="@+id/action_share"
         android:title="分享"

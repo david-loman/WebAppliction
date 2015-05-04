@@ -14,6 +14,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.fromgeoto.nefujwc.webappliction.R;
+import com.umeng.analytics.MobclickAgent;
 
 /**
  * Created by David on 2014/10/31.
@@ -62,6 +63,7 @@ public class DrawDialog {
     //响应帮助操作
     public AlertDialog getHelpDialog() {
         View view = getView(R.layout.help_layout);
+        MobclickAgent.onEvent(context,"show_help");
         return new AlertDialog.Builder(context)
                 .setTitle("帮助信息").setView(view)
                 .setNegativeButton("更多", new DialogInterface.OnClickListener() {
@@ -76,16 +78,16 @@ public class DrawDialog {
 
     //响应列表操作
     public AlertDialog getListDialog(String title) {
-
+        MobclickAgent.onEvent(context,"show_list");
         return new AlertDialog.Builder(context).setTitle(title).setView(view).setNegativeButton(NO, null).show();
     }
 
     //响应帮助者操作
-    public AlertDialog getDeeveloperDialog(final String weibo, final String zhihu, final String zhuye){
+    public AlertDialog getDeeveloperDialog(final String weibo, final String zhihu, final String zhuye) {
         Button weiboButton, zhihuButton, zhuyeButton;
-        weiboButton = (Button)getView(R.layout.dev_layout).findViewById(R.id.weibo);
-        zhihuButton = (Button)getView().findViewById(R.id.zhihu);
-        zhuyeButton = (Button)getView().findViewById(R.id.zhuye);
+        weiboButton = (Button) getView(R.layout.dev_layout).findViewById(R.id.weibo);
+        zhihuButton = (Button) getView().findViewById(R.id.zhihu);
+        zhuyeButton = (Button) getView().findViewById(R.id.zhuye);
 
         weiboButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -105,7 +107,7 @@ public class DrawDialog {
                 visit(zhuye);
             }
         });
-
+        MobclickAgent.onEvent(context,"show_devloper");
         return new AlertDialog.Builder(context)
                 .setTitle("开发者信息").setView(view).setPositiveButton("确定", null)
                 .show();
@@ -118,6 +120,7 @@ public class DrawDialog {
             public void onClick(DialogInterface dialog, int which) {
                 Uri uri = Uri.parse(url);
                 Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                MobclickAgent.onEvent(context, "download_appliction");
                 ((Activity) context).startActivity(intent);
             }
         };
@@ -209,6 +212,6 @@ public class DrawDialog {
     private void visit(String url) {
         Uri uri = Uri.parse(url);
         Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-        ((Activity)context).startActivity(intent);
+        ((Activity) context).startActivity(intent);
     }
 }

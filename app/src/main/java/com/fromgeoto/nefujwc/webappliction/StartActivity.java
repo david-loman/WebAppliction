@@ -10,6 +10,8 @@ import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.umeng.analytics.MobclickAgent;
+
 import DataFactory.DataHelper;
 import DataFactory.JsonHelper;
 import NetWork.QucikConnection;
@@ -39,6 +41,13 @@ public class StartActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
+        MobclickAgent.onResume(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        MobclickAgent.onPause(this);
     }
 
     android.os.Handler handler = new android.os.Handler() {
@@ -51,13 +60,13 @@ public class StartActivity extends Activity {
                     //更新 app_updata
                     app_updataSP(jsonString);
                 }
-            }else if (msg.arg1==2){
-                String jsonString =msg.obj.toString();
+            } else if (msg.arg1 == 2) {
+                String jsonString = msg.obj.toString();
                 if (jsonString != null && jsonString.length() > 0) {
                     //更新app_website
                     app_websiteSP(jsonString);
                 }
-            }else {
+            } else {
                 //如果APPLOGIN未初始化
                 gotoNext(dataHelper.getSharedPreferencesValue(dataHelper.APPLOGIN, dataHelper.SYSTEM).equals(dataHelper.SYSTEM));
             }
@@ -84,33 +93,33 @@ public class StartActivity extends Activity {
                 }
             }
             //获取更新信息
-            if (qucikConnection.checkNetwork()){
+            if (qucikConnection.checkNetwork()) {
                 result = qucikConnection.getResultString(dataHelper.getUPDATASTATUSURL());
             }
             boolean[] updataStatus = jsonHelper.parseUpdataJson(result);
             //如果应用需要更新或者未初始化
-            result=null;
+            result = null;
             if (updataStatus[0] || dataHelper.getSharedPreferencesValue(dataHelper.APPUPDATA, dataHelper.VERSION).equals(dataHelper.VERSION)) {
-               if (qucikConnection.checkNetwork()){
-                   result=qucikConnection.getResultString(dataHelper.getAPPLICATIONINFOURL());
-                   //一旦有新的更新，将count归零
-                   dataHelper.setSharedPreferencesValue(dataHelper.APPUPDATA,dataHelper.COUNT,String.valueOf(0));
-               }
-               if (result != null){
-                   sendMsg(1,result);
-               }
-            }
-            //如果列表需要更新或者未初始化
-            result=null;
-            if (updataStatus[1] || dataHelper.getSharedPreferencesValue(dataHelper.APPWEBSITE, dataHelper.DEFAULTWEBSITE).equals(dataHelper.DEFAULTWEBSITE)) {
-                if (qucikConnection.checkNetwork()){
-                    result=qucikConnection.getResultString(dataHelper.getDATAINFOURL());
+                if (qucikConnection.checkNetwork()) {
+                    result = qucikConnection.getResultString(dataHelper.getAPPLICATIONINFOURL());
+                    //一旦有新的更新，将count归零
+                    dataHelper.setSharedPreferencesValue(dataHelper.APPUPDATA, dataHelper.COUNT, String.valueOf(0));
                 }
                 if (result != null) {
-                    sendMsg(2,result);
+                    sendMsg(1, result);
                 }
             }
-            sendMsg(0,null);
+            //如果列表需要更新或者未初始化
+            result = null;
+            if (updataStatus[1] || dataHelper.getSharedPreferencesValue(dataHelper.APPWEBSITE, dataHelper.DEFAULTWEBSITE).equals(dataHelper.DEFAULTWEBSITE)) {
+                if (qucikConnection.checkNetwork()) {
+                    result = qucikConnection.getResultString(dataHelper.getDATAINFOURL());
+                }
+                if (result != null) {
+                    sendMsg(2, result);
+                }
+            }
+            sendMsg(0, null);
         }
     }
 
@@ -119,19 +128,19 @@ public class StartActivity extends Activity {
 
         try {
 
-            String versionName = dataHelper.getSharedPreferencesValue(dataHelper.APPUPDATA,dataHelper.VERSION);
+            String versionName = dataHelper.getSharedPreferencesValue(dataHelper.APPUPDATA, dataHelper.VERSION);
             //存储到 SharedPreferences中
-            dataHelper.setSharedPreferencesValues(dataHelper.APPUPDATA,jsonHelper.parseApplictionJson(jsonString,new String []{dataHelper.VERSION
-                    ,dataHelper.URL
-                    ,dataHelper.ONE,dataHelper.TWO,dataHelper.THREE}));
+            dataHelper.setSharedPreferencesValues(dataHelper.APPUPDATA, jsonHelper.parseApplictionJson(jsonString, new String[]{dataHelper.VERSION
+                    , dataHelper.URL
+                    , dataHelper.ONE, dataHelper.TWO, dataHelper.THREE}));
             //获取版本信息
-            if (!versionName.equals(dataHelper.getSharedPreferencesValue(dataHelper.APPUPDATA,dataHelper.VERSION))){
-                dataHelper.setSharedPreferencesValue(dataHelper.APPUPDATA,dataHelper.COUNT,String.valueOf(1));
+            if (!versionName.equals(dataHelper.getSharedPreferencesValue(dataHelper.APPUPDATA, dataHelper.VERSION))) {
+                dataHelper.setSharedPreferencesValue(dataHelper.APPUPDATA, dataHelper.COUNT, String.valueOf(1));
             }
-            versionName=dataHelper.getSharedPreferencesValue(dataHelper.APPUPDATA,dataHelper.VERSION);
+            versionName = dataHelper.getSharedPreferencesValue(dataHelper.APPUPDATA, dataHelper.VERSION);
             //判断可否升级
             if (versionName.equals(getVersionName())) {
-                dataHelper.setSharedPreferencesValue(dataHelper.APPUPDATA,dataHelper.COUNT,String.valueOf(0));
+                dataHelper.setSharedPreferencesValue(dataHelper.APPUPDATA, dataHelper.COUNT, String.valueOf(0));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -140,8 +149,8 @@ public class StartActivity extends Activity {
     }
 
     //更新sharedPreferences: app_website
-    private void app_websiteSP(String jsonString){
-        dataHelper.setSharedPreferencesValue(dataHelper.APPWEBSITE,dataHelper.DEFAULTWEBSITE,jsonString);
+    private void app_websiteSP(String jsonString) {
+        dataHelper.setSharedPreferencesValue(dataHelper.APPWEBSITE, dataHelper.DEFAULTWEBSITE, jsonString);
     }
 
     //从网络中获取应用信息
@@ -151,21 +160,21 @@ public class StartActivity extends Activity {
     }
 
     //获取版本信息
-    private String getVersionName (){
-        String versionName =null;
-        try{
+    private String getVersionName() {
+        String versionName = null;
+        try {
             //获取本应用版本名称
             PackageManager pm = getPackageManager();
             PackageInfo info = pm.getPackageInfo(getPackageName(), 0);
             versionName = info.versionName;
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return versionName;
     }
 
     //发送消息
-    private  void sendMsg (int status,String text){
+    private void sendMsg(int status, String text) {
         Message message = Message.obtain();
         message.arg1 = status;
         if (status != 0) {

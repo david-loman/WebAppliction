@@ -11,6 +11,8 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.umeng.analytics.MobclickAgent;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,7 +28,7 @@ public class MenuActivity extends Activity {
 
     private Button commitButton;
     private Button systemButton, userButton;
-    private Button diyButton, devButton, helpButton,clearBuuton;
+    private Button diyButton, devButton, helpButton, clearBuuton;
     private Button updataButton;
     private TextView userTextView, systemTextView;
 
@@ -35,7 +37,7 @@ public class MenuActivity extends Activity {
     private String selectSystem = null;
     private String psword = null;
     private DataHelper dataHelper = new DataHelper(this);
-    private DrawDialog drawDialog=new DrawDialog(this);
+    private DrawDialog drawDialog = new DrawDialog(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +45,6 @@ public class MenuActivity extends Activity {
         setContentView(R.layout.settings);
 
         commitButton = (Button) findViewById(R.id.sureButton);
-        systemButton = (Button) findViewById(R.id.select_system);
         userButton = (Button) findViewById(R.id.user_count);
         diyButton = (Button) findViewById(R.id.diyButton);
         updataButton = (Button) findViewById(R.id.updataButton);
@@ -65,13 +66,6 @@ public class MenuActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-
-        systemButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                setSelectSystem();
-            }
-        });
 
         userButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -97,7 +91,7 @@ public class MenuActivity extends Activity {
         devButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                drawDialog.getDeeveloperDialog(dataHelper.getMYWEIBO(),dataHelper.getMYZHIHU(),dataHelper.getMYZHUYE());
+                drawDialog.getDeeveloperDialog(dataHelper.getMYWEIBO(), dataHelper.getMYZHIHU(), dataHelper.getMYZHUYE());
             }
         });
 
@@ -114,7 +108,7 @@ public class MenuActivity extends Activity {
             @Override
             public void onClick(View v) {
                 dataHelper.deleteSharedPreferences(dataHelper.APPWEBSITE);
-                Toast.makeText(MenuActivity.this,"网址已清除",Toast.LENGTH_SHORT).show();
+                Toast.makeText(MenuActivity.this, "网址已清除", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -122,16 +116,23 @@ public class MenuActivity extends Activity {
             @Override
             public void onClick(View view) {
                 if (userTextView.getText().toString().equals("null")) {
-                    drawDialog.getErrorDialog("错误提示","您当前的用户为空，请完善信息！",null);
+                    drawDialog.getErrorDialog("错误提示", "您当前的用户为空，请完善信息！", null);
                 } else {
                     go_back();
                 }
             }
         });
+        MobclickAgent.onResume(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        MobclickAgent.onPause(this);
     }
 
     private void setSelectSystem() {
-        drawDialog.getChangeDialog("修改系统","您默认的系统为:\t" + currenSystem + "\n点击修改按钮将修改系统。","修改",changeSystemListener());
+        drawDialog.getChangeDialog("修改系统", "您默认的系统为:\t" + currenSystem + "\n点击修改按钮将修改系统。", "修改", changeSystemListener());
     }
 
     private void changeUser() {
@@ -146,18 +147,18 @@ public class MenuActivity extends Activity {
                 drawDialog.getEditText1(R.layout.changeuser_layout).setText(nameS);
                 drawDialog.getEditText2().setText(pswS);
             }
-            drawDialog.getInputDialog("修改用户",drawDialog.getView(),changeUerListener());
+            drawDialog.getInputDialog("修改用户", drawDialog.getView(), changeUerListener());
 
         } else {
-            drawDialog.getErrorDialog("错误提示","当前系统不支持该功能",null);
+            drawDialog.getErrorDialog("错误提示", "当前系统不支持该功能", null);
         }
     }
 
     private void updata() {
         if (Integer.parseInt(dataHelper.getSharedPreferencesValue(dataHelper.APPUPDATA, dataHelper.COUNT)) != 0) {
-            drawDialog.getUpdateDialog(dataHelper.getUpdataInfo(),drawDialog.downloadListener(dataHelper.getSharedPreferencesValue(dataHelper.APPUPDATA,dataHelper.URL)));
+            drawDialog.getUpdateDialog(dataHelper.getUpdataInfo(), drawDialog.downloadListener(dataHelper.getSharedPreferencesValue(dataHelper.APPUPDATA, dataHelper.URL)));
         } else {
-            drawDialog.getErrorDialog("更新信息","当前已是最高版本",null);
+            drawDialog.getErrorDialog("更新信息", "当前已是最高版本", null);
         }
 
     }
@@ -218,11 +219,11 @@ public class MenuActivity extends Activity {
         drawDialog.getEditText2().setHint("请输入网站地址");
         drawDialog.getEditText2().setTransformationMethod(HideReturnsTransformationMethod.getInstance());
         //显示
-        drawDialog.getInputDialog("自定义添加",drawDialog.getView(),addWebsiteListener());
+        drawDialog.getInputDialog("自定义添加", drawDialog.getView(), addWebsiteListener());
     }
 
     //监听系统修改
-    private DialogInterface.OnClickListener changeSystemListener (){
+    private DialogInterface.OnClickListener changeSystemListener() {
         return new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -240,7 +241,7 @@ public class MenuActivity extends Activity {
     }
 
     //监听用户修改
-    private DialogInterface.OnClickListener changeUerListener (){
+    private DialogInterface.OnClickListener changeUerListener() {
         return new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -255,7 +256,7 @@ public class MenuActivity extends Activity {
     }
 
     //添加网站
-    private DialogInterface.OnClickListener addWebsiteListener(){
+    private DialogInterface.OnClickListener addWebsiteListener() {
         return new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
