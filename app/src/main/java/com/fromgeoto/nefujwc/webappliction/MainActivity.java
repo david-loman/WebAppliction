@@ -81,7 +81,7 @@ public class MainActivity extends ActionBarActivity {
     protected void onResume() {
         super.onResume();
         MobclickAgent.onResume(this);
-        if (qucikConnection.checkNetwork()) {
+        if (QucikConnection.checkNetwork(getApplicationContext())) {
             login(dataHelper.getSharedPreferencesValue(dataHelper.APPACCOUNT, dataHelper.USERID), dataHelper.getSharedPreferencesValue(dataHelper.APPACCOUNT, dataHelper.PASSWORD));
         } else {
             drawDialog.getErrorDialog("网络错误", drawDialog.NetWorkError, drawDialog.exitListener());
@@ -91,7 +91,7 @@ public class MainActivity extends ActionBarActivity {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 view.setInitialScale(39);
-                if (qucikConnection.checkNetwork()) {
+                if (QucikConnection.checkNetwork(getApplicationContext())) {
                     HashMap<String, String> map = new HashMap<String, String>();
                     map.put("website", url);
                     MobclickAgent.onEvent(MainActivity.this, "visit_ok", map);
@@ -205,14 +205,6 @@ public class MainActivity extends ActionBarActivity {
 //            Toast.makeText(this, "设置已更改", Toast.LENGTH_SHORT).show();  to be delete
         } else {
 //            Toast.makeText(this, "设置未更改", Toast.LENGTH_SHORT).show();  to be delete
-        }
-
-        if (resultCode == 1) {
-            systemName = dataHelper.NEWSYSTEM;
-        }
-
-        if (resultCode == 2) {
-            systemName = dataHelper.OLDSYSTEM;
         }
     }
 

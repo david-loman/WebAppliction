@@ -70,7 +70,7 @@ public class InitActivity extends Activity {
         String username = usernameEditText.getText().toString();
         String password = passwordEditText.getText().toString();
         if (checkLogin(username,password)) {
-            app_loginSP(dataHelper.NEWSYSTEM,dataHelper.getNEWJWCURL(),username,password);
+            app_loginSP(dataHelper.getNEWJWCURL(),username,password);
             downloadIcon (username);
             gotoNext();
         } else {
@@ -82,13 +82,12 @@ public class InitActivity extends Activity {
     }
 
     //更新sharedPreferences: app_login
-    private void app_loginSP (String system,String url,String username,String password){
+    private void app_loginSP (String url,String username,String password){
         Map<String,String> data=new HashMap<String, String>();
-        data.put(dataHelper.SYSTEM,system);
         data.put(dataHelper.URL,url);
         data.put(dataHelper.USERNAME,username);
         data.put(dataHelper.PASSWORD,password);
-        dataHelper.setSharedPreferencesValues(dataHelper.APPLOGIN,data);
+        dataHelper.setSharedPreferencesValues(dataHelper.APPACCOUNT,data);
     }
 
     //跳转到下一Activity

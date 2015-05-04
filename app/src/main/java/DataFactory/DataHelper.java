@@ -32,11 +32,6 @@ public class DataHelper {
     private final String UPDATASTATUSURL = "http://jwcglxt.qiniudn.com/updataStatus";
     private final String APPLICATIONINFOURL = "http://jwcglxt.qiniudn.com/applictionInfo";
     private final String DATAINFOURL = "http://jwcglxt.qiniudn.com/dataInfo";
-    private final String USERACCOUNT = "userAccount=";
-    private final String USERPASSWORD = "&userPassword=";
-    //普通数据
-    public final String OLDSYSTEM = "旧教务系统";
-    public final String NEWSYSTEM = "新教务系统";
     //SharedPrefence名称
     public final String APPACCOUNT = "app_account";
     public final String APPUPDATA = "app_updata";
@@ -53,6 +48,7 @@ public class DataHelper {
     public final String USERTYPE = "usertype";
     public final String USERNAME = "username";
     public final String PASSWORD = "password";
+    public final String UPDATATIME = "updatetime";
     public final String DEFAULTWEBSITE = "defaultwebsite";
     public final String MYWEBSITE = "mywebsite";
     //私有属性
@@ -147,77 +143,6 @@ public class DataHelper {
         editor.commit();
         editor = null;
         sharedPreferences = null;
-    }
-
-    public boolean saveImage(File file, String urlString) {
-        try {
-            Bitmap tmpBitmap = null;
-            java.net.URL url = new URL(urlString);
-            HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
-            httpURLConnection.setRequestMethod("GET");
-            httpURLConnection.setDoInput(true);
-            //获取 ICON
-            tmpBitmap = BitmapFactory.decodeStream(httpURLConnection.getInputStream());
-            //存到内存中
-            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-            tmpBitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
-            byte[] tmpByte = byteArrayOutputStream.toByteArray();
-            FileOutputStream fileOutputStream = new FileOutputStream(file);
-            BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(fileOutputStream);
-            bufferedOutputStream.write(tmpByte);
-            bufferedOutputStream.close();
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    public boolean saveAccount(String user, String pasw, String urlString) {
-        boolean status = false;
-        try {
-            String tmp = USERACCOUNT + user + USERPASSWORD + pasw;
-            java.net.URL url = new URL(urlString);
-            HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
-            httpURLConnection.setRequestMethod("POST");
-            httpURLConnection.setDoInput(true);
-            httpURLConnection.setDoOutput(true);
-            // Post 数据
-            BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(httpURLConnection.getOutputStream(), "utf-8"));
-            bufferedWriter.write(tmp);
-            bufferedWriter.flush();
-            bufferedWriter.close();
-            tmp = null;
-            // 数据处理
-            if (httpURLConnection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-                int i = 0;
-                String tmpLine = null;
-                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(httpURLConnection.getInputStream()));
-                while ((tmpLine = bufferedReader.readLine()) != null) {
-                    // 更新数据
-                    if (tmpLine.contains(user)) {
-                        status = true;
-                        setSharedPreferencesValue(APPACCOUNT, USERNAME, tmpLine.substring(tmpLine.compareTo("(") + 1, tmpLine.compareTo(")")));
-                    }
-                    // 数据类型
-                    if (status && i > 0 && i < 3) {
-                        if (i == 1) {
-                            setSharedPreferencesValue(APPACCOUNT, USERTYPE, tmpLine);
-                        } else {
-                            setSharedPreferencesValue(APPACCOUNT, URL, tmpLine);
-                        }
-                        i++;
-                    }
-                    if (i > 3) {
-                        tmpLine = null;
-                        return status;
-                    }
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return status;
     }
 
     public String getNEWJWCURL() {

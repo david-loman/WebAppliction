@@ -2,26 +2,40 @@ package NetWork;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.util.Log;
 import android.widget.Toast;
 
+import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by David on 2014/10/31.
  */
 public class QucikConnection {
 
-    private Context context;
+    private Context mContext;
+    private final String USERACCOUNT = "userAccount=";
+    private final String USERPASSWORD = "&userPassword=";
 
     public QucikConnection (Context context){
-        this.context=context;
+        this.mContext=context;
     }
 
-    public String getResultString(String url) {
+    public static String getResultString(String url) {
         StringBuffer stringBuffer = new StringBuffer();
         try {
 
@@ -55,11 +69,83 @@ public class QucikConnection {
         return stringBuffer.toString();
     }
 
+    public Map<String,String> getResultMap (String user, String pasw, String urlString) {
+        boolean status = false;
+        Map<String,String> resultMap = new HashMap<String,String>();
+        try {
+            String tmp = USERACCOUNT + user + USERPASSWORD + pasw;
+            java.net.URL url = new URL(urlString);
+            HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+            httpURLConnection.setRequestMethod("POST");
+            httpURLConnection.setDoInput(true);
+            httpURLConnection.setDoOutput(true);
+            // Post 数据
+            BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(httpURLConnection.getOutputStream(), "utf-8"));
+            bufferedWriter.write(tmp);
+            bufferedWriter.flush();
+            bufferedWriter.close();
+            tmp = null;
+            // 数据处理
+            if (httpURLConnection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                int i = 0;
+                String tmpLine = null;
+                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(httpURLConnection.getInputStream()));
+                while ((tmpLine = bufferedReader.readLine()) != null) {
+                    // 更新数据
+                    if (tmpLine.contains(user)) {
+                        status = true;
+                        resultMap.put("username",tmpLine.substring(tmpLine.compareTo("(") + 1, tmpLine.compareTo(")")));
+                    }
+                    // 数据类型
+                    if (status && i > 0 && i < 3) {
+                        if (i == 1) {
+                            resultMap.put("usertype",tmpLine);
+                        } else {
+                            resultMap.put("url",tmpLine);
+                        }
+                        i++;
+                    }
+                    if (i > 3) {
+                        tmpLine = null;
+                        return resultMap;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return resultMap;
+    }
+
+    public static boolean saveImage (File file, String urlString) {
+        try {
+            Bitmap tmpBitmap = null;
+            java.net.URL url = new URL(urlString);
+            HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+            httpURLConnection.setRequestMethod("GET");
+            httpURLConnection.setDoInput(true);
+            //获取 ICON
+            tmpBitmap = BitmapFactory.decodeStream(httpURLConnection.getInputStream());
+            //存到内存中
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            tmpBitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+            byte[] tmpByte = byteArrayOutputStream.toByteArray();
+            FileOutputStream fileOutputStream = new FileOutputStream(file);
+            BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(fileOutputStream);
+            bufferedOutputStream.write(tmpByte);
+            bufferedOutputStream.close();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     public void DownloadApplication (String url){
 
     }
 
-    public boolean checkNetwork(){
+    public static boolean checkNetwork(Context context){
         ConnectivityManager conn = (ConnectivityManager) context.getSystemService(Activity.CONNECTIVITY_SERVICE);
         boolean wifi = conn.getNetworkInfo(ConnectivityManager.TYPE_WIFI).isConnected();
         boolean mobile = conn.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).isConnected();

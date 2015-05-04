@@ -69,7 +69,7 @@ public class StartActivity extends Activity {
                 }
             } else {
                 //如果APPLOGIN未初始化
-                gotoNext(dataHelper.getSharedPreferencesValue(dataHelper.APPLOGIN, dataHelper.SYSTEM).equals(dataHelper.SYSTEM));
+                gotoNext(true);
             }
         }
 
@@ -94,14 +94,14 @@ public class StartActivity extends Activity {
                 }
             }
             //获取更新信息
-            if (qucikConnection.checkNetwork()) {
+            if (QucikConnection.checkNetwork(getApplicationContext())) {
                 result = qucikConnection.getResultString(dataHelper.getUPDATASTATUSURL());
             }
             boolean[] updataStatus = jsonHelper.parseUpdataJson(result);
             //如果应用需要更新或者未初始化
             result = null;
             if (updataStatus[0] || dataHelper.getSharedPreferencesValue(dataHelper.APPUPDATA, dataHelper.VERSION).equals(dataHelper.VERSION)) {
-                if (qucikConnection.checkNetwork()) {
+                if (QucikConnection.checkNetwork(getApplicationContext())) {
                     result = qucikConnection.getResultString(dataHelper.getAPPLICATIONINFOURL());
                     //一旦有新的更新，将count归零
                     dataHelper.setSharedPreferencesValue(dataHelper.APPUPDATA, dataHelper.COUNT, String.valueOf(0));
@@ -113,7 +113,7 @@ public class StartActivity extends Activity {
             //如果列表需要更新或者未初始化
             result = null;
             if (updataStatus[1] || dataHelper.getSharedPreferencesValue(dataHelper.APPWEBSITE, dataHelper.DEFAULTWEBSITE).equals(dataHelper.DEFAULTWEBSITE)) {
-                if (qucikConnection.checkNetwork()) {
+                if (QucikConnection.checkNetwork(getApplicationContext())) {
                     result = qucikConnection.getResultString(dataHelper.getDATAINFOURL());
                 }
                 if (result != null) {
