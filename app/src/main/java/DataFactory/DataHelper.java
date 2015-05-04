@@ -38,8 +38,9 @@ public class DataHelper {
     public final String OLDSYSTEM = "旧教务系统";
     public final String NEWSYSTEM = "新教务系统";
     //SharedPrefence名称
+    public final String APPACCOUNT = "app_account";
     public final String APPUPDATA = "app_updata";
-    public final String APPLOGIN = "app_login";
+    public final String APPINFO = "app_info";
     public final String APPWEBSITE = "app_website";
     //SharedPrefence属性
     public final String VERSION = "version";
@@ -47,9 +48,9 @@ public class DataHelper {
     public final String ONE = "one";
     public final String TWO = "two";
     public final String THREE = "three";
-    public final String SYSTEM = "system";
     public final String URL = "url";
-    public final String FUNCTION = "function";
+    public final String USERID = "userid";
+    public final String USERTYPE = "usertype";
     public final String USERNAME = "username";
     public final String PASSWORD = "password";
     public final String DEFAULTWEBSITE = "defaultwebsite";
@@ -83,9 +84,10 @@ public class DataHelper {
             editor.putString(ONE, data.get(ONE));
             editor.putString(TWO, data.get(TWO));
             editor.putString(THREE, data.get(THREE));
-        } else if (sharedPreferencesName.equals(APPLOGIN)) {
-            editor.putString(SYSTEM, data.get(SYSTEM));
+        } else if (sharedPreferencesName.equals(APPACCOUNT)) {
             editor.putString(URL, data.get(URL));
+            editor.putString(USERID, data.get(USERID));
+            editor.putString(USERTYPE, data.get(USERTYPE));
             editor.putString(USERNAME, data.get(USERNAME));
             editor.putString(PASSWORD, data.get(PASSWORD));
         } else if (sharedPreferencesName.equals(APPWEBSITE)) {
@@ -122,8 +124,9 @@ public class DataHelper {
             data.put(TWO, sharedPreferences.getString(TWO, TWO));
             data.put(THREE, sharedPreferences.getString(THREE, THREE));
             data.put(COUNT, sharedPreferences.getString(COUNT, COUNT));
-        } else if (sharedPreferencesName.equals(APPLOGIN)) {
-            data.put(SYSTEM, sharedPreferences.getString(SYSTEM, SYSTEM));
+        } else if (sharedPreferencesName.equals(APPACCOUNT)) {
+            data.put(USERID, sharedPreferences.getString(USERID, USERID));
+            data.put(USERTYPE, sharedPreferences.getString(USERTYPE, USERTYPE));
             data.put(URL, sharedPreferences.getString(URL, URL));
             data.put(USERNAME, sharedPreferences.getString(USERNAME, USERNAME));
             data.put(PASSWORD, sharedPreferences.getString(PASSWORD, PASSWORD));
@@ -171,7 +174,7 @@ public class DataHelper {
     }
 
     public boolean saveAccount(String user, String pasw, String urlString) {
-        boolean status=false;
+        boolean status = false;
         try {
             String tmp = USERACCOUNT + user + USERPASSWORD + pasw;
             java.net.URL url = new URL(urlString);
@@ -187,18 +190,27 @@ public class DataHelper {
             tmp = null;
             // 数据处理
             if (httpURLConnection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-                int i =0;
+                int i = 0;
                 String tmpLine = null;
                 BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(httpURLConnection.getInputStream()));
-                while ((tmpLine=bufferedReader.readLine()) != null){
+                while ((tmpLine = bufferedReader.readLine()) != null) {
                     // 更新数据
                     if (tmpLine.contains(user)) {
                         status = true;
-                        setSharedPreferencesValue(APPLOGIN, USERNAME, tmpLine.substring(tmpLine.compareTo("(") + 1, tmpLine.compareTo(")")));
+                        setSharedPreferencesValue(APPACCOUNT, USERNAME, tmpLine.substring(tmpLine.compareTo("(") + 1, tmpLine.compareTo(")")));
                     }
                     // 数据类型
                     if (status && i > 0 && i < 3) {
-
+                        if (i == 1) {
+                            setSharedPreferencesValue(APPACCOUNT, USERTYPE, tmpLine);
+                        } else {
+                            setSharedPreferencesValue(APPACCOUNT, URL, tmpLine);
+                        }
+                        i++;
+                    }
+                    if (i > 3) {
+                        tmpLine = null;
+                        return status;
                     }
                 }
             }

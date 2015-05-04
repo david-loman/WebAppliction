@@ -22,10 +22,12 @@ import android.widget.Toast;
 import com.umeng.analytics.MobclickAgent;
 
 import org.apache.http.util.EncodingUtils;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import DataFactory.DataHelper;
 import DataFactory.JsonHelper;
 import DrawItem.DrawDialog;
@@ -56,12 +58,6 @@ public class MainActivity extends ActionBarActivity {
         webView = (WebView) findViewById(R.id.myWebView);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
 
-        systemName = dataHelper.getSharedPreferencesValue(dataHelper.APPLOGIN, dataHelper.SYSTEM);
-
-        if (systemName.equals(dataHelper.SYSTEM)) {
-            Toast.makeText(this, "数据加载错误，请重启应用", Toast.LENGTH_SHORT).show();
-        }
-
         //webView初始化
         webView.getSettings().setJavaScriptEnabled(true);
         webView.getSettings().setBuiltInZoomControls(true);
@@ -86,7 +82,7 @@ public class MainActivity extends ActionBarActivity {
         super.onResume();
         MobclickAgent.onResume(this);
         if (qucikConnection.checkNetwork()) {
-            login(systemName, dataHelper.getSharedPreferencesValue(dataHelper.APPLOGIN, dataHelper.USERNAME), dataHelper.getSharedPreferencesValue(dataHelper.APPLOGIN, dataHelper.PASSWORD));
+            login(dataHelper.getSharedPreferencesValue(dataHelper.APPACCOUNT, dataHelper.USERID), dataHelper.getSharedPreferencesValue(dataHelper.APPACCOUNT, dataHelper.PASSWORD));
         } else {
             drawDialog.getErrorDialog("网络错误", drawDialog.NetWorkError, drawDialog.exitListener());
         }
@@ -96,9 +92,9 @@ public class MainActivity extends ActionBarActivity {
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 view.setInitialScale(39);
                 if (qucikConnection.checkNetwork()) {
-                    HashMap<String,String> map =new HashMap<String, String>();
-                    map.put("website",url);
-                    MobclickAgent.onEvent(MainActivity.this,"visit_ok",map);
+                    HashMap<String, String> map = new HashMap<String, String>();
+                    map.put("website", url);
+                    MobclickAgent.onEvent(MainActivity.this, "visit_ok", map);
                     webView.loadUrl(url);
                 } else {
                     drawDialog.getErrorDialog("网络错误", drawDialog.NetWorkError, drawDialog.exitListener());
@@ -110,9 +106,9 @@ public class MainActivity extends ActionBarActivity {
             public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
                 Toast.makeText(MainActivity.this, "连接错误，请检查该链接是否可用", Toast.LENGTH_SHORT).show();
                 view.loadUrl("http://www.baidu.com/");
-                HashMap<String,String> map = new HashMap<String, String>();
-                map.put("errorCode",String.valueOf(errorCode));
-                map.put("description",description);
+                HashMap<String, String> map = new HashMap<String, String>();
+                map.put("errorCode", String.valueOf(errorCode));
+                map.put("description", description);
                 MobclickAgent.onEvent(MainActivity.this, "visit_error", map);
             }
 
@@ -174,7 +170,6 @@ public class MainActivity extends ActionBarActivity {
             clearCookies();
 
             Intent intent = new Intent(MainActivity.this, MenuActivity.class);
-            intent.putExtra(dataHelper.SYSTEM, systemName);
             startActivityForResult(intent, 1);
         } else if (id == R.id.action_exit) {
             MobclickAgent.onKillProcess(this);
@@ -193,12 +188,12 @@ public class MainActivity extends ActionBarActivity {
 
                 AlertDialog dialog = drawDialog.getListDialog("我的网站");
                 //点击有惊喜
-                drawDialog.getListview().setOnItemClickListener(selectListener(dialog,list));
+                drawDialog.getListview().setOnItemClickListener(selectListener(dialog, list));
                 //长按删除
                 drawDialog.getListview().setOnItemLongClickListener(deleteListener(list));
             }
-        }else  if (id ==R.id.action_share){
-            MobclickAgent.onEvent(this,"share_appliction");
+        } else if (id == R.id.action_share) {
+            MobclickAgent.onEvent(this, "share_appliction");
             share();
         }
         return super.onOptionsItemSelected(item);
@@ -242,15 +237,11 @@ public class MainActivity extends ActionBarActivity {
     }
 
     //访问教务管理系统
-    private void login(String system, String username, String password) {
-        if (system.equals(dataHelper.OLDSYSTEM)) {
-            webView.loadUrl(dataHelper.getOLSJWCURL());
-        } else {
-            StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.append(USERNAME).append("=").append(username).append("&").append(PASSWORD).append("=").append(password);
-            webView.postUrl(dataHelper.getNEWJWCURL(), EncodingUtils.getBytes(stringBuilder.toString(), "base64"));
-            stringBuilder = null;
-        }
+    private void login(String username, String password) {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(USERNAME).append("=").append(username).append("&").append(PASSWORD).append("=").append(password);
+        webView.postUrl(dataHelper.getNEWJWCURL(), EncodingUtils.getBytes(stringBuilder.toString(), "base64"));
+        stringBuilder = null;
     }
 
     //清除 Cookie
@@ -290,19 +281,19 @@ public class MainActivity extends ActionBarActivity {
                 psw = drawDialog.getEditText2().getText().toString();
                 if (name == null || name.length() <= 0 || psw == null || psw.length() <= 0) {
                     Toast.makeText(MainActivity.this, "请输入完整的信息！", Toast.LENGTH_SHORT).show();
-                    MobclickAgent.onEvent(MainActivity.this,"login_error");
+                    MobclickAgent.onEvent(MainActivity.this, "login_error");
                 } else {
                     clearCookies();
                     //加载页面
-                    login(dataHelper.NEWSYSTEM, name, psw);
-                    MobclickAgent.onEvent(MainActivity.this,"geust_session");
+                    login(name, psw);
+                    MobclickAgent.onEvent(MainActivity.this, "geust_session");
                 }
             }
         };
     }
 
     //监听列表选择
-    private AdapterView.OnItemClickListener selectListener(final AlertDialog dialog,final List<Map<String,String>> list) {
+    private AdapterView.OnItemClickListener selectListener(final AlertDialog dialog, final List<Map<String, String>> list) {
         return new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -313,7 +304,7 @@ public class MainActivity extends ActionBarActivity {
     }
 
     //监听类表删除
-    private AdapterView.OnItemLongClickListener deleteListener(final List<Map<String,String>> list) {
+    private AdapterView.OnItemLongClickListener deleteListener(final List<Map<String, String>> list) {
         return new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
@@ -323,7 +314,7 @@ public class MainActivity extends ActionBarActivity {
         };
     }
 
-    private void share (){
+    private void share() {
         //调用系统分享功能
         Intent sendIntent = new Intent(Intent.ACTION_SEND);
         sendIntent.setType("text/plain");
