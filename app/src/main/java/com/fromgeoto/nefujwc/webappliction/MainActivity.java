@@ -22,6 +22,7 @@ import android.widget.ProgressBar;
 import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
+import com.pnikosis.materialishprogress.ProgressWheel;
 import com.umeng.analytics.MobclickAgent;
 
 import org.apache.http.util.EncodingUtils;
@@ -39,7 +40,7 @@ import NetWork.QucikConnection;
 public class MainActivity extends ActionBarActivity {
 
     private WebView webView;
-    private ProgressBar progressBar;
+    private ProgressWheel progressWheel;
     private final String USERNAME = "USERNAME";
     private final String PASSWORD = "PASSWORD";
     private DataHelper dataHelper = new DataHelper(this);
@@ -58,7 +59,7 @@ public class MainActivity extends ActionBarActivity {
         }
 
         webView = (WebView) findViewById(R.id.myWebView);
-        progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        progressWheel = (ProgressWheel) findViewById(R.id.progressWheel);
 
         //webView初始化
         webView.getSettings().setJavaScriptEnabled(true);
@@ -116,16 +117,16 @@ public class MainActivity extends ActionBarActivity {
 
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
-                if (progressBar.getVisibility() != View.VISIBLE) {
-                    progressBar.setVisibility(View.VISIBLE);
+                if (progressWheel.getVisibility() != View.VISIBLE) {
+                    progressWheel.setVisibility(View.VISIBLE);
                 }
                 super.onPageStarted(view, url, favicon);
             }
 
             @Override
             public void onPageFinished(WebView view, String url) {
-                if (progressBar.getVisibility() == View.VISIBLE) {
-                    progressBar.setVisibility(View.GONE);
+                if (progressWheel.getVisibility() == View.VISIBLE) {
+                    progressWheel.setVisibility(View.GONE);
                 }
                 super.onPageFinished(view, url);
             }
