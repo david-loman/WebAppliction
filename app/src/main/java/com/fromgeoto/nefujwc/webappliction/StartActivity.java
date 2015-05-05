@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.os.Message;
 import android.util.Log;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.umeng.analytics.MobclickAgent;
 
@@ -27,6 +28,7 @@ public class StartActivity extends Activity implements Runnable {
     private JsonHelper jsonHelper = new JsonHelper();
     private ImageView addImageView;
     private boolean mDone = false;
+    private boolean mIsConnection = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,7 +36,18 @@ public class StartActivity extends Activity implements Runnable {
         //清理旧数据
         dataHelper.deleteSharedPreferences("app_login");
         //检查可否登录
-        checkLogin();
+        checkNetToJWC();
+        if (mIsConnection) {
+            checkLogin();
+        } else {
+            Toast.makeText(getApplicationContext(), "与教务处的连接中断，正在退出应用", Toast.LENGTH_SHORT).show();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    System.exit(0);
+                }
+            }, 2000);
+        }
         //界面绘制
         setContentView(R.layout.layout);
         addImageView = (ImageView) findViewById(R.id.welcome);
@@ -90,10 +103,9 @@ public class StartActivity extends Activity implements Runnable {
             if (!dataHelper.getSharedPreferencesValue(dataHelper.APPWEBSITE, dataHelper.DEFAULTWEBSITE).equals(dataHelper.DEFAULTWEBSITE)) {
                 website = true;
             }
-            if (dataHelper.getSharedPreferencesValue(dataHelper.APPACCOUNT,dataHelper.USERID).equals(dataHelper.USERID)){
-                next=true;
+            if (dataHelper.getSharedPreferencesValue(dataHelper.APPACCOUNT, dataHelper.USERID).equals(dataHelper.USERID)) {
+                next = true;
             }
-            Log.e("TAG-S",String.valueOf(update)+" : "+String.valueOf(website)+" : "+String.valueOf(next));
             while (update && website && next) {
                 gotoNext(mDone);
                 next = false;
@@ -106,14 +118,15 @@ public class StartActivity extends Activity implements Runnable {
     public void run() {
         Message msg = Message.obtain();
         Map<String, String> map = QucikConnection.getResultMap(dataHelper.getSharedPreferencesValue(dataHelper.APPACCOUNT, dataHelper.USERID), dataHelper.getSharedPreferencesValue(dataHelper.APPACCOUNT, dataHelper.PASSWORD), dataHelper.getPOSTURL());
-        if ((map.get(dataHelper.URL)!= null)&&(!dataHelper.URL.equals(map.get(dataHelper.URL)))) {
+        if ((map.get(dataHelper.URL) != null) && (!dataHelper.URL.equals(map.get(dataHelper.URL)))) {
             mDone = true;
-            dataHelper.setSharedPreferencesValue(dataHelper.APPACCOUNT,dataHelper.USERTYPE,map.get(dataHelper.USERTYPE));
-            dataHelper.setSharedPreferencesValue(dataHelper.APPACCOUNT,dataHelper.URL,map.get(dataHelper.URL));
+            dataHelper.setSharedPreferencesValue(dataHelper.APPACCOUNT, dataHelper.USERTYPE, map.get(dataHelper.USERTYPE));
+            dataHelper.setSharedPreferencesValue(dataHelper.APPACCOUNT, dataHelper.URL, map.get(dataHelper.URL));
             msg.arg1 = 0;
             handler.sendMessage(msg);
         } else {
             msg.arg1 = -1;
+            Log.e("T-117", "Connection Error : " + map.get("error"));
             handler.sendMessage(msg);
         }
         return;
@@ -234,4 +247,18 @@ public class StartActivity extends Activity implements Runnable {
         }
     }
 
+    private void checkNetToJWC() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                if (QucikConnection.checkNetwork(getApplicationContext())) {
+                    String reslut = QucikConnection.getResultString(dataHelper.getNEWJWCURL());
+                    Log.e("T-256", reslut);
+                    if (!("ERROR".equals(reslut))) {
+                        mIsConnection = true;
+                    }
+                }
+            }
+        }).start();
+    }
 }

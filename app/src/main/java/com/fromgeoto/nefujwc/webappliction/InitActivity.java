@@ -111,14 +111,12 @@ public class InitActivity extends Activity {
             }
         }
     });
-
     //跳转到下一Activity
     private void gotoNext() {
         Intent intent = new Intent(InitActivity.this, MainActivity.class);
         startActivity(intent);
         finish();
     }
-
     //下载图像
     private void downloadIcon(final String userId) {
         new Thread(new Runnable() {
@@ -132,7 +130,6 @@ public class InitActivity extends Activity {
             }
         }).start();
     }
-
     //登录验证
     private void checkLogin(final String userID, final String password) {
         new Thread(new Runnable() {
@@ -140,7 +137,6 @@ public class InitActivity extends Activity {
             public void run() {
                 Message msg = Message.obtain();
                 Map<String, String> map = QucikConnection.getResultMap(userID, password, dataHelper.getPOSTURL());
-                Log.e("Init-T-84", map.get(dataHelper.USERNAME) + " :" + map.get(dataHelper.USERTYPE) + " , " + map.get(dataHelper.URL));
                 if ((map.get(dataHelper.USERNAME) != null) && (!dataHelper.USERNAME.equals(map.get(dataHelper.USERNAME)))) {
                     map.put(dataHelper.USERID, userID);
                     map.put(dataHelper.PASSWORD, password);
@@ -150,6 +146,7 @@ public class InitActivity extends Activity {
                 } else {
                     deleteIcon();
                     msg.what = -1;
+                    Log.e("T-152","Connection Error : "+map.get("error"));
                     handler.sendMessage(msg);
                 }
             }

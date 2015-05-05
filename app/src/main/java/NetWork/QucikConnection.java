@@ -36,7 +36,6 @@ public class QucikConnection {
     public static String getResultString(String url) {
         StringBuffer stringBuffer = new StringBuffer();
         try {
-
             java.net.URL Url = new URL(url);
             HttpURLConnection connection = (HttpURLConnection) Url.openConnection();
             connection.setConnectTimeout(2000);
@@ -58,12 +57,14 @@ public class QucikConnection {
                 inputStream.close();
                 url = null;
             } else {
+                stringBuffer.append(responseCode);
                 Log.e("Qucik_ResultString", "Error on the net");
             }
         } catch (Exception e) {
+            stringBuffer = new StringBuffer("ERROR");
+            Log.e("Get ERROR", "TIME_OUT");
             e.printStackTrace();
         }
-
         return stringBuffer.toString();
     }
 
@@ -75,6 +76,7 @@ public class QucikConnection {
             java.net.URL url = new URL(urlString);
             HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
             httpURLConnection.setRequestMethod("POST");
+            httpURLConnection.setConnectTimeout(2000);
             httpURLConnection.setDoInput(true);
             httpURLConnection.setDoOutput(true);
             // Post 数据
@@ -108,6 +110,9 @@ public class QucikConnection {
                         return resultMap;
                     }
                 }
+            } else {
+                resultMap.put("error", String.valueOf(httpURLConnection.getResponseCode()));
+                return resultMap;
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -121,6 +126,7 @@ public class QucikConnection {
             java.net.URL url = new URL(urlString);
             HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
             httpURLConnection.setRequestMethod("GET");
+            httpURLConnection.setConnectTimeout(2000);
             httpURLConnection.setDoInput(true);
             //获取 ICON
             if (httpURLConnection.getResponseCode() == httpURLConnection.HTTP_OK) {
