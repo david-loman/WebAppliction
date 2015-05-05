@@ -1,12 +1,14 @@
 package com.fromgeoto.nefujwc.webappliction;
 
-import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.text.InputType;
 import android.text.method.HideReturnsTransformationMethod;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,7 +26,7 @@ import DrawItem.DrawDialog;
 /**
  * Created by David on 2014/8/28.
  */
-public class MenuActivity extends Activity {
+public class MenuActivity extends ActionBarActivity {
 
     private Button commitButton;
     private Button userButton;
@@ -40,6 +42,7 @@ public class MenuActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        initStatusBar();
         setContentView(R.layout.settings);
 
         commitButton = (Button) findViewById(R.id.sureButton);
@@ -155,8 +158,8 @@ public class MenuActivity extends Activity {
     }
 
     private void showInfo() {
-            String name = dataHelper.getSharedPreferencesValue(dataHelper.APPACCOUNT, dataHelper.USERNAME);
-            userTextView.setText(name);
+            systemTextView.setText(dataHelper.getSharedPreferencesValue(dataHelper.APPACCOUNT,dataHelper.USERTYPE));
+            userTextView.setText(dataHelper.getSharedPreferencesValue(dataHelper.APPACCOUNT, dataHelper.USERNAME));
     }
 
     private void help() {
@@ -210,6 +213,13 @@ public class MenuActivity extends Activity {
                 }
             }
         };
+    }
+
+    private void initStatusBar(){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        }
     }
 
 }

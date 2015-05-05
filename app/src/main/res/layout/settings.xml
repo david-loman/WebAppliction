@@ -2,138 +2,145 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#ffcfcfcf">
-
-    <Button
-        android:id="@+id/user_count"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="left|center_vertical"
-        android:layout_margin="5dp"
-        android:padding="2dp"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:text="@string/userinfo"
-        android:background="#ffffffff" />
-
-    <Button
-        android:id="@+id/diyButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="left|center_vertical"
-        android:layout_margin="5dp"
-        android:padding="2dp"
-        android:text="@string/diy"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:layout_below="@+id/user_count"
-        android:background="#ffffffff" />
-
-    <Button
-        android:id="@+id/updataButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="left|center_vertical"
-        android:layout_margin="5dp"
-        android:padding="2dp"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:text="@string/updata"
-        android:background="#ffffffff"
-        android:layout_below="@+id/diyButton" />
-
-    <Button
-        android:id="@+id/developerButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="left|center_vertical"
-        android:layout_margin="5dp"
-        android:padding="2dp"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:text="@string/developer"
-        android:background="#ffffffff"
-        android:layout_below="@+id/clearButton" />
-
-    <Button
-        android:id="@+id/helpButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="left|center_vertical"
-        android:layout_margin="5dp"
-        android:padding="2dp"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:text="@string/help"
-        android:background="#ffffffff"
-        android:layout_below="@+id/developerButton" />
-
-    <Button
-        android:id="@+id/clearButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="left|center_vertical"
-        android:layout_margin="5dp"
-        android:padding="2dp"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:text="清除网址"
-        android:background="#ffffffff"
-        android:layout_below="@+id/updataButton" />
+    android:fitsSystemWindows="true"
+    android:background="#388E3C">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/helpButton"
-        android:layout_margin="5dp"
-        android:background="#ffffffff">
+        android:background="#ffcfcfcf">
 
-        <TextView
-            android:id="@+id/curren_System"
-            android:layout_width="wrap_content"
+        <Button
+            android:id="@+id/user_count"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
             android:background="#ffffffff"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:text="@string/currenSystem" />
-
-        <TextView
-            android:id="@+id/selecd_System"
-            android:layout_toRightOf="@+id/curren_System"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="12sp"
-            android:layout_alignBaseline="@+id/curren_System"
-            android:layout_margin="5dp" />
-
-        <TextView
-            android:id="@+id/curren_User"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/curren_System"
-            android:background="#ffffffff"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:text="@string/currenUser"
-            android:layout_margin="5dp" />
-
-        <TextView
-            android:id="@+id/selecd_User"
-            android:layout_toRightOf="@+id/curren_User"
-            android:layout_below="@+id/selecd_System"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBaseline="@+id/curren_User"
-            android:textSize="16sp"
-            android:layout_margin="5dp" />
+            android:gravity="left|center_vertical"
+            android:padding="2dp"
+            android:text="@string/userinfo"
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
         <Button
-            android:id="@+id/sureButton"
+            android:id="@+id/diyButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:text="@string/sure" />
+            android:layout_below="@+id/user_count"
+            android:layout_margin="5dp"
+            android:background="#ffffffff"
+            android:gravity="left|center_vertical"
+            android:padding="2dp"
+            android:text="@string/diy"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/updataButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/diyButton"
+            android:layout_margin="5dp"
+            android:background="#ffffffff"
+            android:gravity="left|center_vertical"
+            android:padding="2dp"
+            android:text="@string/updata"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/developerButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/clearButton"
+            android:layout_margin="5dp"
+            android:background="#ffffffff"
+            android:gravity="left|center_vertical"
+            android:padding="2dp"
+            android:text="@string/developer"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/helpButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/developerButton"
+            android:layout_margin="5dp"
+            android:background="#ffffffff"
+            android:gravity="left|center_vertical"
+            android:padding="2dp"
+            android:text="@string/help"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/clearButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/updataButton"
+            android:layout_margin="5dp"
+            android:background="#ffffffff"
+            android:gravity="left|center_vertical"
+            android:padding="2dp"
+            android:text="清除网址"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/helpButton"
+            android:layout_margin="5dp"
+            android:background="#ffffffff">
+
+            <TextView
+                android:id="@+id/curren_System"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:background="#ffffffff"
+                android:text="@string/currenSystem"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/selecd_System"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/curren_System"
+                android:layout_margin="5dp"
+                android:layout_toRightOf="@+id/curren_System"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/curren_User"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/curren_System"
+                android:layout_margin="5dp"
+                android:background="#ffffffff"
+                android:text="@string/currenUser"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/selecd_User"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/curren_User"
+                android:layout_below="@+id/selecd_System"
+                android:layout_margin="5dp"
+                android:layout_toRightOf="@+id/curren_User"
+                android:textSize="16sp" />
+
+            <Button
+                android:id="@+id/sureButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:text="@string/sure" />
+        </RelativeLayout>
 
     </RelativeLayout>
 
