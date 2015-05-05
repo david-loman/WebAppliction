@@ -27,14 +27,12 @@ import DrawItem.DrawDialog;
 public class MenuActivity extends Activity {
 
     private Button commitButton;
-    private Button systemButton, userButton;
+    private Button userButton;
     private Button diyButton, devButton, helpButton, clearBuuton;
     private Button updataButton;
     private TextView userTextView, systemTextView;
 
     private int requestCode = 0;
-    private String currenSystem = null;
-    private String selectSystem = null;
     private String psword = null;
     private DataHelper dataHelper = new DataHelper(this);
     private DrawDialog drawDialog = new DrawDialog(this);
@@ -53,8 +51,6 @@ public class MenuActivity extends Activity {
         clearBuuton = (Button) findViewById(R.id.clearButton);
         userTextView = (TextView) findViewById(R.id.selecd_User);
         systemTextView = (TextView) findViewById(R.id.selecd_System);
-        Intent intent = getIntent();
-        init(intent);
         showInfo();
     }
 
@@ -131,27 +127,16 @@ public class MenuActivity extends Activity {
         MobclickAgent.onPause(this);
     }
 
-    private void setSelectSystem() {
-        drawDialog.getChangeDialog("修改系统", "您默认的系统为:\t" + currenSystem + "\n点击修改按钮将修改系统。", "修改", changeSystemListener());
-    }
-
     private void changeUser() {
-        if (selectSystem.equals(dataHelper.NEWSYSTEM)) {
-
-            if (currenSystem.equals(dataHelper.NEWSYSTEM)) {
-                String nameS = dataHelper.getSharedPreferencesValue(dataHelper.APPLOGIN, dataHelper.USERNAME);
-                String pswS = dataHelper.getSharedPreferencesValue(dataHelper.APPLOGIN, dataHelper.PASSWORD);
-                if (nameS.equals(dataHelper.USERNAME)) {
-                    nameS = "null";
-                }
-                drawDialog.getEditText1(R.layout.changeuser_layout).setText(nameS);
-                drawDialog.getEditText2().setText(pswS);
-            }
-            drawDialog.getInputDialog("修改用户", drawDialog.getView(), changeUerListener());
-
-        } else {
-            drawDialog.getErrorDialog("错误提示", "当前系统不支持该功能", null);
+        String nameS = dataHelper.getSharedPreferencesValue(dataHelper.APPACCOUNT, dataHelper.USERID);
+        String pswS = dataHelper.getSharedPreferencesValue(dataHelper.APPACCOUNT, dataHelper.PASSWORD);
+        if (nameS.equals(dataHelper.USERID)) {
+            nameS = "null";
         }
+        drawDialog.getEditText1(R.layout.changeuser_layout).setText(nameS);
+        drawDialog.getEditText2().setText(pswS);
+        drawDialog.getInputDialog("修改用户", drawDialog.getView(), changeUerListener());
+
     }
 
     private void updata() {
@@ -164,45 +149,14 @@ public class MenuActivity extends Activity {
     }
 
     private void go_back() {
-        if (!currenSystem.equals(selectSystem)) {
-            dataHelper.setSharedPreferencesValue(dataHelper.APPLOGIN, dataHelper.SYSTEM, selectSystem);
-            if (selectSystem.equals(dataHelper.NEWSYSTEM)) {
-                dataHelper.setSharedPreferencesValue(dataHelper.APPLOGIN, dataHelper.URL, dataHelper.getNEWJWCURL());
-            } else {
-                dataHelper.setSharedPreferencesValue(dataHelper.APPLOGIN, dataHelper.URL, dataHelper.getOLSJWCURL());
-            }
-        }
-        if (selectSystem.equals(dataHelper.NEWSYSTEM)) {
-            if (!(dataHelper.getSharedPreferencesValue(dataHelper.APPLOGIN, dataHelper.USERNAME)).equals(userTextView.getText().toString())) {
-                dataHelper.setSharedPreferencesValue(dataHelper.APPLOGIN, dataHelper.USERNAME, userTextView.getText().toString());
-                dataHelper.setSharedPreferencesValue(dataHelper.APPLOGIN, dataHelper.PASSWORD, psword);
-            }
-        }
-
         Intent intent = new Intent(MenuActivity.this, MainActivity.class);
         setResult(requestCode, intent);
         finish();
     }
 
     private void showInfo() {
-
-        if (selectSystem.equals(dataHelper.NEWSYSTEM)) {
-            String name = dataHelper.getSharedPreferencesValue(dataHelper.APPLOGIN, dataHelper.USERNAME);
-            if (name.equals(dataHelper.USERNAME)) {
-                name = "null";
-            }
-            systemTextView.setText(selectSystem);
+            String name = dataHelper.getSharedPreferencesValue(dataHelper.APPACCOUNT, dataHelper.USERNAME);
             userTextView.setText(name);
-        } else {
-            systemTextView.setText(selectSystem);
-            userTextView.setText("这个系统没有用户");
-        }
-
-    }
-
-    private void init(Intent intent) {
-        currenSystem = intent.getStringExtra(dataHelper.SYSTEM);
-        selectSystem = currenSystem;
     }
 
     private void help() {
@@ -221,25 +175,6 @@ public class MenuActivity extends Activity {
         //显示
         drawDialog.getInputDialog("自定义添加", drawDialog.getView(), addWebsiteListener());
     }
-
-    //监听系统修改
-    private DialogInterface.OnClickListener changeSystemListener() {
-        return new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                if (selectSystem.equals(dataHelper.OLDSYSTEM)) {
-                    selectSystem = dataHelper.NEWSYSTEM;
-                    requestCode = 1;
-                } else {
-                    selectSystem = dataHelper.OLDSYSTEM;
-                    userTextView.setText("");
-                    requestCode = 2;
-                }
-                showInfo();
-            }
-        };
-    }
-
     //监听用户修改
     private DialogInterface.OnClickListener changeUerListener() {
         return new DialogInterface.OnClickListener() {

@@ -28,11 +28,9 @@ import java.util.Map;
 public class QucikConnection {
 
     private Context mContext;
-    private final String USERACCOUNT = "userAccount=";
-    private final String USERPASSWORD = "&userPassword=";
 
-    public QucikConnection (Context context){
-        this.mContext=context;
+    public QucikConnection(Context context) {
+        this.mContext = context;
     }
 
     public static String getResultString(String url) {
@@ -69,11 +67,11 @@ public class QucikConnection {
         return stringBuffer.toString();
     }
 
-    public Map<String,String> getResultMap (String user, String pasw, String urlString) {
+    public static Map<String, String> getResultMap(String user, String pasw, String urlString) {
         boolean status = false;
-        Map<String,String> resultMap = new HashMap<String,String>();
+        Map<String, String> resultMap = new HashMap<String, String>();
         try {
-            String tmp = USERACCOUNT + user + USERPASSWORD + pasw;
+            String tmp = "userAccount=" + user + "&userPassword=" + pasw;
             java.net.URL url = new URL(urlString);
             HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
             httpURLConnection.setRequestMethod("POST");
@@ -92,16 +90,16 @@ public class QucikConnection {
                 BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(httpURLConnection.getInputStream()));
                 while ((tmpLine = bufferedReader.readLine()) != null) {
                     // 更新数据
-                    if (tmpLine.contains(user)) {
+                    if (tmpLine.contains(user) && (i == 0)) {
                         status = true;
-                        resultMap.put("username",tmpLine.substring(tmpLine.compareTo("(") + 1, tmpLine.compareTo(")")));
+                        resultMap.put("username", tmpLine.substring(tmpLine.indexOf("(") + 1, tmpLine.indexOf(")")));
                     }
                     // 数据类型
-                    if (status && i > 0 && i < 3) {
+                    if (status && (i < 3)) {
                         if (i == 1) {
-                            resultMap.put("usertype",tmpLine);
-                        } else {
-                            resultMap.put("url",tmpLine);
+                            resultMap.put("usertype", tmpLine.substring(tmpLine.indexOf("=") + 1, tmpLine.indexOf("+")));
+                        } else if (i == 2) {
+                            resultMap.put("url", tmpLine.substring(tmpLine.indexOf("=") + 1, tmpLine.indexOf(";")));
                         }
                         i++;
                     }
@@ -117,7 +115,7 @@ public class QucikConnection {
         return resultMap;
     }
 
-    public static boolean saveImage (File file, String urlString) {
+    public static boolean saveImage(File file, String urlString) {
         try {
             Bitmap tmpBitmap = null;
             java.net.URL url = new URL(urlString);
@@ -125,27 +123,31 @@ public class QucikConnection {
             httpURLConnection.setRequestMethod("GET");
             httpURLConnection.setDoInput(true);
             //获取 ICON
-            tmpBitmap = BitmapFactory.decodeStream(httpURLConnection.getInputStream());
-            //存到内存中
-            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-            tmpBitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
-            byte[] tmpByte = byteArrayOutputStream.toByteArray();
-            FileOutputStream fileOutputStream = new FileOutputStream(file);
-            BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(fileOutputStream);
-            bufferedOutputStream.write(tmpByte);
-            bufferedOutputStream.close();
-            return true;
+            if (httpURLConnection.getResponseCode() == httpURLConnection.HTTP_OK) {
+                tmpBitmap = BitmapFactory.decodeStream(httpURLConnection.getInputStream());
+                //存到内存中
+                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                tmpBitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+                byte[] tmpByte = byteArrayOutputStream.toByteArray();
+                FileOutputStream fileOutputStream = new FileOutputStream(file);
+                BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(fileOutputStream);
+                bufferedOutputStream.write(tmpByte);
+                bufferedOutputStream.close();
+                return true;
+            } else {
+                return false;
+            }
         } catch (Exception e) {
             e.printStackTrace();
             return false;
         }
     }
 
-    public void DownloadApplication (String url){
+    public void DownloadApplication(String url) {
 
     }
 
-    public static boolean checkNetwork(Context context){
+    public static boolean checkNetwork(Context context) {
         ConnectivityManager conn = (ConnectivityManager) context.getSystemService(Activity.CONNECTIVITY_SERVICE);
         boolean wifi = conn.getNetworkInfo(ConnectivityManager.TYPE_WIFI).isConnected();
         boolean mobile = conn.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).isConnected();

@@ -51,6 +51,7 @@ public class DataHelper {
     public final String UPDATATIME = "updatetime";
     public final String DEFAULTWEBSITE = "defaultwebsite";
     public final String MYWEBSITE = "mywebsite";
+    public final String SAVEFILE = "iconImage";
     //私有属性
     private Context context;
     private SharedPreferences sharedPreferences = null;
@@ -181,5 +182,13 @@ public class DataHelper {
                 + "3. " + getSharedPreferencesValue(APPUPDATA, THREE) + "\n\n"
                 + "是否更新？";
         return information;
+    }
+
+    public String getPOSTURL() {
+        return POSTURL;
+    }
+
+    public String getICONURL() {
+        return ICONURL;
     }
 }

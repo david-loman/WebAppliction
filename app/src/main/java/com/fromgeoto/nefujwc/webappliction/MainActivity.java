@@ -4,12 +4,15 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
 import android.webkit.WebView;
@@ -39,15 +42,14 @@ public class MainActivity extends ActionBarActivity {
     private ProgressBar progressBar;
     private final String USERNAME = "USERNAME";
     private final String PASSWORD = "PASSWORD";
-    private String systemName = null;
     private DataHelper dataHelper = new DataHelper(this);
     private JsonHelper jsonHelper = new JsonHelper();
-    private QucikConnection qucikConnection = new QucikConnection(this);
     private DrawDialog drawDialog = new DrawDialog(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        initStatusBar();
         setContentView(R.layout.activity_my);
         //检查更新
         if (checkUpdata()) {
@@ -64,7 +66,7 @@ public class MainActivity extends ActionBarActivity {
         webView.getSettings().setDisplayZoomControls(false);
         webView.getSettings().setUseWideViewPort(true);
         webView.getSettings().setLoadWithOverviewMode(true);
-
+        Log.e("URL-69",dataHelper.getSharedPreferencesValue(dataHelper.APPACCOUNT,dataHelper.URL));
     }
 
     @Override
@@ -314,4 +316,12 @@ public class MainActivity extends ActionBarActivity {
         sendIntent.putExtra(Intent.EXTRA_TEXT, "便捷登录教务处，你也可以做到的，应用下载：http://davidloman.net/project/jwcglxt/");
         startActivity(Intent.createChooser(sendIntent, "分享到"));
     }
+
+    private void initStatusBar(){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        }
+    }
+
 }

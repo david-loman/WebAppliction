@@ -2,14 +2,17 @@ package com.fromgeoto.nefujwc.webappliction;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.media.Image;
 import android.os.Bundle;
 import android.os.Message;
+import android.util.Log;
 import android.widget.ImageView;
 
 import com.umeng.analytics.MobclickAgent;
+
+import java.util.Map;
 
 import DataFactory.DataHelper;
 import DataFactory.JsonHelper;
@@ -18,20 +21,25 @@ import NetWork.QucikConnection;
 /**
  * Created by David on 2014/10/9.
  */
-public class StartActivity extends Activity {
+public class StartActivity extends Activity implements Runnable {
 
     private DataHelper dataHelper = new DataHelper(this);
     private JsonHelper jsonHelper = new JsonHelper();
-    private ImageView addImageView ;
+    private ImageView addImageView;
+    private boolean mDone = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //获取数据
-        getData();
-
+        //清理旧数据
+        dataHelper.deleteSharedPreferences("app_login");
+        //检查可否登录
+        checkLogin();
+        //界面绘制
         setContentView(R.layout.layout);
         addImageView = (ImageView) findViewById(R.id.welcome);
+        //获取数据
+        getData();
     }
 
     @Override
@@ -52,6 +60,9 @@ public class StartActivity extends Activity {
     }
 
     android.os.Handler handler = new android.os.Handler() {
+        boolean update = false;
+        boolean website = false;
+        boolean next = false;
 
         @Override
         public void handleMessage(Message msg) {
@@ -60,39 +71,61 @@ public class StartActivity extends Activity {
                 if (jsonString != null && jsonString.length() > 0) {
                     //更新 app_updata
                     app_updataSP(jsonString);
+                    update = true;
                 }
             } else if (msg.arg1 == 2) {
                 String jsonString = msg.obj.toString();
                 if (jsonString != null && jsonString.length() > 0) {
                     //更新app_website
                     app_websiteSP(jsonString);
+                    website = true;
                 }
             } else {
-                //如果APPLOGIN未初始化
-                gotoNext(true);
+                next = true;
+            }
+            //防止因为没有更新而卡在登录界面
+            if (!dataHelper.getSharedPreferencesValue(dataHelper.APPUPDATA, dataHelper.VERSION).equals(dataHelper.VERSION)) {
+                update = true;
+            }
+            if (!dataHelper.getSharedPreferencesValue(dataHelper.APPWEBSITE, dataHelper.DEFAULTWEBSITE).equals(dataHelper.DEFAULTWEBSITE)) {
+                website = true;
+            }
+            if (dataHelper.getSharedPreferencesValue(dataHelper.APPACCOUNT,dataHelper.USERID).equals(dataHelper.USERID)){
+                next=true;
+            }
+            Log.e("TAG-S",String.valueOf(update)+" : "+String.valueOf(website)+" : "+String.valueOf(next));
+            while (update && website && next) {
+                gotoNext(mDone);
+                next = false;
             }
         }
 
     };
 
+    @Override
+    public void run() {
+        Message msg = Message.obtain();
+        Map<String, String> map = QucikConnection.getResultMap(dataHelper.getSharedPreferencesValue(dataHelper.APPACCOUNT, dataHelper.USERID), dataHelper.getSharedPreferencesValue(dataHelper.APPACCOUNT, dataHelper.PASSWORD), dataHelper.getPOSTURL());
+        if ((map.get(dataHelper.URL)!= null)&&(!dataHelper.URL.equals(map.get(dataHelper.URL)))) {
+            mDone = true;
+            dataHelper.setSharedPreferencesValue(dataHelper.APPACCOUNT,dataHelper.USERTYPE,map.get(dataHelper.USERTYPE));
+            dataHelper.setSharedPreferencesValue(dataHelper.APPACCOUNT,dataHelper.URL,map.get(dataHelper.URL));
+            msg.arg1 = 0;
+            handler.sendMessage(msg);
+        } else {
+            msg.arg1 = -1;
+            handler.sendMessage(msg);
+        }
+        return;
+    }
+
     private class DownloadThread extends Thread {
 
         private QucikConnection qucikConnection = new QucikConnection(StartActivity.this);
         String result = null;
-        private int count = 0;
 
         @Override
         public void run() {
-
-            //延迟1.5秒
-            while (count <= 2) {
-                count++;
-                try {
-                    DownloadThread.sleep(750);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
             //获取更新信息
             if (QucikConnection.checkNetwork(getApplicationContext())) {
                 result = qucikConnection.getResultString(dataHelper.getUPDATASTATUSURL());
@@ -120,7 +153,6 @@ public class StartActivity extends Activity {
                     sendMsg(2, result);
                 }
             }
-            sendMsg(0, null);
         }
     }
 
@@ -187,13 +219,19 @@ public class StartActivity extends Activity {
     //跳转到下一Activity
     private void gotoNext(boolean done) {
         Intent intent = null;
-        if (!done) {
+        if (done) {
             intent = new Intent(StartActivity.this, MainActivity.class);
         } else {
             intent = new Intent(StartActivity.this, InitActivity.class);
         }
         startActivity(intent);
         finish();
+    }
+
+    private void checkLogin() {
+        if (!dataHelper.USERID.equals(dataHelper.getSharedPreferencesValue(dataHelper.APPACCOUNT, dataHelper.USERID))) {
+            new Thread(this).start();
+        }
     }
 
 }
