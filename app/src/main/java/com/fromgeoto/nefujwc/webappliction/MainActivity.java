@@ -4,9 +4,13 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -18,8 +22,9 @@ import android.webkit.CookieSyncManager;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.AdapterView;
-import android.widget.ProgressBar;
+import android.widget.ImageView;
 import android.widget.SimpleAdapter;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.pnikosis.materialishprogress.ProgressWheel;
@@ -39,19 +44,25 @@ import NetWork.QucikConnection;
 
 public class MainActivity extends ActionBarActivity {
 
+    private Toolbar mToolbar;
+    private DrawerLayout mDrawerLayout;
     private WebView webView;
     private ProgressWheel progressWheel;
+    private ImageView mImageView ;
+    private TextView userIdTextView,userTypeTextView,userNameTextView;
     private final String USERNAME = "USERNAME";
     private final String PASSWORD = "PASSWORD";
     private DataHelper dataHelper = new DataHelper(this);
     private JsonHelper jsonHelper = new JsonHelper();
     private DrawDialog drawDialog = new DrawDialog(this);
+    private ActionBarDrawerToggle mActionBarDrawerToggle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initStatusBar();
         setContentView(R.layout.activity_my);
+        initView();
         //检查更新
         if (checkUpdata()) {
             dataHelper.deleteSharedPreferences("app_info");
@@ -88,7 +99,7 @@ public class MainActivity extends ActionBarActivity {
             if (!dataHelper.getSharedPreferencesValue(dataHelper.APPACCOUNT, dataHelper.URL).equals(dataHelper.URL)) {
                 login();
             } else {
-                Toast.makeText(getApplicationContext(),"登录信息出错，通过备用方式登录。",Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "登录信息出错，通过备用方式登录。", Toast.LENGTH_SHORT).show();
                 login(dataHelper.getSharedPreferencesValue(dataHelper.APPACCOUNT, dataHelper.USERID), dataHelper.getSharedPreferencesValue(dataHelper.APPACCOUNT, dataHelper.PASSWORD));
             }
         } else {
@@ -328,6 +339,42 @@ public class MainActivity extends ActionBarActivity {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         }
+    }
+
+    private void initView (){
+        //layout
+        mImageView = (ImageView)findViewById(R.id.userIconImageView);
+        userIdTextView =(TextView)findViewById(R.id.infoUserIdTextView);
+        userTypeTextView =(TextView)findViewById(R.id.infoUserTypeTextView);
+        userNameTextView =(TextView)findViewById(R.id.infoUserNameTextView);
+        mImageView.setImageBitmap(BitmapFactory.decodeFile(getFilesDir().getAbsolutePath()+"/"+dataHelper.SAVEFILE));
+        userNameTextView.setText(dataHelper.getSharedPreferencesValue(dataHelper.APPACCOUNT,dataHelper.USERNAME));
+        userIdTextView.setText(dataHelper.getSharedPreferencesValue(dataHelper.APPACCOUNT,dataHelper.USERID));
+        userTypeTextView.setText(dataHelper.getSharedPreferencesValue(dataHelper.APPACCOUNT,dataHelper.USERTYPE));
+        //toolbar
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        mToolbar.setTitle("教务助手");
+        setSupportActionBar(mToolbar);
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawerlayout);
+
+        mActionBarDrawerToggle = new ActionBarDrawerToggle(this,mDrawerLayout,mToolbar,R.string.one,R.string.two){
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                invalidateOptionsMenu();
+            }
+
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                super.onDrawerClosed(drawerView);
+                invalidateOptionsMenu();
+            }
+        };
+        mActionBarDrawerToggle.syncState();
+        mDrawerLayout.setDrawerListener(mActionBarDrawerToggle);
     }
 
 }
