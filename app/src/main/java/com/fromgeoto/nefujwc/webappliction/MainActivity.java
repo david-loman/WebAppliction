@@ -209,11 +209,7 @@ public class MainActivity extends ActionBarActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode > 0) {
-//            Toast.makeText(this, "设置已更改", Toast.LENGTH_SHORT).show();  to be delete
-        } else {
-//            Toast.makeText(this, "设置未更改", Toast.LENGTH_SHORT).show();  to be delete
-        }
+
     }
 
     //是否可以更新
