@@ -67,7 +67,7 @@ public class MainActivity extends ActionBarActivity {
         webView.getSettings().setDisplayZoomControls(false);
         webView.getSettings().setUseWideViewPort(true);
         webView.getSettings().setLoadWithOverviewMode(true);
-        Log.e("URL-69",dataHelper.getSharedPreferencesValue(dataHelper.APPACCOUNT,dataHelper.URL));
+        Log.e("URL-69", dataHelper.getSharedPreferencesValue(dataHelper.APPACCOUNT, dataHelper.URL));
     }
 
     @Override
@@ -85,7 +85,12 @@ public class MainActivity extends ActionBarActivity {
         super.onResume();
         MobclickAgent.onResume(this);
         if (QucikConnection.checkNetwork(getApplicationContext())) {
-            login(dataHelper.getSharedPreferencesValue(dataHelper.APPACCOUNT, dataHelper.USERID), dataHelper.getSharedPreferencesValue(dataHelper.APPACCOUNT, dataHelper.PASSWORD));
+            if (!dataHelper.getSharedPreferencesValue(dataHelper.APPACCOUNT, dataHelper.URL).equals(dataHelper.URL)) {
+                login();
+            } else {
+                Toast.makeText(getApplicationContext(),"登录信息出错，通过备用方式登录。",Toast.LENGTH_SHORT).show();
+                login(dataHelper.getSharedPreferencesValue(dataHelper.APPACCOUNT, dataHelper.USERID), dataHelper.getSharedPreferencesValue(dataHelper.APPACCOUNT, dataHelper.PASSWORD));
+            }
         } else {
             drawDialog.getErrorDialog("网络错误", drawDialog.NetWorkError, drawDialog.exitListener());
         }
@@ -239,6 +244,10 @@ public class MainActivity extends ActionBarActivity {
         stringBuilder = null;
     }
 
+    private void login() {
+        webView.loadUrl(dataHelper.getSharedPreferencesValue(dataHelper.APPACCOUNT, dataHelper.URL));
+    }
+
     //清除 Cookie
     private void clearCookies() {
         CookieSyncManager.createInstance(MainActivity.this);
@@ -318,8 +327,8 @@ public class MainActivity extends ActionBarActivity {
         startActivity(Intent.createChooser(sendIntent, "分享到"));
     }
 
-    private void initStatusBar(){
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){
+    private void initStatusBar() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         }

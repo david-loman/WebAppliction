@@ -35,7 +35,6 @@ public class MenuActivity extends ActionBarActivity {
     private TextView userTextView, systemTextView;
 
     private int requestCode = 0;
-    private String psword = null;
     private DataHelper dataHelper = new DataHelper(this);
     private DrawDialog drawDialog = new DrawDialog(this);
 
@@ -46,7 +45,6 @@ public class MenuActivity extends ActionBarActivity {
         setContentView(R.layout.settings);
 
         commitButton = (Button) findViewById(R.id.sureButton);
-        userButton = (Button) findViewById(R.id.user_count);
         diyButton = (Button) findViewById(R.id.diyButton);
         updataButton = (Button) findViewById(R.id.updataButton);
         devButton = (Button) findViewById(R.id.developerButton);
@@ -65,13 +63,6 @@ public class MenuActivity extends ActionBarActivity {
     @Override
     protected void onResume() {
         super.onResume();
-
-        userButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                changeUser();
-            }
-        });
 
         diyButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -130,18 +121,6 @@ public class MenuActivity extends ActionBarActivity {
         MobclickAgent.onPause(this);
     }
 
-    private void changeUser() {
-        String nameS = dataHelper.getSharedPreferencesValue(dataHelper.APPACCOUNT, dataHelper.USERID);
-        String pswS = dataHelper.getSharedPreferencesValue(dataHelper.APPACCOUNT, dataHelper.PASSWORD);
-        if (nameS.equals(dataHelper.USERID)) {
-            nameS = "null";
-        }
-        drawDialog.getEditText1(R.layout.changeuser_layout).setText(nameS);
-        drawDialog.getEditText2().setText(pswS);
-        drawDialog.getInputDialog("修改用户", drawDialog.getView(), changeUerListener());
-
-    }
-
     private void updata() {
         if (Integer.parseInt(dataHelper.getSharedPreferencesValue(dataHelper.APPUPDATA, dataHelper.COUNT)) != 0) {
             drawDialog.getUpdateDialog(dataHelper.getUpdataInfo(), drawDialog.downloadListener(dataHelper.getSharedPreferencesValue(dataHelper.APPUPDATA, dataHelper.URL)));
@@ -178,21 +157,6 @@ public class MenuActivity extends ActionBarActivity {
         //显示
         drawDialog.getInputDialog("自定义添加", drawDialog.getView(), addWebsiteListener());
     }
-    //监听用户修改
-    private DialogInterface.OnClickListener changeUerListener() {
-        return new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                String nameValue = drawDialog.getEditText1().getText().toString();
-                psword = drawDialog.getEditText2().getText().toString();
-                if (nameValue.length() <= 1 || nameValue == null) {
-                    nameValue = "null";
-                }
-                userTextView.setText(nameValue);
-            }
-        };
-    }
-
     //添加网站
     private DialogInterface.OnClickListener addWebsiteListener() {
         return new DialogInterface.OnClickListener() {

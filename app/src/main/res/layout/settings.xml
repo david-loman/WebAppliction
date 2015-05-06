@@ -2,14 +2,16 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
-    android:background="#388E3C">
+    android:background="#388E3C"
+    android:fitsSystemWindows="true">
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#ffcfcfcf">
+        android:background="#ffcfcfcf"
+        android:orientation="vertical">
 
+        <!--
         <Button
             android:id="@+id/user_count"
             android:layout_width="match_parent"
@@ -21,12 +23,11 @@
             android:text="@string/userinfo"
             android:textSize="18sp"
             android:textStyle="bold" />
-
+        -->
         <Button
             android:id="@+id/diyButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/user_count"
             android:layout_margin="5dp"
             android:background="#ffffffff"
             android:gravity="left|center_vertical"
@@ -39,7 +40,6 @@
             android:id="@+id/updataButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/diyButton"
             android:layout_margin="5dp"
             android:background="#ffffffff"
             android:gravity="left|center_vertical"
@@ -52,7 +52,6 @@
             android:id="@+id/developerButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/clearButton"
             android:layout_margin="5dp"
             android:background="#ffffffff"
             android:gravity="left|center_vertical"
@@ -65,7 +64,6 @@
             android:id="@+id/helpButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/developerButton"
             android:layout_margin="5dp"
             android:background="#ffffffff"
             android:gravity="left|center_vertical"
@@ -78,7 +76,6 @@
             android:id="@+id/clearButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/updataButton"
             android:layout_margin="5dp"
             android:background="#ffffffff"
             android:gravity="left|center_vertical"
@@ -90,8 +87,8 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@+id/helpButton"
             android:layout_margin="5dp"
+            android:layout_weight="1"
             android:background="#ffffffff">
 
             <TextView
@@ -142,6 +139,6 @@
                 android:text="@string/sure" />
         </RelativeLayout>
 
-    </RelativeLayout>
+    </LinearLayout>
 
 </RelativeLayout>

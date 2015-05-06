@@ -28,7 +28,6 @@ public class StartActivity extends Activity implements Runnable {
     private JsonHelper jsonHelper = new JsonHelper();
     private ImageView addImageView;
     private boolean mDone = false;
-    private boolean mIsConnection = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,17 +36,7 @@ public class StartActivity extends Activity implements Runnable {
         dataHelper.deleteSharedPreferences("app_login");
         //检查可否登录
         checkNetToJWC();
-        if (mIsConnection) {
-            checkLogin();
-        } else {
-            Toast.makeText(getApplicationContext(), "与教务处的连接中断，正在退出应用", Toast.LENGTH_SHORT).show();
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    System.exit(0);
-                }
-            }, 2000);
-        }
+        checkLogin();
         //界面绘制
         setContentView(R.layout.layout);
         addImageView = (ImageView) findViewById(R.id.welcome);
@@ -93,8 +82,11 @@ public class StartActivity extends Activity implements Runnable {
                     app_websiteSP(jsonString);
                     website = true;
                 }
-            } else {
+            } else if (msg.arg1 == 0) {
                 next = true;
+            } else if (msg.arg1 < 0) {
+                Toast.makeText(getApplicationContext(), "无法连接到教务处，请确认网站可以访问", Toast.LENGTH_SHORT).show();
+                System.exit(0);
             }
             //防止因为没有更新而卡在登录界面
             if (!dataHelper.getSharedPreferencesValue(dataHelper.APPUPDATA, dataHelper.VERSION).equals(dataHelper.VERSION)) {
@@ -125,7 +117,7 @@ public class StartActivity extends Activity implements Runnable {
             msg.arg1 = 0;
             handler.sendMessage(msg);
         } else {
-            msg.arg1 = -1;
+            msg.arg1 = 6;
             Log.e("T-117", "Connection Error : " + map.get("error"));
             handler.sendMessage(msg);
         }
@@ -242,7 +234,7 @@ public class StartActivity extends Activity implements Runnable {
     }
 
     private void checkLogin() {
-        if (!dataHelper.USERID.equals(dataHelper.getSharedPreferencesValue(dataHelper.APPACCOUNT, dataHelper.USERID))) {
+        if ((!dataHelper.USERID.equals(dataHelper.getSharedPreferencesValue(dataHelper.APPACCOUNT, dataHelper.USERID))) && QucikConnection.checkNetwork(getApplicationContext())) {
             new Thread(this).start();
         }
     }
@@ -251,12 +243,16 @@ public class StartActivity extends Activity implements Runnable {
         new Thread(new Runnable() {
             @Override
             public void run() {
+                Message msg = Message.obtain();
                 if (QucikConnection.checkNetwork(getApplicationContext())) {
                     String reslut = QucikConnection.getResultString(dataHelper.getNEWJWCURL());
                     Log.e("T-256", reslut);
                     if (!("ERROR".equals(reslut))) {
-                        mIsConnection = true;
+                        msg.arg1 = 9;
+                    } else {
+                        msg.arg1 = -1;
                     }
+                    handler.sendMessage(msg);
                 }
             }
         }).start();
