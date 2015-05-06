@@ -65,6 +65,7 @@ public class StartActivity extends Activity implements Runnable {
         boolean update = false;
         boolean website = false;
         boolean next = false;
+        boolean gone = true;
 
         @Override
         public void handleMessage(Message msg) {
@@ -98,9 +99,10 @@ public class StartActivity extends Activity implements Runnable {
             if (dataHelper.getSharedPreferencesValue(dataHelper.APPACCOUNT, dataHelper.USERID).equals(dataHelper.USERID)) {
                 next = true;
             }
-            while (update && website && next) {
+            while (update && website && next && gone) {
                 gotoNext(mDone);
                 next = false;
+                gone=false;
             }
         }
 
@@ -234,7 +236,7 @@ public class StartActivity extends Activity implements Runnable {
     }
 
     private void checkLogin() {
-        if ((!dataHelper.USERID.equals(dataHelper.getSharedPreferencesValue(dataHelper.APPACCOUNT, dataHelper.USERID))) && QucikConnection.checkNetwork(getApplicationContext())) {
+        if ((!dataHelper.URL.equals(dataHelper.getSharedPreferencesValue(dataHelper.APPACCOUNT, dataHelper.URL))) && QucikConnection.checkNetwork(getApplicationContext())) {
             new Thread(this).start();
         }
     }
