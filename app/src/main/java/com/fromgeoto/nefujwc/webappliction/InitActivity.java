@@ -65,7 +65,10 @@ public class InitActivity extends Activity {
             public void onFocusChange(View view, boolean b) {
                 if (!b) {
                     if ((usernameEditText.getText().toString().length() == 8) || (usernameEditText.getText().toString().length() == 10)) {
-                        deleteIcon();
+                        if (mFile.exists()) {
+                            deleteIcon();
+                        }
+                        mIsAccount=false;
                         downloadIcon(usernameEditText.getText().toString());
                     } else {
                         Toast.makeText(getApplicationContext(), "请输入正确的学号", Toast.LENGTH_SHORT).show();
@@ -148,6 +151,13 @@ public class InitActivity extends Activity {
 
     //下载图像
     private void downloadIcon(final String userId) {
+        try {
+            if (!mFile.exists()) {
+                mFile.createNewFile();
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -174,7 +184,6 @@ public class InitActivity extends Activity {
                     msg.what = 2;
                     handler.sendMessage(msg);
                 } else {
-                    deleteIcon();
                     msg.what = -1;
 //                    Log.e("T-152", "Connection Error : " + map.get("error"));
                     handler.sendMessage(msg);
