@@ -8,7 +8,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#ffcfcfcf"
+        android:background="#FFFFFF"
         android:orientation="vertical">
 
         <!--
@@ -25,118 +25,130 @@
             android:textStyle="bold" />
         -->
         <Button
+            android:layout_marginTop="8dp"
             android:id="@+id/diyButton"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:background="#ffffffff"
-            android:gravity="left|center_vertical"
-            android:padding="2dp"
+            android:layout_height="48dp"
+            android:background="#FFFFFF"
+            android:gravity="center_vertical"
             android:text="@string/diy"
             android:textSize="18sp"
+            android:layout_marginLeft="16dp"
             android:textStyle="bold" />
 
         <Button
             android:id="@+id/updataButton"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:background="#ffffffff"
-            android:gravity="left|center_vertical"
-            android:padding="2dp"
+            android:layout_height="48dp"
+            android:background="#FFFFFF"
+            android:gravity="center_vertical"
             android:text="@string/updata"
             android:textSize="18sp"
+            android:layout_marginLeft="16dp"
             android:textStyle="bold" />
 
         <Button
             android:id="@+id/developerButton"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:background="#ffffffff"
-            android:gravity="left|center_vertical"
-            android:padding="2dp"
+            android:layout_height="48dp"
+            android:background="#FFFFFF"
+            android:gravity="center_vertical"
             android:text="@string/developer"
             android:textSize="18sp"
-            android:textStyle="bold" />
-
-        <Button
-            android:id="@+id/helpButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:background="#ffffffff"
-            android:gravity="left|center_vertical"
-            android:padding="2dp"
-            android:text="@string/help"
-            android:textSize="18sp"
+            android:layout_marginLeft="16dp"
             android:textStyle="bold" />
 
         <Button
             android:id="@+id/clearButton"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:background="#ffffffff"
-            android:gravity="left|center_vertical"
-            android:padding="2dp"
+            android:layout_height="48dp"
+            android:background="#FFFFFF"
+            android:layout_marginLeft="16dp"
+            android:gravity="center_vertical"
             android:text="清除网址"
             android:textSize="18sp"
             android:textStyle="bold" />
 
+       <!-- <Button
+            android:id="@+id/logoutButton"
+            android:background="#FFFFFF"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginLeft="16dp"
+            android:gravity="center_vertical"
+            android:text="退出登录"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            /> -->
+        <View
+            android:background="#B6B6B6"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"/>
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_margin="5dp"
             android:layout_weight="1"
             android:background="#ffffffff">
 
             <TextView
-                android:id="@+id/curren_System"
+                android:id="@+id/student_type"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="5dp"
+                android:layout_height="48dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginLeft="16dp"
                 android:background="#ffffffff"
+                android:gravity="center_vertical"
                 android:text="@string/currenSystem"
                 android:textSize="16sp"
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/selecd_System"
+                android:id="@+id/student_type_value"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignBaseline="@+id/curren_System"
-                android:layout_margin="5dp"
-                android:layout_toRightOf="@+id/curren_System"
+                android:layout_height="48dp"
+                android:layout_alignBaseline="@+id/student_type"
+                android:gravity="center_vertical"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_toRightOf="@+id/student_type"
                 android:textSize="16sp" />
 
             <TextView
-                android:id="@+id/curren_User"
+                android:id="@+id/student_name"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/curren_System"
-                android:layout_margin="5dp"
+                android:layout_height="48dp"
+                android:layout_below="@+id/student_type"
+                android:layout_marginLeft="16dp"
+                android:gravity="center_vertical"
                 android:background="#ffffffff"
                 android:text="@string/currenUser"
                 android:textSize="16sp"
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/selecd_User"
+                android:id="@+id/student_name_value"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignBaseline="@+id/curren_User"
-                android:layout_below="@+id/selecd_System"
-                android:layout_margin="5dp"
-                android:layout_toRightOf="@+id/curren_User"
+                android:layout_height="48dp"
+                android:layout_alignBaseline="@+id/student_name"
+                android:layout_below="@+id/student_type_value"
+                android:layout_marginRight="16dp"
+                android:layout_marginLeft="8dp"
+                android:gravity="center_vertical"
+                android:layout_toRightOf="@+id/student_name"
                 android:textSize="16sp" />
 
-            <Button
+            <!--<Button
                 android:id="@+id/sureButton"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginBottom="1dp"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="48dp"
+                android:gravity="center"
                 android:layout_alignParentBottom="true"
-                android:text="@string/sure" />
+                android:text="@string/sure" />-->
         </RelativeLayout>
 
     </LinearLayout>

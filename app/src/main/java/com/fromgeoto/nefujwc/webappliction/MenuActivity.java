@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.umeng.analytics.MobclickAgent;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,13 +29,9 @@ import DrawItem.DrawDialog;
  */
 public class MenuActivity extends ActionBarActivity {
 
-    private Button commitButton;
-    private Button userButton;
-    private Button diyButton, devButton, helpButton, clearBuuton;
-    private Button updataButton;
-    private TextView userTextView, systemTextView;
+    private Button diyButton, devButton, clearButton, updateButton;
+    private TextView studentNameTextView, studentTypeTextView;
 
-    private int requestCode = 0;
     private DataHelper dataHelper = new DataHelper(this);
     private DrawDialog drawDialog = new DrawDialog(this);
 
@@ -44,14 +41,13 @@ public class MenuActivity extends ActionBarActivity {
         initStatusBar();
         setContentView(R.layout.settings);
 
-        commitButton = (Button) findViewById(R.id.sureButton);
         diyButton = (Button) findViewById(R.id.diyButton);
-        updataButton = (Button) findViewById(R.id.updataButton);
+        updateButton = (Button) findViewById(R.id.updataButton);
         devButton = (Button) findViewById(R.id.developerButton);
-        helpButton = (Button) findViewById(R.id.helpButton);
-        clearBuuton = (Button) findViewById(R.id.clearButton);
-        userTextView = (TextView) findViewById(R.id.selecd_User);
-        systemTextView = (TextView) findViewById(R.id.selecd_System);
+        clearButton = (Button) findViewById(R.id.clearButton);
+//        logoutButton = (Button) findViewById(R.id.logoutButton);
+        studentNameTextView = (TextView) findViewById(R.id.student_name_value);
+        studentTypeTextView = (TextView) findViewById(R.id.student_type_value);
         showInfo();
     }
 
@@ -63,7 +59,7 @@ public class MenuActivity extends ActionBarActivity {
     @Override
     protected void onResume() {
         super.onResume();
-
+        MobclickAgent.onResume(this);
         diyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -71,7 +67,7 @@ public class MenuActivity extends ActionBarActivity {
             }
         });
 
-        updataButton.setOnClickListener(new View.OnClickListener() {
+        updateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 updata();
@@ -87,14 +83,7 @@ public class MenuActivity extends ActionBarActivity {
 
         devButton.setOnLongClickListener(drawDialog.thansListener());
 
-        helpButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                help();
-            }
-        });
-
-        clearBuuton.setOnClickListener(new View.OnClickListener() {
+        clearButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 dataHelper.deleteSharedPreferences(dataHelper.APPWEBSITE);
@@ -102,17 +91,19 @@ public class MenuActivity extends ActionBarActivity {
             }
         });
 
-        commitButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (userTextView.getText().toString().equals("null")) {
-                    drawDialog.getErrorDialog("错误提示", "您当前的用户为空，请完善信息！", null);
-                } else {
-                    go_back();
-                }
-            }
-        });
-        MobclickAgent.onResume(this);
+//        logoutButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                dataHelper.deleteSharedPreferences(dataHelper.APPACCOUNT);
+//                Intent intent = new Intent(MenuActivity.this,StartActivity.class);
+//                startActivity(intent);
+//                File file = new File(getFilesDir().getAbsolutePath()+"/"+dataHelper.SAVEFILE);
+//                if (file.exists()){
+//                    file.delete();
+//                }
+//                System.exit(0);
+//            }
+//        });
     }
 
     @Override
@@ -130,19 +121,9 @@ public class MenuActivity extends ActionBarActivity {
 
     }
 
-    private void go_back() {
-        Intent intent = new Intent(MenuActivity.this, MainActivity.class);
-        setResult(requestCode, intent);
-        finish();
-    }
-
     private void showInfo() {
-            systemTextView.setText(dataHelper.getSharedPreferencesValue(dataHelper.APPACCOUNT,dataHelper.USERTYPE));
-            userTextView.setText(dataHelper.getSharedPreferencesValue(dataHelper.APPACCOUNT, dataHelper.USERNAME));
-    }
-
-    private void help() {
-        drawDialog.getHelpDialog();
+        studentTypeTextView.setText(dataHelper.getSharedPreferencesValue(dataHelper.APPACCOUNT, dataHelper.USERTYPE));
+        studentNameTextView.setText(dataHelper.getSharedPreferencesValue(dataHelper.APPACCOUNT, dataHelper.USERNAME));
     }
 
     private void DIY() {
@@ -157,6 +138,7 @@ public class MenuActivity extends ActionBarActivity {
         //显示
         drawDialog.getInputDialog("自定义添加", drawDialog.getView(), addWebsiteListener());
     }
+
     //添加网站
     private DialogInterface.OnClickListener addWebsiteListener() {
         return new DialogInterface.OnClickListener() {
@@ -179,8 +161,8 @@ public class MenuActivity extends ActionBarActivity {
         };
     }
 
-    private void initStatusBar(){
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){
+    private void initStatusBar() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         }

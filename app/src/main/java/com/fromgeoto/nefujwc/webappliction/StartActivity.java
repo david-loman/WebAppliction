@@ -2,12 +2,10 @@ package com.fromgeoto.nefujwc.webappliction;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Message;
-import android.util.Log;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -120,7 +118,7 @@ public class StartActivity extends Activity implements Runnable {
             handler.sendMessage(msg);
         } else {
             msg.arg1 = 6;
-            Log.e("T-117", "Connection Error : " + map.get("error"));
+//            Log.e("T-117", "Connection Error : " + map.get("error"));
             handler.sendMessage(msg);
         }
         return;
@@ -248,7 +246,7 @@ public class StartActivity extends Activity implements Runnable {
                 Message msg = Message.obtain();
                 if (QucikConnection.checkNetwork(getApplicationContext())) {
                     String reslut = QucikConnection.getResultString(dataHelper.getNEWJWCURL());
-                    Log.e("T-256", reslut);
+//                    Log.e("T-256", reslut);
                     if (!("ERROR".equals(reslut))) {
                         msg.arg1 = 9;
                     } else {

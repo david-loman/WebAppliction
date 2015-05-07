@@ -23,6 +23,8 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.AdapterView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -48,14 +50,17 @@ public class MainActivity extends ActionBarActivity {
     private DrawerLayout mDrawerLayout;
     private WebView webView;
     private ProgressWheel progressWheel;
-    private ImageView mImageView ;
-    private TextView userIdTextView,userTypeTextView,userNameTextView;
+    private ImageView mImageView;
+    private TextView userIdTextView, userTypeTextView, userNameTextView;
     private final String USERNAME = "USERNAME";
     private final String PASSWORD = "PASSWORD";
     private DataHelper dataHelper = new DataHelper(this);
     private JsonHelper jsonHelper = new JsonHelper();
     private DrawDialog drawDialog = new DrawDialog(this);
     private ActionBarDrawerToggle mActionBarDrawerToggle;
+    private LinearLayout mHomeLinearLayout, mScoreLinearLayout, mTableLinearLayout, mCourseLinearLayout, mExamLinearLayout,
+            mSignupLinearLayout, mAppraiseLinearLayout, mCalendarLinearLayout, mGuestLinearLayout, mSettingsLinearLayout, mHelpLinearLayout;
+    private ScrollView mItemScrollView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,11 +68,6 @@ public class MainActivity extends ActionBarActivity {
         initStatusBar();
         setContentView(R.layout.activity_my);
         initView();
-        //检查更新
-        if (checkUpdata()) {
-            dataHelper.deleteSharedPreferences("app_info");
-            showUpdataDialog();
-        }
 
         webView = (WebView) findViewById(R.id.myWebView);
         progressWheel = (ProgressWheel) findViewById(R.id.progressWheel);
@@ -78,7 +78,7 @@ public class MainActivity extends ActionBarActivity {
         webView.getSettings().setDisplayZoomControls(false);
         webView.getSettings().setUseWideViewPort(true);
         webView.getSettings().setLoadWithOverviewMode(true);
-        Log.e("URL-69", dataHelper.getSharedPreferencesValue(dataHelper.APPACCOUNT, dataHelper.URL));
+//        Log.e("URL-69", dataHelper.getSharedPreferencesValue(dataHelper.APPACCOUNT, dataHelper.URL));
     }
 
     @Override
@@ -95,6 +95,10 @@ public class MainActivity extends ActionBarActivity {
     protected void onResume() {
         super.onResume();
         MobclickAgent.onResume(this);
+
+        if (checkUpdata()) {
+            showUpdataDialog();
+        }
         if (QucikConnection.checkNetwork(getApplicationContext())) {
             if (!dataHelper.getSharedPreferencesValue(dataHelper.APPACCOUNT, dataHelper.URL).equals(dataHelper.URL)) {
                 login();
@@ -147,6 +151,7 @@ public class MainActivity extends ActionBarActivity {
                 super.onPageFinished(view, url);
             }
         });
+        layoutClick();
     }
 
     @Override
@@ -185,16 +190,9 @@ public class MainActivity extends ActionBarActivity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            clearCookies();
-
-            Intent intent = new Intent(MainActivity.this, MenuActivity.class);
-            startActivityForResult(intent, 1);
-        } else if (id == R.id.action_exit) {
+        if (id == R.id.action_exit) {
             MobclickAgent.onKillProcess(this);
             this.finish();
-        } else if (id == R.id.change) {
-            drawDialog.getInputDialog("切换用户", drawDialog.getView(R.layout.changeuser_layout), changeListener());
         } else if (id == R.id.action_website) {
             //获取数据
             final List<Map<String, String>> list = getWebsite();
@@ -216,11 +214,6 @@ public class MainActivity extends ActionBarActivity {
             share();
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-
     }
 
     //是否可以更新
@@ -319,7 +312,6 @@ public class MainActivity extends ActionBarActivity {
         return new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-
                 return true;
             }
         };
@@ -341,16 +333,29 @@ public class MainActivity extends ActionBarActivity {
         }
     }
 
-    private void initView (){
+    private void initView() {
         //layout
-        mImageView = (ImageView)findViewById(R.id.userIconImageView);
-        userIdTextView =(TextView)findViewById(R.id.infoUserIdTextView);
-        userTypeTextView =(TextView)findViewById(R.id.infoUserTypeTextView);
-        userNameTextView =(TextView)findViewById(R.id.infoUserNameTextView);
-        mImageView.setImageBitmap(BitmapFactory.decodeFile(getFilesDir().getAbsolutePath()+"/"+dataHelper.SAVEFILE));
-        userNameTextView.setText(dataHelper.getSharedPreferencesValue(dataHelper.APPACCOUNT,dataHelper.USERNAME));
-        userIdTextView.setText(dataHelper.getSharedPreferencesValue(dataHelper.APPACCOUNT,dataHelper.USERID));
-        userTypeTextView.setText(dataHelper.getSharedPreferencesValue(dataHelper.APPACCOUNT,dataHelper.USERTYPE));
+        mImageView = (ImageView) findViewById(R.id.userIconImageView);
+        userIdTextView = (TextView) findViewById(R.id.infoUserIdTextView);
+        userTypeTextView = (TextView) findViewById(R.id.infoUserTypeTextView);
+        userNameTextView = (TextView) findViewById(R.id.infoUserNameTextView);
+        mImageView.setImageBitmap(BitmapFactory.decodeFile(getFilesDir().getAbsolutePath() + "/" + dataHelper.SAVEFILE));
+        userNameTextView.setText(dataHelper.getSharedPreferencesValue(dataHelper.APPACCOUNT, dataHelper.USERNAME));
+        userIdTextView.setText(dataHelper.getSharedPreferencesValue(dataHelper.APPACCOUNT, dataHelper.USERID));
+        userTypeTextView.setText(dataHelper.getSharedPreferencesValue(dataHelper.APPACCOUNT, dataHelper.USERTYPE));
+        mHomeLinearLayout = (LinearLayout) findViewById(R.id.homeLayout);
+        mScoreLinearLayout = (LinearLayout) findViewById(R.id.scoreLayout);
+        mTableLinearLayout = (LinearLayout) findViewById(R.id.tableLayout);
+        mCourseLinearLayout = (LinearLayout) findViewById(R.id.courseLayout);
+        mSignupLinearLayout = (LinearLayout) findViewById(R.id.signupLayout);
+        mAppraiseLinearLayout = (LinearLayout) findViewById(R.id.appraiseLayout);
+        mCalendarLinearLayout = (LinearLayout) findViewById(R.id.calendarLayout);
+        mGuestLinearLayout = (LinearLayout) findViewById(R.id.guestLayout);
+        mSettingsLinearLayout = (LinearLayout) findViewById(R.id.settingsLayout);
+        mHelpLinearLayout = (LinearLayout) findViewById(R.id.helpLayout);
+        mItemScrollView = (ScrollView) findViewById(R.id.drawerItemLayout);
+        mExamLinearLayout = (LinearLayout) findViewById(R.id.examLayout);
+        mItemScrollView.setVerticalScrollBarEnabled(false);
         //toolbar
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         mToolbar.setTitle("教务助手");
@@ -360,7 +365,7 @@ public class MainActivity extends ActionBarActivity {
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawerlayout);
 
-        mActionBarDrawerToggle = new ActionBarDrawerToggle(this,mDrawerLayout,mToolbar,R.string.one,R.string.two){
+        mActionBarDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, mToolbar, R.string.one, R.string.two) {
             @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
@@ -370,11 +375,99 @@ public class MainActivity extends ActionBarActivity {
             @Override
             public void onDrawerClosed(View drawerView) {
                 super.onDrawerClosed(drawerView);
+                mItemScrollView.smoothScrollTo(0, 0);
                 invalidateOptionsMenu();
             }
         };
         mActionBarDrawerToggle.syncState();
         mDrawerLayout.setDrawerListener(mActionBarDrawerToggle);
+    }
+
+    private void layoutClick() {
+        mHomeLinearLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!dataHelper.getSharedPreferencesValue(dataHelper.APPACCOUNT, dataHelper.URL).equals(dataHelper.URL)) {
+                    webView.loadUrl(dataHelper.getSharedPreferencesValue(dataHelper.APPACCOUNT, dataHelper.URL));
+                } else {
+                    Toast.makeText(getApplicationContext(), "数据错误，请重新启动应用", Toast.LENGTH_SHORT).show();
+                }
+                mDrawerLayout.closeDrawer(mItemScrollView);
+            }
+        });
+        mScoreLinearLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                webView.loadUrl("http://jwcnew.nefu.edu.cn/dblydx_jsxsd/kscj/cjcx_query");
+                mDrawerLayout.closeDrawer(mItemScrollView);
+            }
+        });
+        mTableLinearLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                webView.loadUrl("http://jwcnew.nefu.edu.cn/dblydx_jsxsd/xskb/xskb_list.do");
+                mDrawerLayout.closeDrawer(mItemScrollView);
+            }
+        });
+        mExamLinearLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                webView.loadUrl("http://jwcnew.nefu.edu.cn/dblydx_jsxsd/xsks/xsksap_query?Ves632DSdyV=NEW_XSD_KSBM");
+                mDrawerLayout.closeDrawer(mItemScrollView);
+            }
+        });
+        mCourseLinearLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                webView.loadUrl("http://jwcnew.nefu.edu.cn/dblydx_jsxsd/xk/AccessToXk");
+                mDrawerLayout.closeDrawer(mItemScrollView);
+            }
+        });
+        mSignupLinearLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                webView.loadUrl("http://jwcnew.nefu.edu.cn/dblydx_jsxsd/xsdjks/xsdjks_list");
+                mDrawerLayout.closeDrawer(mItemScrollView);
+            }
+        });
+        mAppraiseLinearLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                webView.loadUrl("http://jwcnew.nefu.edu.cn/dblydx_jsxsd/xspj/xspj_find.do");
+                mDrawerLayout.closeDrawer(mItemScrollView);
+            }
+        });
+        mCalendarLinearLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                webView.loadUrl("http://jwcnew.nefu.edu.cn/dblydx_jsxsd/jxzl/jxzl_query?Ves632DSdyV=NEW_XSD_WDZM");
+                mDrawerLayout.closeDrawer(mItemScrollView);
+            }
+        });
+        mGuestLinearLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                drawDialog.getInputDialog("切换用户", drawDialog.getView(R.layout.changeuser_layout), changeListener());
+                mDrawerLayout.closeDrawer(mItemScrollView);
+            }
+        });
+        mSettingsLinearLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                clearCookies();
+
+                Intent intent = new Intent(MainActivity.this, MenuActivity.class);
+                startActivity(intent);
+                mDrawerLayout.closeDrawer(mItemScrollView);
+            }
+        });
+        mHelpLinearLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                drawDialog.getHelpDialog();
+                mDrawerLayout.closeDrawer(mItemScrollView);
+            }
+        });
     }
 
 }

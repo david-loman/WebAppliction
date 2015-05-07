@@ -21,11 +21,21 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <TextView
+            android:id="@+id/tipTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:gravity="center"
+            android:text="正在跳转..."
+            android:visibility="invisible" />
+
         <RelativeLayout
             android:id="@+id/checkLayout"
-            android:layout_above="@+id/copyrightView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:layout_above="@+id/copyrightView">
 
             <com.pnikosis.materialishprogress.ProgressWheel
                 android:id="@+id/loginWheel"
@@ -37,11 +47,11 @@
                 wheel:matProg_progressIndeterminate="true" />
 
             <TextView
-                android:gravity="center"
-                android:text="正在验证..."
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/loginWheel" />
+                android:layout_below="@+id/loginWheel"
+                android:gravity="center"
+                android:text="正在验证..." />
         </RelativeLayout>
 
         <TextView

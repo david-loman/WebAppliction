@@ -37,7 +37,7 @@
         <activity
             android:name="com.fromgeoto.nefujwc.webappliction.MainActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-        <activity android:name="com.fromgeoto.nefujwc.webappliction.MenuActivity" />
+        <activity android:name="com.fromgeoto.nefujwc.webappliction.MenuActivity" android:parentActivityName=".MainActivity"/>
         <activity android:name="com.fromgeoto.nefujwc.webappliction.InitActivity" />
     </application>
 

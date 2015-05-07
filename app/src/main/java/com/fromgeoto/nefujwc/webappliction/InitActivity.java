@@ -1,18 +1,12 @@
 package com.fromgeoto.nefujwc.webappliction;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.text.Editable;
-import android.text.InputType;
-import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
@@ -20,6 +14,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.umeng.analytics.MobclickAgent;
@@ -37,6 +32,7 @@ public class InitActivity extends Activity {
 
     private RelativeLayout loginRelativeLayout;
     private EditText usernameEditText, passwordEditText;
+    private TextView tipTextView;
     private Button loginButton, resetButton;
     private ImageView iconView;
     private DataHelper dataHelper = new DataHelper(this);
@@ -50,13 +46,14 @@ public class InitActivity extends Activity {
         initStatusBar();
         initFile();
         setContentView(R.layout.activity_init);
-        initView();
+
         mInputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
+        initView();
     }
 
     @Override
@@ -86,7 +83,7 @@ public class InitActivity extends Activity {
                     mInputMethodManager.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
                 }
                 //登录验证
-                if (mIsAccount && passwordEditText.getText().toString().length() > 1) {
+                if (mIsAccount && passwordEditText.getText().toString().length() >= 8) {
                     checkLogin(usernameEditText.getText().toString(), passwordEditText.getText().toString());
                 } else if (!mIsAccount) {
                     Toast.makeText(getApplicationContext(), "请输入正确的学号", Toast.LENGTH_SHORT).show();
@@ -122,6 +119,7 @@ public class InitActivity extends Activity {
                 loginRelativeLayout.setVisibility(View.INVISIBLE);
                 iconView.setImageBitmap(BitmapFactory.decodeFile(mFile.getAbsolutePath()));
                 iconView.setVisibility(View.VISIBLE);
+                tipTextView.setVisibility(View.VISIBLE);
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -178,7 +176,7 @@ public class InitActivity extends Activity {
                 } else {
                     deleteIcon();
                     msg.what = -1;
-                    Log.e("T-152", "Connection Error : " + map.get("error"));
+//                    Log.e("T-152", "Connection Error : " + map.get("error"));
                     handler.sendMessage(msg);
                 }
             }
@@ -195,6 +193,8 @@ public class InitActivity extends Activity {
         resetButton = (Button) findViewById(R.id.cancelButton);
         resetButton.setText("重置");
         iconView = (ImageView) findViewById(R.id.iconImageView);
+        tipTextView=(TextView)findViewById(R.id.tipTextView);
+        tipTextView.setVisibility(View.INVISIBLE);
     }
 
     private void initStatusBar() {

@@ -5,8 +5,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
-import android.util.Log;
-import android.widget.Toast;
 
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
@@ -58,11 +56,11 @@ public class QucikConnection {
                 url = null;
             } else {
                 stringBuffer.append(responseCode);
-                Log.e("Qucik_ResultString", "Error on the net");
+//                Log.e("Qucik_ResultString", "Error on the net");
             }
         } catch (Exception e) {
             stringBuffer = new StringBuffer("ERROR");
-            Log.e("Get ERROR", "TIME_OUT");
+//            Log.e("Get ERROR", "TIME_OUT");
             e.printStackTrace();
         }
         return stringBuffer.toString();
