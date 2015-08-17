@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.fromgeoto.nefujwc.webappliction"
-    android:installLocation="preferExternal">
+    android:installLocation="preferExternal" >
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -15,19 +15,18 @@
         android:allowBackup="true"
         android:icon="@drawable/launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme">
-
+        android:theme="@style/AppTheme" >
         <meta-data
             android:name="UMENG_APPKEY"
-            android:value="5544ee9c67e58e3c9a00b2a9"></meta-data>
+            android:value="5544ee9c67e58e3c9a00b2a9" />
         <meta-data
             android:name="UMENG_CHANNEL"
             android:value="dev_channel" />
 
         <activity
-            android:name="com.fromgeoto.nefujwc.webappliction.StartActivity"
+            android:name=".StartActivity"
             android:label="@string/app_name"
-            android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -35,10 +34,19 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.fromgeoto.nefujwc.webappliction.MainActivity"
+            android:name=".MainActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-        <activity android:name="com.fromgeoto.nefujwc.webappliction.MenuActivity" android:parentActivityName=".MainActivity"/>
-        <activity android:name="com.fromgeoto.nefujwc.webappliction.InitActivity" />
+        <activity
+            android:name=".MenuActivity"
+            android:parentActivityName=".MainActivity" />
+        <activity android:name=".InitActivity" />
+        <activity
+            android:name=".SplashActivity"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
+            <intent-filter>
+
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>
