@@ -2,10 +2,9 @@ package com.fromgeoto.nefujwc.webappliction;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.support.v7.app.ActionBarActivity;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.widget.ImageView;
 
 import com.umeng.analytics.MobclickAgent;
@@ -30,10 +29,16 @@ public class SplashActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
+        // 删除无用表
+        mDataHelper.deleteSharedPreferences("app_login");
+        mDataHelper.deleteSharedPreferences(mDataHelper.APPWEBSITE);
         setContentView(R.layout.activity_splash);
         mImageView = (ImageView)findViewById(R.id.splashImageView);
+
+        // 如果第一次使用直接跳登录
+        if(!isFirstIntro()){
+            goNextActivity(false);
+        }
     }
 
     @Override
@@ -53,5 +58,39 @@ public class SplashActivity extends Activity {
         startActivity(intent);
         this.finish();
     }
+
+    private boolean isFirstIntro (){
+        boolean firstIntro = false;
+        String version = mDataHelper.getSharedPreferencesValue(mDataHelper.APPUPDATA,mDataHelper.VERSION);
+        if (version.equals(mDataHelper.VERSION)){
+            // 更新
+            firstIntro = true;
+            updateAppUpdata(getVersionInfo(0),getVersionInfo(1));
+        }
+        return firstIntro;
+    }
+
+    private void updateAppUpdata (String vs,String vc){
+        if (!vs.equals(mDataHelper.getSharedPreferencesValue(mDataHelper.APPUPDATA, mDataHelper.VERSION))){
+            mDataHelper.setSharedPreferencesValue(mDataHelper.APPUPDATA, mDataHelper.VERSION, vs);
+        }
+        if (!vc.equals(mDataHelper.getSharedPreferencesValue(mDataHelper.APPUPDATA, mDataHelper.VERSIONCODE))){
+            mDataHelper.setSharedPreferencesValue(mDataHelper.APPUPDATA, mDataHelper.VERSIONCODE, vc);
+        }
+    }
+
+    private String getVersionInfo (int type){
+        String reslut = null;
+        try{
+            PackageManager pm = getPackageManager();
+            PackageInfo pi = pm.getPackageInfo(getPackageName(),0);
+            reslut = type == 1 ? String.valueOf(pi.versionCode) : pi.versionName;
+        }catch (Exception e){
+            e.printStackTrace();
+            reslut = "ERROR";
+        }
+        return reslut;
+    }
+
 
 }

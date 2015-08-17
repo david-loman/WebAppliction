@@ -2,6 +2,8 @@ package DataFactory;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
@@ -15,6 +17,8 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -39,6 +43,7 @@ public class DataHelper {
     public final String APPWEBSITE = "app_website";
     //SharedPrefence属性
     public final String VERSION = "version";
+    public final String VERSIONCODE = "versioncode";
     public final String COUNT = "count";
     public final String ONE = "one";
     public final String TWO = "two";
@@ -104,9 +109,6 @@ public class DataHelper {
         if (value.equals(COUNT)) {
             value = String.valueOf(0);
         }
-        if (value.equals(MYWEBSITE)) {
-            value = "{ \"len\" : 0 , \"mywebsite\" :[]  }";
-        }
         sharedPreferences = null;
         return value;
     }
@@ -144,6 +146,10 @@ public class DataHelper {
         editor.commit();
         editor = null;
         sharedPreferences = null;
+    }
+
+    public void setInfo (){
+
     }
 
     public String getNEWJWCURL() {
@@ -190,5 +196,12 @@ public class DataHelper {
 
     public String getICONURL() {
         return ICONURL;
+    }
+
+    public String getTime (){
+        String time = null;
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        time=simpleDateFormat.format(new Date());
+        return time != null ? time : "ERROR";
     }
 }
