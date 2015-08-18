@@ -56,8 +56,7 @@ public class DataHelper {
     public final String USERNAME = "username";
     public final String PASSWORD = "password";
     public final String UPDATATIME = "updatetime";
-    public final String DEFAULTWEBSITE = "defaultwebsite";
-    public final String MYWEBSITE = "mywebsite";
+    public final String WELCOMEIMAGE = "welcomeImage";
     public final String SAVEFILE = "iconImage";
     //私有属性
     private Context context;
@@ -94,10 +93,7 @@ public class DataHelper {
             editor.putString(USERTYPE, data.get(USERTYPE));
             editor.putString(USERNAME, data.get(USERNAME));
             editor.putString(PASSWORD, data.get(PASSWORD));
-        } else if (sharedPreferencesName.equals(APPWEBSITE)) {
-            editor.putString(DEFAULTWEBSITE, data.get(DEFAULTWEBSITE));
-            editor.putString(MYWEBSITE, data.get(MYWEBSITE));
-        } else {
+        }  else {
             editor.clear();
         }
         editor.commit();
@@ -131,10 +127,7 @@ public class DataHelper {
             data.put(URL, sharedPreferences.getString(URL, URL));
             data.put(USERNAME, sharedPreferences.getString(USERNAME, USERNAME));
             data.put(PASSWORD, sharedPreferences.getString(PASSWORD, PASSWORD));
-        } else if (sharedPreferencesName.equals(APPWEBSITE)) {
-            data.put(DEFAULTWEBSITE, sharedPreferences.getString(DEFAULTWEBSITE, DEFAULTWEBSITE));
-            data.put(MYWEBSITE, sharedPreferences.getString(MYWEBSITE, MYWEBSITE));
-        } else {
+        }  else {
             data = null;
         }
         sharedPreferences = null;
