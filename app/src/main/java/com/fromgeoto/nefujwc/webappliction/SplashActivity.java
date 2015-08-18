@@ -9,8 +9,12 @@ import android.widget.ImageView;
 
 import com.umeng.analytics.MobclickAgent;
 
+import java.util.HashMap;
+
 import DataFactory.DataHelper;
 import DataFactory.JsonHelper;
+import NetWork.QucikConnection;
+
 /**
  *  Created by David on 2015/08/17.
  *  该页面是程序的启动页，用于处于初始化操作。
@@ -23,6 +27,7 @@ public class SplashActivity extends Activity {
 
     private DataHelper mDataHelper = new DataHelper(getApplicationContext());
     private JsonHelper mJsonHelper = new JsonHelper();
+    private QucikConnection mQucikConnection = new QucikConnection(getApplicationContext());
     private ImageView mImageView;
     private boolean mNewFeature;
 
@@ -32,13 +37,40 @@ public class SplashActivity extends Activity {
         // 删除无用表
         mDataHelper.deleteSharedPreferences("app_login");
         mDataHelper.deleteSharedPreferences(mDataHelper.APPWEBSITE);
+
         setContentView(R.layout.activity_splash);
         mImageView = (ImageView)findViewById(R.id.splashImageView);
 
+        // 数据加载
+        String lastTime = mDataHelper.getSharedPreferencesValue(mDataHelper.APPINFO,mDataHelper.UPDATATIME);
+        boolean firstCome = lastTime.equals(mDataHelper.UPDATATIME);
+        if (firstCome){
+            downloadDate();
+        }
+        chechAccount();
+        checkLogin();
         // 如果第一次使用直接跳登录
         if(!isFirstIntro()){
             goNextActivity(false);
         }
+    }
+
+    private void downloadDate() {
+        downloadImage();
+        downloadAppInfo();
+    }
+
+    private void downloadImage() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                String resultURL = QucikConnection.getResultString(mDataHelper.getIMAGEINFOURL());
+                if (!resultURL.equals(mDataHelper.getDEFAULTIMAGEURL())){
+                    mQucikConnection.saveImage(,resultURL);
+                }
+                mImageView
+            }
+        });
     }
 
     @Override
@@ -92,5 +124,12 @@ public class SplashActivity extends Activity {
         return reslut;
     }
 
-
+    private void updateImage (){
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                String lastTime = mDataHelper.getSharedPreferencesValue(mDataHelper.APPINFO,)
+            }
+        });
+    }
 }

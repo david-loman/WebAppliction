@@ -36,6 +36,8 @@ public class DataHelper {
     private final String UPDATASTATUSURL = "http://jwcglxt.qiniudn.com/updataStatus";
     private final String APPLICATIONINFOURL = "http://jwcglxt.qiniudn.com/applictionInfo";
     private final String DATAINFOURL = "http://jwcglxt.qiniudn.com/dataInfo";
+    private final String IMAGEINFOURL = "http://jwcglxt.qiniudn.com/imageInfo";
+    private final String DEFAULTIMAGEURL = "";
     //SharedPrefence名称
     public final String APPACCOUNT = "app_account";
     public final String APPUPDATA = "app_updata";
@@ -179,6 +181,15 @@ public class DataHelper {
     public String getDATAINFOURL() {
         return DATAINFOURL;
     }
+
+    public String getIMAGEINFOURL(){
+        return IMAGEINFOURL;
+    }
+
+    public String getDEFAULTIMAGEURL(){
+        return DEFAULTIMAGEURL;
+    }
+
 
     public String getUpdataInfo() {
 

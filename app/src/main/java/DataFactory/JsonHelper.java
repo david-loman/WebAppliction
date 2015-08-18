@@ -37,6 +37,11 @@ public class JsonHelper {
         return result;
     }
 
+    public Map<String,String> parseImageJson(String jsonString){
+        Map<String,String> map = new HashMap<>();
+        return map;
+    }
+
     public Map<String, String> parseApplictionJson(String jsonString, String[] jsonKey) {
         Map<String, String> data = new HashMap<String, String>();
         try {
