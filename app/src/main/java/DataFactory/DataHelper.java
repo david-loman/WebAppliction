@@ -42,7 +42,7 @@ public class DataHelper {
     public final String APPACCOUNT = "app_account";
     public final String APPUPDATA = "app_updata";
     public final String APPINFO = "app_info";
-    public final String APPWEBSITE = "app_website";
+//    public final String APPWEBSITE = "app_website";
     //SharedPrefence属性
     public final String VERSION = "version";
     public final String VERSIONCODE = "versioncode";
