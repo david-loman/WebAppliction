@@ -34,7 +34,7 @@ public class DataHelper {
     private final String MYZHIHU = "http://www.zhihu.com/people/david-lin-92";
     private final String MYZHUYE = "http://davidloman.net";
     private final String UPDATASTATUSURL = "http://jwcglxt.qiniudn.com/updataStatus";
-    private final String APPLICATIONINFOURL = "http://jwcglxt.qiniudn.com/applictionInfo";
+    private final String APPLICATIONINFOURL = "http://jwcglxt.qiniudn.com/applictionUpdateInfo";
     private final String DATAINFOURL = "http://jwcglxt.qiniudn.com/dataInfo";
     private final String IMAGEINFOURL = "http://jwcglxt.qiniudn.com/imageInfo";
     private final String DEFAULTIMAGEURL = "";
@@ -83,6 +83,7 @@ public class DataHelper {
         //编辑
         if (sharedPreferencesName.equals(APPUPDATA)) {
             editor.putString(VERSION, data.get(VERSION));
+            editor.putString(VERSIONCODE,data.get(VERSIONCODE));
             editor.putString(URL, data.get(URL));
             editor.putString(ONE, data.get(ONE));
             editor.putString(TWO, data.get(TWO));
@@ -116,6 +117,7 @@ public class DataHelper {
         sharedPreferences = context.getSharedPreferences(sharedPreferencesName, Context.MODE_PRIVATE);
         if (sharedPreferencesName.equals(APPUPDATA)) {
             data.put(VERSION, sharedPreferences.getString(VERSION, VERSION));
+            data.put(VERSIONCODE,sharedPreferences.getString(VERSIONCODE,VERSIONCODE));
             data.put(URL, sharedPreferences.getString(URL, URL));
             data.put(ONE, sharedPreferences.getString(ONE, ONE));
             data.put(TWO, sharedPreferences.getString(TWO, TWO));
