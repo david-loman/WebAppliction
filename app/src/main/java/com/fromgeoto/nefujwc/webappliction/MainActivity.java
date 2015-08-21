@@ -261,16 +261,16 @@ public class MainActivity extends ActionBarActivity {
         if (dataHelper.getSharedPreferencesValue(dataHelper.APPWEBSITE, dataHelper.DEFAULTWEBSITE).equals(dataHelper.DEFAULTWEBSITE)) {
             Toast.makeText(this, "数据加载错误", Toast.LENGTH_SHORT).show();
         } else {
-            List<Map<String, String>> tmp = jsonHelper.parseWebsiteJson(dataHelper.getSharedPreferencesValue(dataHelper.APPWEBSITE, dataHelper.DEFAULTWEBSITE), dataHelper.DEFAULTWEBSITE);
-            for (int i = 0; i < tmp.size(); i++) {
-                list.add(tmp.get(i));
-            }
-            if (!dataHelper.getSharedPreferencesValue(dataHelper.APPWEBSITE, dataHelper.MYWEBSITE).equals(dataHelper.MYWEBSITE)) {
-                tmp = jsonHelper.parseWebsiteJson(dataHelper.getSharedPreferencesValue(dataHelper.APPWEBSITE, dataHelper.MYWEBSITE), dataHelper.MYWEBSITE);
-                for (int i = 0; i < tmp.size(); i++) {
-                    list.add(tmp.get(i));
-                }
-            }
+//            List<Map<String, String>> tmp = jsonHelper.parseWebsiteJson(dataHelper.getSharedPreferencesValue(dataHelper.APPWEBSITE, dataHelper.DEFAULTWEBSITE), dataHelper.DEFAULTWEBSITE);
+//            for (int i = 0; i < tmp.size(); i++) {
+//                list.add(tmp.get(i));
+//            }
+//            if (!dataHelper.getSharedPreferencesValue(dataHelper.APPWEBSITE, dataHelper.MYWEBSITE).equals(dataHelper.MYWEBSITE)) {
+//                tmp = jsonHelper.parseWebsiteJson(dataHelper.getSharedPreferencesValue(dataHelper.APPWEBSITE, dataHelper.MYWEBSITE), dataHelper.MYWEBSITE);
+//                for (int i = 0; i < tmp.size(); i++) {
+//                    list.add(tmp.get(i));
+//                }
+//            }
         }
         return list;
     }

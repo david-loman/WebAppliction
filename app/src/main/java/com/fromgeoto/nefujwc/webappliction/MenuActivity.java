@@ -136,30 +136,30 @@ public class MenuActivity extends ActionBarActivity {
         drawDialog.getEditText2().setHint("请输入网站地址");
         drawDialog.getEditText2().setTransformationMethod(HideReturnsTransformationMethod.getInstance());
         //显示
-        drawDialog.getInputDialog("自定义添加", drawDialog.getView(), addWebsiteListener());
+//        drawDialog.getInputDialog("自定义添加", drawDialog.getView(), addWebsiteListener());
     }
 
     //添加网站
-    private DialogInterface.OnClickListener addWebsiteListener() {
-        return new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                JsonHelper jsonHelper = new JsonHelper();
-                Map<String, String> map = new HashMap<String, String>();
-                List<Map<String, String>> list = jsonHelper.parseWebsiteJson(dataHelper.getSharedPreferencesValue(dataHelper.APPWEBSITE, dataHelper.MYWEBSITE), dataHelper.MYWEBSITE);
-                if (drawDialog.getEditText1().getText().toString().length() <= 0 || drawDialog.getEditText2().getText().toString().length() <= 0) {
-                    Toast.makeText(MenuActivity.this, "数据无效", Toast.LENGTH_LONG).show();
-                } else {
-                    map.put(jsonHelper.NAME, drawDialog.getEditText1().getText().toString());
-                    map.put(jsonHelper.URL, drawDialog.getEditText2().getText().toString());
-                    map.put(dataHelper.USERNAME, null);
-                    map.put(dataHelper.PASSWORD, null);
-                    list.add(map);
-                    dataHelper.setSharedPreferencesValue(dataHelper.APPWEBSITE, dataHelper.MYWEBSITE, jsonHelper.convertWebsiteJson(list, dataHelper.MYWEBSITE));
-                }
-            }
-        };
-    }
+//    private DialogInterface.OnClickListener addWebsiteListener() {
+//        return new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialog, int which) {
+//                JsonHelper jsonHelper = new JsonHelper();
+//                Map<String, String> map = new HashMap<String, String>();
+//                List<Map<String, String>> list = jsonHelper.parseWebsiteJson(dataHelper.getSharedPreferencesValue(dataHelper.APPWEBSITE, dataHelper.MYWEBSITE), dataHelper.MYWEBSITE);
+//                if (drawDialog.getEditText1().getText().toString().length() <= 0 || drawDialog.getEditText2().getText().toString().length() <= 0) {
+//                    Toast.makeText(MenuActivity.this, "数据无效", Toast.LENGTH_LONG).show();
+//                } else {
+//                    map.put(jsonHelper.NAME, drawDialog.getEditText1().getText().toString());
+//                    map.put(jsonHelper.URL, drawDialog.getEditText2().getText().toString());
+//                    map.put(dataHelper.USERNAME, null);
+//                    map.put(dataHelper.PASSWORD, null);
+//                    list.add(map);
+//                    dataHelper.setSharedPreferencesValue(dataHelper.APPWEBSITE, dataHelper.MYWEBSITE, jsonHelper.convertWebsiteJson(list, dataHelper.MYWEBSITE));
+//                }
+//            }
+//        };
+//    }
 
     private void initStatusBar() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {

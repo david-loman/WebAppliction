@@ -45,18 +45,18 @@ public class SplashActivity extends Activity {
         mImageView = (ImageView) findViewById(R.id.splashImageView);
 
         // 单日第一次进入，更新数据
-        boolean firstCome = (mDataHelper.getSharedPreferencesValue(mDataHelper.APPINFO, mDataHelper.UPDATATIME).equals(mDataHelper.getTime()) ||
+        boolean firstCome = (!mDataHelper.getSharedPreferencesValue(mDataHelper.APPINFO, mDataHelper.UPDATATIME).equals(mDataHelper.getTime()) ||
                 mDataHelper.UPDATATIME.equals(mDataHelper.getSharedPreferencesValue(mDataHelper.APPINFO, mDataHelper.UPDATATIME)));
         if (firstCome) {
             mDataHelper.setSharedPreferencesValue(mDataHelper.APPINFO, mDataHelper.UPDATATIME, mDataHelper.getTime());
             downloadDate();
         } else {
-            updateCount();
             // 如果有新的欢迎页则加载
             if (Boolean.parseBoolean(mDataHelper.getSharedPreferencesValue(mDataHelper.APPINFO, mDataHelper.WELCOMEIMAGE))) {
                 mImageView.setImageBitmap(BitmapFactory.decodeFile(getFilesDir().getAbsoluteFile() + mDataHelper.WELCOMEIMAGE));
             }
         }
+        updateCount();
         // 用户第一次登录，无需检查帐号信息
         if (mDataHelper.getSharedPreferencesValue(mDataHelper.APPACCOUNT, mDataHelper.PASSWORD).equals(mDataHelper.PASSWORD)) {
             goNextActivity(false);

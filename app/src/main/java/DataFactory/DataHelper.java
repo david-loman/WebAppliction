@@ -56,6 +56,8 @@ public class DataHelper {
     public final String USERNAME = "username";
     public final String PASSWORD = "password";
     public final String UPDATATIME = "updatetime";
+    public final String APPWEBSITE = "appwebsite";
+    public final String DEFAULTWEBSITE = "defaultwebsite";
     public final String WELCOMEIMAGE = "welcomeImage";
     public final String SAVEFILE = "iconImage";
     //私有属性
