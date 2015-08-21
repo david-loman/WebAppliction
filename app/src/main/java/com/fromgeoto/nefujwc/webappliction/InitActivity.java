@@ -164,7 +164,7 @@ public class InitActivity extends Activity {
                 if (QucikConnection.saveImage(mFile, dataHelper.getICONURL() + userId + ".JPG")) {
                     mIsAccount = true;
                 } else {
-                    initInput();
+                    Toast.makeText(InitActivity.this,"This Account maybe has some problem !",Toast.LENGTH_LONG).show();
                 }
             }
         }).start();

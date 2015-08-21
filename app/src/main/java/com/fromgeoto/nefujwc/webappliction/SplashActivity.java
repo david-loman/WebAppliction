@@ -128,7 +128,7 @@ public class SplashActivity extends Activity {
                 String resultURL = QucikConnection.getResultString(mDataHelper.getIMAGEINFOURL());
                 mDataHelper.setSharedPreferencesValue(mDataHelper.APPINFO, mDataHelper.WELCOMEIMAGE, String.valueOf(false));
                 if (!resultURL.equals(mDataHelper.getDEFAULTIMAGEURL()) &&
-                        mQucikConnection.saveImage(new File(getFilesDir().getAbsoluteFile() + mDataHelper.WELCOMEIMAGE), resultURL)) {
+                        mQucikConnection.saveImage(new File(getFilesDir().getAbsoluteFile() + "/" + mDataHelper.WELCOMEIMAGE), resultURL)) {
                     // 载入图片
                     mImageView.setImageBitmap(BitmapFactory.decodeFile(getFilesDir().getAbsolutePath() + mDataHelper.WELCOMEIMAGE));
                     mDataHelper.setSharedPreferencesValue(mDataHelper.APPINFO, mDataHelper.WELCOMEIMAGE, String.valueOf(true));
