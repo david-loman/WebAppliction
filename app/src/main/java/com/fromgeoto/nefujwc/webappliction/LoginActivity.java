@@ -15,6 +15,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.umeng.analytics.MobclickAgent;
+
 import java.io.File;
 import java.util.Map;
 
@@ -27,8 +29,8 @@ public class LoginActivity extends BaseViewActivity {
     private ImageView mIconImageView;
     private RelativeLayout mRelativeLayout;
     private TextView mTipTextView;
-    private EditText mPasswordEditText,mUsernameEditText;
-    private Button mLoginButton,mCancelButton;
+    private EditText mPasswordEditText, mUsernameEditText;
+    private Button mLoginButton, mCancelButton;
     private InputMethodManager mInputMethodManager;
     private QucikConnection mQucikConnection;
 
@@ -38,14 +40,14 @@ public class LoginActivity extends BaseViewActivity {
         setContentView(R.layout.activity_init);
 
         initView();
-        mInputMethodManager = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
+        mInputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
         mQucikConnection = new QucikConnection(this);
     }
 
     protected void initView() {
         mIconImageView = (ImageView) findViewById(R.id.iconImageView);
         mRelativeLayout = (RelativeLayout) findViewById(R.id.checkLayout);
-        mTipTextView = (TextView)findViewById(R.id.tipTextView);
+        mTipTextView = (TextView) findViewById(R.id.tipTextView);
         mPasswordEditText = (EditText) findViewById(R.id.passwordEditText);
         mUsernameEditText = (EditText) findViewById(R.id.usernameEditText);
         mLoginButton = (Button) findViewById(R.id.loginButton);
@@ -75,7 +77,7 @@ public class LoginActivity extends BaseViewActivity {
                 }
             }
         });
-        
+
         mLoginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -83,7 +85,7 @@ public class LoginActivity extends BaseViewActivity {
                 if (mPasswordEditText.getText().toString().length() > 8) {
                     checkLogin(mUsernameEditText.getText().toString(), mPasswordEditText.getText().toString());
                 } else {
-                    Toast.makeText(getApplicationContext(),"输入的密码有误",Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "输入的密码有误", Toast.LENGTH_LONG).show();
                     mPasswordEditText.setText("");
                 }
             }
@@ -95,30 +97,31 @@ public class LoginActivity extends BaseViewActivity {
                 initInput();
             }
         });
-
+        MobclickAgent.onResume(getApplicationContext());
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+        MobclickAgent.onPause(getApplicationContext());
     }
 
-    public Handler handler = new Handler(){
+    public Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            if (msg.what > 0){
+            if (msg.what > 0) {
                 mRelativeLayout.setVisibility(View.INVISIBLE);
                 mTipTextView.setVisibility(View.VISIBLE);
                 goNextActivity(true);
-            }else {
-                Toast.makeText(getApplicationContext(),"输入的密码有误",Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(getApplicationContext(), "输入的密码有误", Toast.LENGTH_LONG).show();
                 mPasswordEditText.setText("");
             }
         }
     };
-    
-    private void  checkLogin(final String uid, final String psw){
+
+    private void checkLogin(final String uid, final String psw) {
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -137,8 +140,8 @@ public class LoginActivity extends BaseViewActivity {
             }
         }).start();
     }
-    
-    private void downloadIcon (final String uid){
+
+    private void downloadIcon(final String uid) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -164,8 +167,8 @@ public class LoginActivity extends BaseViewActivity {
         mUsernameEditText.setText("");
     }
 
-    protected void goNextActivity(boolean isComplete){
-        Intent intent = new Intent(LoginActivity.this,MainActivity.class);
+    protected void goNextActivity(boolean isComplete) {
+        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
         startActivity(intent);
     }
 
