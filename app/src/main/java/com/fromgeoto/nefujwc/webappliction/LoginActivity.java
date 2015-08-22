@@ -18,11 +18,11 @@ import android.widget.Toast;
 import java.io.File;
 import java.util.Map;
 
-import BaseView.BaseActivity;
+import BaseView.BaseViewActivity;
 import NetWork.QucikConnection;
 
 
-public class LoginActivity extends BaseActivity {
+public class LoginActivity extends BaseViewActivity {
 
     private ImageView mIconImageView;
     private RelativeLayout mRelativeLayout;
