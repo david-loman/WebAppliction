@@ -57,19 +57,9 @@ public abstract class BaseActivity extends Activity {
     }
 
     // 消息对话框
-    protected void showMessageDialog (String title,String msg,String posString){
+    protected void showMessageDialog (String title,String msg,String posString,DialogInterface.OnClickListener onClickListener) {
         new AlertDialog.Builder(getApplicationContext()).setTitle(title).setMessage(msg)
-                .setPositiveButton(posString,null).show();
-    }
-
-    // 用户账户对话框
-    protected void showInputDialog (){
-
-    }
-
-    // 开发者对话框
-    protected void showDeveloperDialog(){
-
+                .setPositiveButton(posString, onClickListener).show();
     }
 
     protected abstract void initView();

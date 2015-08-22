@@ -20,7 +20,7 @@ import DrawItem.DrawDialog;
  * About : 基础类
  */
 
-public class BaseViewActivity extends Activity {
+public abstract class BaseViewActivity extends BaseActivity {
 
     protected DataHelper mDataHelper = new DataHelper(getApplicationContext());
     protected DrawDialog mDrawerLayout = new DrawDialog(getApplicationContext());
@@ -34,15 +34,11 @@ public class BaseViewActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-        // 友盟埋点
-        MobclickAgent.onResume(getApplicationContext());
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        // 友盟埋点
-        MobclickAgent.onPause(getApplicationContext());
     }
 
     // 用于对布局进行包装

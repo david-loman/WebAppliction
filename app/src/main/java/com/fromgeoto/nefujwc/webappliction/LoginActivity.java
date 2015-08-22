@@ -42,7 +42,7 @@ public class LoginActivity extends BaseViewActivity {
         mQucikConnection = new QucikConnection(this);
     }
 
-    private void initView() {
+    protected void initView() {
         mIconImageView = (ImageView) findViewById(R.id.iconImageView);
         mRelativeLayout = (RelativeLayout) findViewById(R.id.checkLayout);
         mTipTextView = (TextView)findViewById(R.id.tipTextView);
@@ -110,7 +110,7 @@ public class LoginActivity extends BaseViewActivity {
             if (msg.what > 0){
                 mRelativeLayout.setVisibility(View.INVISIBLE);
                 mTipTextView.setVisibility(View.VISIBLE);
-                gotoMainActivity();
+                goNextActivity(true);
             }else {
                 Toast.makeText(getApplicationContext(),"输入的密码有误",Toast.LENGTH_LONG).show();
                 mPasswordEditText.setText("");
@@ -164,8 +164,9 @@ public class LoginActivity extends BaseViewActivity {
         mUsernameEditText.setText("");
     }
 
-    private void gotoMainActivity(){
+    protected void goNextActivity(boolean isComplete){
         Intent intent = new Intent(LoginActivity.this,MainActivity.class);
         startActivity(intent);
     }
+
 }
