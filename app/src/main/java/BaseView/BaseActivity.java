@@ -8,6 +8,9 @@ import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.provider.Settings;
 
+import DataFactory.DataHelper;
+import DrawItem.DrawDialog;
+
 /**
  * Created by David on 15-8-22.
  * <li> 基础类，提供基础的网络可访问检查，对话框的显示。
@@ -16,9 +19,13 @@ import android.provider.Settings;
  */
 public abstract class BaseActivity extends Activity {
 
+    protected DataHelper mDataHelper;
+    protected DrawDialog mDrawerLayout;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mDataHelper = new DataHelper(getApplicationContext());
+        mDrawerLayout = new DrawDialog(getApplicationContext());
     }
 
     @Override
@@ -40,8 +47,8 @@ public abstract class BaseActivity extends Activity {
     }
 
     // 网络不可访问提示对话框
-    protected void showNetErrorDialog (String title,String msg){
-        new AlertDialog.Builder(getApplicationContext()).setTitle(title).setMessage(msg)
+    protected void showNetErrorDialog (){
+        new AlertDialog.Builder(getApplicationContext()).setTitle("网络连接错误").setMessage("请重新设置网络环境")
                 .setNegativeButton("退出", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {

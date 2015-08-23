@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
+import android.util.Log;
 
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
@@ -126,6 +127,7 @@ public class QucikConnection {
             httpURLConnection.setRequestMethod("GET");
             httpURLConnection.setConnectTimeout(2000);
             httpURLConnection.setDoInput(true);
+            Log.e("QN",file.toString()+" : "+urlString);
             //获取 ICON
             if (httpURLConnection.getResponseCode() == httpURLConnection.HTTP_OK) {
                 tmpBitmap = BitmapFactory.decodeStream(httpURLConnection.getInputStream());

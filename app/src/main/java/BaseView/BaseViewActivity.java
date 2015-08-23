@@ -22,8 +22,6 @@ import DrawItem.DrawDialog;
 
 public abstract class BaseViewActivity extends BaseActivity {
 
-    protected DataHelper mDataHelper = new DataHelper(getApplicationContext());
-    protected DrawDialog mDrawerLayout = new DrawDialog(getApplicationContext());
     // 子类调用的时候应该指定对应的布局
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +46,5 @@ public abstract class BaseViewActivity extends BaseActivity {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         }
     }
-
-
 
 }

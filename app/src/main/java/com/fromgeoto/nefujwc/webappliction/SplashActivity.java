@@ -6,6 +6,9 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.util.Log;
 import android.widget.ImageView;
 
 import com.umeng.analytics.MobclickAgent;
@@ -14,6 +17,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
+import BaseView.BaseActivity;
 import DataFactory.DataHelper;
 import DataFactory.JsonHelper;
 import NetWork.QucikConnection;
@@ -26,23 +30,23 @@ import NetWork.QucikConnection;
  * <li>检查用户是否为第一次打开应用，是则跳转到登录页 。
  * <li>检查用户是否已经登录，是则跳转到 MainActivity，否则跳到 LoginActivity 。
  */
-public class SplashActivity extends Activity {
+public class SplashActivity extends BaseActivity {
 
-    private DataHelper mDataHelper = new DataHelper(getApplicationContext());
     private JsonHelper mJsonHelper = new JsonHelper();
-    private QucikConnection mQucikConnection = new QucikConnection(getApplicationContext());
+    private QucikConnection mQucikConnection;
     private ImageView mImageView;
     private boolean hasLogin;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         // 删除无用表
         mDataHelper.deleteSharedPreferences("app_login");
         mDataHelper.deleteSharedPreferences("app_website");
 
         setContentView(R.layout.activity_splash);
-        mImageView = (ImageView) findViewById(R.id.splashImageView);
+        initView();
 
         // 单日第一次进入，更新数据
         boolean firstCome = (!mDataHelper.getSharedPreferencesValue(mDataHelper.APPINFO, mDataHelper.UPDATATIME).equals(mDataHelper.getTime()) ||
@@ -61,8 +65,12 @@ public class SplashActivity extends Activity {
         if (mDataHelper.getSharedPreferencesValue(mDataHelper.APPACCOUNT, mDataHelper.PASSWORD).equals(mDataHelper.PASSWORD)) {
             goNextActivity(false);
         } else {
-            checkLogin();
-            goNextActivity(hasLogin);
+            if (checkNetwork()) {
+                checkLogin();
+                goNextActivity(hasLogin);
+            } else {
+                showNetErrorDialog();
+            }
         }
     }
 
@@ -77,6 +85,22 @@ public class SplashActivity extends Activity {
         super.onPause();
         MobclickAgent.onPause(getApplicationContext());
     }
+
+    protected void initView() {
+        mImageView = (ImageView) findViewById(R.id.splashImageView);
+    }
+
+    public Handler handler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            if (msg.arg1 == 1){
+                // 载入图片
+                mImageView.setImageBitmap(BitmapFactory.decodeFile(getFilesDir().getAbsolutePath() + mDataHelper.WELCOMEIMAGE));
+                mDataHelper.setSharedPreferencesValue(mDataHelper.APPINFO, mDataHelper.WELCOMEIMAGE, String.valueOf(true));
+            }
+        }
+    };
 
     private boolean checkLogin() {
         hasLogin = false;
@@ -103,8 +127,12 @@ public class SplashActivity extends Activity {
     }
 
     private void downloadDate() {
-        downloadImage();
-        downloadAppInfo();
+        if (checkNetwork()) {
+            downloadImage();
+            downloadAppInfo();
+        } else {
+            showNetErrorDialog();
+        }
     }
 
     private void downloadAppInfo() {
@@ -117,25 +145,26 @@ public class SplashActivity extends Activity {
                         new String[]{mDataHelper.VERSION, mDataHelper.VERSIONCODE, mDataHelper.URL,
                                 mDataHelper.ONE, mDataHelper.TWO, mDataHelper.THREE}));
                 updateCount();
+                Log.e("135", "Good!");
             }
         });
     }
 
     private void downloadImage() {
-        runOnUiThread(new Runnable() {
+        mDataHelper.setSharedPreferencesValue(mDataHelper.APPINFO, mDataHelper.WELCOMEIMAGE, String.valueOf(false));
+        new Thread(new Runnable() {
             @Override
             public void run() {
                 String resultURL = QucikConnection.getResultString(mDataHelper.getIMAGEINFOURL());
-                mDataHelper.setSharedPreferencesValue(mDataHelper.APPINFO, mDataHelper.WELCOMEIMAGE, String.valueOf(false));
                 if (!resultURL.equals(mDataHelper.getDEFAULTIMAGEURL()) &&
                         mQucikConnection.saveImage(new File(getFilesDir().getAbsoluteFile() + "/" + mDataHelper.WELCOMEIMAGE), resultURL)) {
-                    // 载入图片
-                    mImageView.setImageBitmap(BitmapFactory.decodeFile(getFilesDir().getAbsolutePath() + mDataHelper.WELCOMEIMAGE));
-                    mDataHelper.setSharedPreferencesValue(mDataHelper.APPINFO, mDataHelper.WELCOMEIMAGE, String.valueOf(true));
+                    Message message = Message.obtain();
+                    message.arg1= 1;
+                    handler.sendMessage(message);
                 }
-                resultURL = null;
             }
-        });
+        }).start();
+
     }
 
     private void updateCount() {
@@ -148,10 +177,16 @@ public class SplashActivity extends Activity {
         }
     }
 
-    private void goNextActivity(boolean done) {
-        Intent intent = done ? new Intent(this, MainActivity.class) : new Intent(this, InitActivity.class);
-        startActivity(intent);
-        this.finish();
+    protected void goNextActivity(boolean done) {
+        final Intent intent = done ? new Intent(this, MainActivity.class) : new Intent(this, LoginActivity.class);
+        // 延时执行
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                startActivity(intent);
+                finish();
+            }
+        },1500);
     }
 
     private String getVersionInfo(int type) {
@@ -166,4 +201,5 @@ public class SplashActivity extends Activity {
         }
         return reslut;
     }
+
 }

@@ -82,7 +82,7 @@ public class LoginActivity extends BaseViewActivity {
             @Override
             public void onClick(View view) {
                 mRelativeLayout.setVisibility(View.VISIBLE);
-                if (mPasswordEditText.getText().toString().length() > 8) {
+                if (mPasswordEditText.getText().toString().length() >= 8 && mUsernameEditText.getText().toString().length() > 0) {
                     checkLogin(mUsernameEditText.getText().toString(), mPasswordEditText.getText().toString());
                 } else {
                     Toast.makeText(getApplicationContext(), "输入的密码有误", Toast.LENGTH_LONG).show();
@@ -110,13 +110,21 @@ public class LoginActivity extends BaseViewActivity {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            if (msg.what > 0) {
+            if (msg.what == 1) {
                 mRelativeLayout.setVisibility(View.INVISIBLE);
                 mTipTextView.setVisibility(View.VISIBLE);
                 goNextActivity(true);
+            } else if (msg.what == 2) {
+                mIconImageView.setImageBitmap(BitmapFactory.decodeFile(getFilesDir().getAbsolutePath() + "/" + mDataHelper.SAVEFILE));
             } else {
-                Toast.makeText(getApplicationContext(), "输入的密码有误", Toast.LENGTH_LONG).show();
-                mPasswordEditText.setText("");
+                if (msg.what == 0) {
+                    Toast.makeText(LoginActivity.this, "This Account maybe has some problem !", Toast.LENGTH_LONG).show();
+                    initInput();
+                }else {
+                    Toast.makeText(getApplicationContext(), "输入的密码有误", Toast.LENGTH_LONG).show();
+                    mPasswordEditText.setText("");
+                    mRelativeLayout.setVisibility(View.INVISIBLE);
+                }
             }
         }
     };
@@ -142,17 +150,18 @@ public class LoginActivity extends BaseViewActivity {
     }
 
     private void downloadIcon(final String uid) {
-        runOnUiThread(new Runnable() {
+        new Thread(new Runnable() {
             @Override
             public void run() {
+                Message message = Message.obtain();
                 if (QucikConnection.saveImage(new File(getFilesDir().getAbsolutePath() + "/" + mDataHelper.SAVEFILE), mDataHelper.getICONURL() + uid + ".JPG")) {
-                    mIconImageView.setImageBitmap(BitmapFactory.decodeFile(getFilesDir().getAbsolutePath() + "/" + mDataHelper.SAVEFILE));
+                    message.what = 2;
                 } else {
-                    Toast.makeText(LoginActivity.this, "This Account maybe has some problem !", Toast.LENGTH_LONG).show();
-                    initInput();
+                    message.what = 0;
                 }
+                handler.sendMessage(message);
             }
-        });
+        }).start();
     }
 
     private void initInput() {
