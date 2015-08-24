@@ -21,8 +21,10 @@
 
         <EditText
             android:layout_margin="5dp"
-            android:inputType="number"
+            android:numeric="integer"
             android:id="@+id/usernameEditText"
+            android:singleLine="true"
+            android:imeOptions="actionNext"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </LinearLayout>
@@ -45,6 +47,8 @@
             android:layout_margin="5dp"
             android:id="@+id/passwordEditText"
             android:password="true"
+            android:singleLine="true"
+            android:imeOptions="actionDone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </LinearLayout>

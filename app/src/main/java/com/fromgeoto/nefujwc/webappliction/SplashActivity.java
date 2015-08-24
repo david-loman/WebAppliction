@@ -69,7 +69,7 @@ public class SplashActivity extends BaseActivity {
                 checkLogin();
                 goNextActivity(hasLogin);
             } else {
-                showNetErrorDialog();
+                showNetErrorDialog(this);
             }
         }
     }
@@ -131,7 +131,7 @@ public class SplashActivity extends BaseActivity {
             downloadImage();
             downloadAppInfo();
         } else {
-            showNetErrorDialog();
+            showNetErrorDialog(this);
         }
     }
 

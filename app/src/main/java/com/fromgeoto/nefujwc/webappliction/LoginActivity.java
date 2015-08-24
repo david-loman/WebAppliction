@@ -6,7 +6,9 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.text.InputType;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -56,24 +58,27 @@ public class LoginActivity extends BaseViewActivity {
         mRelativeLayout.setVisibility(View.INVISIBLE);
         mTipTextView.setVisibility(View.INVISIBLE);
         mLoginButton.setText("登录");
-        mLoginButton.setInputType(InputType.TYPE_CLASS_NUMBER);
         mCancelButton.setText("取消");
-        mLoginButton.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        // 监听EditorAction
+        mUsernameEditText.setOnEditorActionListener(checkAccountListener);
+        mPasswordEditText.setOnEditorActionListener(checkAccountListener);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
 
-        mUsernameEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        mPasswordEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean b) {
-                if (!b) {
-                    if (mUsernameEditText.getText().toString().length() == 8 || mUsernameEditText.getText().toString().length() == 10) {
-                        downloadIcon(mUsernameEditText.getText().toString());
-                    } else {
-                        initInput();
-                    }
+                // 如果帐号检查没有通过
+                int lenth = mUsernameEditText.getText().toString().length();
+                if (b && lenth != 8 && lenth != 10) {
+                    showUserNameError();
+                }
+                // 如果帐号检查通过
+                if (b && (lenth == 8 || lenth == 10)) {
+                    downloadIcon(mUsernameEditText.getText().toString());
                 }
             }
         });
@@ -81,13 +86,7 @@ public class LoginActivity extends BaseViewActivity {
         mLoginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mRelativeLayout.setVisibility(View.VISIBLE);
-                if (mPasswordEditText.getText().toString().length() >= 8 && mUsernameEditText.getText().toString().length() > 0) {
-                    checkLogin(mUsernameEditText.getText().toString(), mPasswordEditText.getText().toString());
-                } else {
-                    Toast.makeText(getApplicationContext(), "输入的密码有误", Toast.LENGTH_LONG).show();
-                    mPasswordEditText.setText("");
-                }
+                startLogin();
             }
         });
 
@@ -95,6 +94,7 @@ public class LoginActivity extends BaseViewActivity {
             @Override
             public void onClick(View view) {
                 initInput();
+                resetFocus();
             }
         });
         MobclickAgent.onResume(getApplicationContext());
@@ -118,56 +118,64 @@ public class LoginActivity extends BaseViewActivity {
                 mIconImageView.setImageBitmap(BitmapFactory.decodeFile(getFilesDir().getAbsolutePath() + "/" + mDataHelper.SAVEFILE));
             } else {
                 if (msg.what == 0) {
-                    Toast.makeText(LoginActivity.this, "This Account maybe has some problem !", Toast.LENGTH_LONG).show();
-                    initInput();
-                }else {
-                    Toast.makeText(getApplicationContext(), "输入的密码有误", Toast.LENGTH_LONG).show();
-                    mPasswordEditText.setText("");
-                    mRelativeLayout.setVisibility(View.INVISIBLE);
+                    // 帐号出错
+                    showUserNameError();
+                } else {
+                    showPassWordError();
                 }
             }
         }
     };
 
     private void checkLogin(final String uid, final String psw) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                Message msg = Message.obtain();
-                Map<String, String> map = QucikConnection.getResultMap(uid, psw, mDataHelper.getPOSTURL());
-                if ((map.get(mDataHelper.USERNAME) != null) && (!mDataHelper.USERNAME.equals(map.get(mDataHelper.USERNAME)))) {
-                    map.put(mDataHelper.USERID, uid);
-                    map.put(mDataHelper.PASSWORD, psw);
-                    mDataHelper.setSharedPreferencesValues(mDataHelper.APPACCOUNT, map);
-                    msg.what = 1;
-                    handler.sendMessage(msg);
-                } else {
-                    msg.what = -1;
-                    handler.sendMessage(msg);
+        // 关闭输入法
+        if (mInputMethodManager.isActive()) {
+            mInputMethodManager.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+        }
+        if (checkNetwork()) {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    Message msg = Message.obtain();
+                    Map<String, String> map = QucikConnection.getResultMap(uid, psw, mDataHelper.getPOSTURL());
+                    if ((map.get(mDataHelper.USERNAME) != null) && (!mDataHelper.USERNAME.equals(map.get(mDataHelper.USERNAME)))) {
+                        map.put(mDataHelper.USERID, uid);
+                        map.put(mDataHelper.PASSWORD, psw);
+                        mDataHelper.setSharedPreferencesValues(mDataHelper.APPACCOUNT, map);
+                        msg.what = 1;
+                        handler.sendMessage(msg);
+                    } else {
+                        msg.what = -1;
+                        handler.sendMessage(msg);
+                    }
                 }
-            }
-        }).start();
+            }).start();
+        } else {
+            showNetErrorDialog(this);
+        }
     }
 
     private void downloadIcon(final String uid) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                Message message = Message.obtain();
-                if (QucikConnection.saveImage(new File(getFilesDir().getAbsolutePath() + "/" + mDataHelper.SAVEFILE), mDataHelper.getICONURL() + uid + ".JPG")) {
-                    message.what = 2;
-                } else {
-                    message.what = 0;
+        if (checkNetwork()) {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    Message message = Message.obtain();
+                    if (QucikConnection.saveImage(new File(getFilesDir().getAbsolutePath() + "/" + mDataHelper.SAVEFILE), mDataHelper.getICONURL() + uid + ".JPG")) {
+                        message.what = 2;
+                    } else {
+                        message.what = 0;
+                    }
+                    handler.sendMessage(message);
                 }
-                handler.sendMessage(message);
-            }
-        }).start();
+            }).start();
+        } else {
+            showNetErrorDialog(this);
+        }
     }
 
     private void initInput() {
-        mRelativeLayout.setVisibility(View.INVISIBLE);
-        mIconImageView.setImageResource(R.drawable.owl);
-        mIconImageView.setVisibility(View.VISIBLE);
+        resetView();
         //关闭软键盘 （万恶的软键盘）
         if (mInputMethodManager.isActive()) {
             mInputMethodManager.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
@@ -176,9 +184,64 @@ public class LoginActivity extends BaseViewActivity {
         mUsernameEditText.setText("");
     }
 
+    private void resetView() {
+        mRelativeLayout.setVisibility(View.INVISIBLE);
+        mIconImageView.setImageResource(R.drawable.owl);
+        mIconImageView.setVisibility(View.VISIBLE);
+    }
+
+    private void resetFocus() {
+        mPasswordEditText.clearFocus();
+        mUsernameEditText.setText("");
+        mUsernameEditText.requestFocus();
+    }
+
+    private void showUserNameError() {
+        Toast.makeText(LoginActivity.this, "用户名不存在", Toast.LENGTH_LONG).show();
+        resetView();
+        resetFocus();
+    }
+
+    private void showPassWordError() {
+        Toast.makeText(getApplicationContext(), "输入的密码有误", Toast.LENGTH_LONG).show();
+        mPasswordEditText.setText("");
+        mRelativeLayout.setVisibility(View.INVISIBLE);
+    }
+
+    private TextView.OnEditorActionListener checkAccountListener = new TextView.OnEditorActionListener() {
+        @Override
+        public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
+            if (i == EditorInfo.IME_ACTION_NEXT) {
+                int lenth = mUsernameEditText.getText().toString().length();
+                if (lenth == 8 || lenth == 10) {
+                    downloadIcon(mUsernameEditText.getText().toString());
+                    return false;
+                } else {
+                    mUsernameEditText.setText("");
+                    return true;
+                }
+            } else if (i == EditorInfo.IME_ACTION_DONE) {
+                return startLogin();
+            }
+            return false;
+        }
+    };
+
+    private boolean startLogin() {
+        mRelativeLayout.setVisibility(View.VISIBLE);
+        if (mPasswordEditText.getText().toString().length() >= 8 && mUsernameEditText.getText().toString().length() > 0) {
+            checkLogin(mUsernameEditText.getText().toString(), mPasswordEditText.getText().toString());
+            return false;
+        } else {
+            showPassWordError();
+            return true;
+        }
+    }
+
     protected void goNextActivity(boolean isComplete) {
         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
         startActivity(intent);
+        finish();
     }
 
 }

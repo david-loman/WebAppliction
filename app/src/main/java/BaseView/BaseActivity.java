@@ -2,6 +2,7 @@ package BaseView;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.ConnectivityManager;
@@ -47,8 +48,8 @@ public abstract class BaseActivity extends Activity {
     }
 
     // 网络不可访问提示对话框
-    protected void showNetErrorDialog (){
-        new AlertDialog.Builder(getApplicationContext()).setTitle("网络连接错误").setMessage("请重新设置网络环境")
+    protected void showNetErrorDialog (Context context){
+        new AlertDialog.Builder(context).setTitle("网络连接错误").setMessage("请重新设置网络环境")
                 .setNegativeButton("退出", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -64,8 +65,8 @@ public abstract class BaseActivity extends Activity {
     }
 
     // 消息对话框
-    protected void showMessageDialog (String title,String msg,String posString,DialogInterface.OnClickListener onClickListener) {
-        new AlertDialog.Builder(getApplicationContext()).setTitle(title).setMessage(msg)
+    protected void showMessageDialog (Context context,String title,String msg,String posString,DialogInterface.OnClickListener onClickListener) {
+        new AlertDialog.Builder(context).setTitle(title).setMessage(msg)
                 .setPositiveButton(posString, onClickListener).show();
     }
 
