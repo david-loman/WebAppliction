@@ -152,11 +152,5 @@ public class QucikConnection {
     public void DownloadApplication(String url) {
 
     }
-
-    public static boolean checkNetwork(Context context) {
-        ConnectivityManager conn = (ConnectivityManager) context.getSystemService(Activity.CONNECTIVITY_SERVICE);
-        boolean wifi = conn.getNetworkInfo(ConnectivityManager.TYPE_WIFI).isConnected();
-        boolean mobile = conn.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).isConnected();
-        return (wifi || mobile);
-    }
+    
 }

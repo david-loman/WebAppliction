@@ -34,7 +34,6 @@ public class LoginActivity extends BaseViewActivity {
     private EditText mPasswordEditText, mUsernameEditText;
     private Button mLoginButton, mCancelButton;
     private InputMethodManager mInputMethodManager;
-    private QucikConnection mQucikConnection;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +42,6 @@ public class LoginActivity extends BaseViewActivity {
 
         initView();
         mInputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-        mQucikConnection = new QucikConnection(this);
     }
 
     protected void initView() {
