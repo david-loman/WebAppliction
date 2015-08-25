@@ -104,6 +104,13 @@ public class LoginActivity extends BaseViewActivity {
         MobclickAgent.onPause(getApplicationContext());
     }
 
+    /**
+     * 多线程信息处理。
+     * 1： 帐号验证通过
+     * -1： 密码出错
+     * 2： 用户名检测通过
+     * 0： 用户名检测未通过
+     */
     public Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -116,7 +123,6 @@ public class LoginActivity extends BaseViewActivity {
                 mIconImageView.setImageBitmap(BitmapFactory.decodeFile(getFilesDir().getAbsolutePath() + "/" + mDataHelper.SAVEFILE));
             } else {
                 if (msg.what == 0) {
-                    // 帐号出错
                     showUserNameError();
                 } else {
                     showPassWordError();
@@ -206,6 +212,7 @@ public class LoginActivity extends BaseViewActivity {
         mRelativeLayout.setVisibility(View.INVISIBLE);
     }
 
+    // 监听键盘里的用户操作
     private TextView.OnEditorActionListener checkAccountListener = new TextView.OnEditorActionListener() {
         @Override
         public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
@@ -241,5 +248,4 @@ public class LoginActivity extends BaseViewActivity {
         startActivity(intent);
         finish();
     }
-
 }
