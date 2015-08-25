@@ -1,13 +1,11 @@
 package com.fromgeoto.nefujwc.webappliction;
 
-import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -16,16 +14,13 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.WindowManager;
 import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
-import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,13 +29,11 @@ import com.umeng.analytics.MobclickAgent;
 
 import org.apache.http.util.EncodingUtils;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import BaseView.BaseViewActivity;
 import DataFactory.JsonHelper;
+import DataFactory.UmengString;
 import DrawItem.DrawDialog;
 
 public class MainActivity extends BaseViewActivity {
@@ -51,15 +44,15 @@ public class MainActivity extends BaseViewActivity {
     private ProgressWheel mProgressWheel;
     private ImageView mImageView;
     private TextView mUserIdTextView, mUserTypeTextView, mUserNameTextView;
-    private final String USERNAME = "USERNAME";
-    private final String PASSWORD = "PASSWORD";
-    private JsonHelper mJsonHelper = new JsonHelper();
-    private DrawDialog mDrawDialog = new DrawDialog(this);
-    private ActionBarDrawerToggle mActionBarDrawerToggle;
     private LinearLayout mHomeLinearLayout, mScoreLinearLayout, mTableLinearLayout, mCourseLinearLayout, mExamLinearLayout,
             mSignupLinearLayout, mAppraiseLinearLayout, mCalendarLinearLayout, mGuestLinearLayout, mSettingsLinearLayout, mHelpLinearLayout;
     private ScrollView mItemScrollView;
-
+    private ActionBarDrawerToggle mActionBarDrawerToggle;
+    
+    private final String USERNAME = "USERNAME";
+    private final String PASSWORD = "PASSWORD";
+    private DrawDialog mDrawDialog = new DrawDialog(this);
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -100,7 +93,7 @@ public class MainActivity extends BaseViewActivity {
                 if (checkNetwork()) {
                     HashMap<String, String> map = new HashMap<String, String>();
                     map.put("website", url);
-                    MobclickAgent.onEvent(MainActivity.this, "visit_ok", map);
+                    MobclickAgent.onEvent(MainActivity.this, UmengString.VISITOK, map);
                     mWebView.loadUrl(url);
                 } else {
                     showNetErrorDialog(getApplicationContext());
@@ -115,7 +108,7 @@ public class MainActivity extends BaseViewActivity {
                 HashMap<String, String> map = new HashMap<String, String>();
                 map.put("errorCode", String.valueOf(errorCode));
                 map.put("description", description);
-                MobclickAgent.onEvent(MainActivity.this, "visit_error", map);
+                MobclickAgent.onEvent(MainActivity.this, UmengString.VISITERROR, map);
             }
 
             @Override
@@ -172,7 +165,7 @@ public class MainActivity extends BaseViewActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.my, menu);
+        getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
 
@@ -186,7 +179,7 @@ public class MainActivity extends BaseViewActivity {
             MobclickAgent.onKillProcess(this);
             this.finish();
         }  else if (id == R.id.action_share) {
-            MobclickAgent.onEvent(this, "share_appliction");
+            MobclickAgent.onEvent(this, UmengString.SHAREAPPLICTION);
             share();
         }
         return super.onOptionsItemSelected(item);
@@ -221,12 +214,12 @@ public class MainActivity extends BaseViewActivity {
                 psw = mDrawDialog.getEditText2().getText().toString();
                 if (name == null || name.length() <= 0 || psw == null || psw.length() <= 0) {
                     Toast.makeText(MainActivity.this, "请输入完整的信息！", Toast.LENGTH_SHORT).show();
-                    MobclickAgent.onEvent(MainActivity.this, "login_error");
+                    MobclickAgent.onEvent(MainActivity.this, UmengString.LOGINERROR);
                 } else {
                     clearCookies();
                     //加载页面
                     login(name, psw);
-                    MobclickAgent.onEvent(MainActivity.this, "geust_session");
+                    MobclickAgent.onEvent(MainActivity.this, UmengString.GEUSTSESSION);
                 }
             }
         };
@@ -307,6 +300,7 @@ public class MainActivity extends BaseViewActivity {
             public void onClick(View view) {
                 if (!mDataHelper.getSharedPreferencesValue(mDataHelper.APPACCOUNT, mDataHelper.URL).equals(mDataHelper.URL)) {
                     mWebView.loadUrl(mDataHelper.getSharedPreferencesValue(mDataHelper.APPACCOUNT, mDataHelper.URL));
+                    MobclickAgent.onEvent(MainActivity.this, UmengString.VISITHOME);
                 } else {
                     Toast.makeText(getApplicationContext(), "数据错误，请重新启动应用", Toast.LENGTH_SHORT).show();
                 }
@@ -318,6 +312,7 @@ public class MainActivity extends BaseViewActivity {
             public void onClick(View view) {
                 mWebView.loadUrl("http://jwcnew.nefu.edu.cn/dblydx_jsxsd/kscj/cjcx_query");
                 mDrawerLayout.closeDrawer(mItemScrollView);
+                MobclickAgent.onEvent(MainActivity.this, UmengString.VISITSCORE);
             }
         });
         mTableLinearLayout.setOnClickListener(new View.OnClickListener() {
@@ -325,6 +320,7 @@ public class MainActivity extends BaseViewActivity {
             public void onClick(View view) {
                 mWebView.loadUrl("http://jwcnew.nefu.edu.cn/dblydx_jsxsd/xskb/xskb_list.do");
                 mDrawerLayout.closeDrawer(mItemScrollView);
+                MobclickAgent.onEvent(MainActivity.this, UmengString.VISITTABLE);
             }
         });
         mExamLinearLayout.setOnClickListener(new View.OnClickListener() {
@@ -332,6 +328,7 @@ public class MainActivity extends BaseViewActivity {
             public void onClick(View view) {
                 mWebView.loadUrl("http://jwcnew.nefu.edu.cn/dblydx_jsxsd/xsks/xsksap_query?Ves632DSdyV=NEW_XSD_KSBM");
                 mDrawerLayout.closeDrawer(mItemScrollView);
+                MobclickAgent.onEvent(MainActivity.this, UmengString.VISITEXAM);
             }
         });
         mCourseLinearLayout.setOnClickListener(new View.OnClickListener() {
@@ -339,6 +336,7 @@ public class MainActivity extends BaseViewActivity {
             public void onClick(View view) {
                 mWebView.loadUrl("http://jwcnew.nefu.edu.cn/dblydx_jsxsd/xk/AccessToXk");
                 mDrawerLayout.closeDrawer(mItemScrollView);
+                MobclickAgent.onEvent(MainActivity.this, UmengString.VISITCOURSE);
             }
         });
         mSignupLinearLayout.setOnClickListener(new View.OnClickListener() {
@@ -346,6 +344,7 @@ public class MainActivity extends BaseViewActivity {
             public void onClick(View view) {
                 mWebView.loadUrl("http://jwcnew.nefu.edu.cn/dblydx_jsxsd/xsdjks/xsdjks_list");
                 mDrawerLayout.closeDrawer(mItemScrollView);
+                MobclickAgent.onEvent(MainActivity.this, UmengString.VISITSIANUP);
             }
         });
         mAppraiseLinearLayout.setOnClickListener(new View.OnClickListener() {
@@ -353,6 +352,7 @@ public class MainActivity extends BaseViewActivity {
             public void onClick(View view) {
                 mWebView.loadUrl("http://jwcnew.nefu.edu.cn/dblydx_jsxsd/xspj/xspj_find.do");
                 mDrawerLayout.closeDrawer(mItemScrollView);
+                MobclickAgent.onEvent(MainActivity.this, UmengString.VISITAPPRAISE);
             }
         });
         mCalendarLinearLayout.setOnClickListener(new View.OnClickListener() {
@@ -360,6 +360,7 @@ public class MainActivity extends BaseViewActivity {
             public void onClick(View view) {
                 mWebView.loadUrl("http://jwcnew.nefu.edu.cn/dblydx_jsxsd/jxzl/jxzl_query?Ves632DSdyV=NEW_XSD_WDZM");
                 mDrawerLayout.closeDrawer(mItemScrollView);
+                MobclickAgent.onEvent(MainActivity.this, UmengString.VISITCALENDAR);
             }
         });
         mGuestLinearLayout.setOnClickListener(new View.OnClickListener() {
@@ -377,6 +378,7 @@ public class MainActivity extends BaseViewActivity {
                 Intent intent = new Intent(MainActivity.this, MenuActivity.class);
                 startActivity(intent);
                 mDrawerLayout.closeDrawer(mItemScrollView);
+                MobclickAgent.onEvent(MainActivity.this, UmengString.VISITSETTINGS);
             }
         });
         mHelpLinearLayout.setOnClickListener(new View.OnClickListener() {
@@ -384,6 +386,7 @@ public class MainActivity extends BaseViewActivity {
             public void onClick(View view) {
                 mDrawDialog.getHelpDialog();
                 mDrawerLayout.closeDrawer(mItemScrollView);
+                MobclickAgent.onEvent(MainActivity.this, UmengString.SHOWHELP);
             }
         });
     }

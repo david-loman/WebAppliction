@@ -16,6 +16,8 @@ import android.widget.TextView;
 import com.fromgeoto.nefujwc.webappliction.R;
 import com.umeng.analytics.MobclickAgent;
 
+import DataFactory.UmengString;
+
 /**
  * Created by David on 2014/10/31.
  */
@@ -50,11 +52,6 @@ public class DrawDialog {
         return new AlertDialog.Builder(context).setTitle(title).setMessage(msg).setPositiveButton(YES, onClickListener).show();
     }
 
-    //响应选择改变
-    public AlertDialog getChangeDialog(String title, String msg, String note, DialogInterface.OnClickListener onClickListener) {
-        return new AlertDialog.Builder(context).setTitle(title).setMessage(msg).setNegativeButton(NO, null).setPositiveButton(note, onClickListener).show();
-    }
-
     //响应更新操作
     public AlertDialog getUpdateDialog(String msg, DialogInterface.OnClickListener listener) {
         return new AlertDialog.Builder(context).setTitle("更新信息").setMessage(msg).setNegativeButton(NO, null).setPositiveButton(YES, listener).show();
@@ -63,7 +60,6 @@ public class DrawDialog {
     //响应帮助操作
     public AlertDialog getHelpDialog() {
         View view = getView(R.layout.help_layout);
-        MobclickAgent.onEvent(context,"show_help");
         return new AlertDialog.Builder(context)
                 .setTitle("帮助信息").setView(view)
                 .setNegativeButton("更多", new DialogInterface.OnClickListener() {
@@ -74,12 +70,6 @@ public class DrawDialog {
                         ((Activity) context).startActivity(intent);
                     }
                 }).setPositiveButton(YES, null).show();
-    }
-
-    //响应列表操作
-    public AlertDialog getListDialog(String title) {
-        MobclickAgent.onEvent(context,"show_list");
-        return new AlertDialog.Builder(context).setTitle(title).setView(view).setNegativeButton(NO, null).show();
     }
 
     //响应帮助者操作
@@ -107,7 +97,7 @@ public class DrawDialog {
                 visit(zhuye);
             }
         });
-        MobclickAgent.onEvent(context,"show_devloper");
+        MobclickAgent.onEvent(context,UmengString.SHOWDEVLOPER);
         return new AlertDialog.Builder(context)
                 .setTitle("开发者信息").setView(view).setPositiveButton("确定", null)
                 .show();
@@ -120,7 +110,7 @@ public class DrawDialog {
             public void onClick(DialogInterface dialog, int which) {
                 Uri uri = Uri.parse(url);
                 Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-                MobclickAgent.onEvent(context, "download_appliction");
+                MobclickAgent.onEvent(context, UmengString.DOWNLOADAPPLICTION);
                 ((Activity) context).startActivity(intent);
             }
         };
@@ -199,7 +189,7 @@ public class DrawDialog {
             @Override
             public boolean onLongClick(View v) {
                 AlertDialog dialog = new AlertDialog.Builder(context)
-                        .setTitle("致敬").setMessage("感谢的图书馆A区四楼的那位女生，正是你的存在，让我能够将这个项目坚持下来，谢谢你")
+                        .setTitle("致敬").setMessage("你好啊，陌生人，我已经离开了学校。好好珍惜校园时光！")
                         .setPositiveButton("Good Luck", null)
                         .show();
 
