@@ -60,6 +60,10 @@ public class MainActivity extends BaseViewActivity {
 
         initView();
         setmWebView();
+        // 补丁
+        if (mDataHelper.UPDATATIME.equals(mDataHelper.getSharedPreferencesValue(mDataHelper.APPINFO,mDataHelper.UPDATATIME))){
+            finish();
+        }
     }
 
     @Override

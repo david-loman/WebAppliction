@@ -23,7 +23,7 @@
             android:text="@string/userinfo"
             android:textSize="18sp"
             android:textStyle="bold" />
-        -->
+
         <Button
             android:layout_marginTop="8dp"
             android:id="@+id/diyButton"
@@ -35,7 +35,7 @@
             android:textSize="18sp"
             android:layout_marginLeft="16dp"
             android:textStyle="bold" />
-
+        -->
         <Button
             android:id="@+id/updataButton"
             android:layout_width="match_parent"
@@ -46,7 +46,16 @@
             android:textSize="18sp"
             android:layout_marginLeft="16dp"
             android:textStyle="bold" />
-
+        <Button
+            android:id="@+id/clearButton"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:background="#FFFFFF"
+            android:layout_marginLeft="16dp"
+            android:gravity="center_vertical"
+            android:text="清除数据"
+            android:textSize="18sp"
+            android:textStyle="bold" />
         <Button
             android:id="@+id/developerButton"
             android:layout_width="match_parent"
@@ -56,17 +65,6 @@
             android:text="@string/developer"
             android:textSize="18sp"
             android:layout_marginLeft="16dp"
-            android:textStyle="bold" />
-
-        <Button
-            android:id="@+id/clearButton"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:background="#FFFFFF"
-            android:layout_marginLeft="16dp"
-            android:gravity="center_vertical"
-            android:text="清除网址"
-            android:textSize="18sp"
             android:textStyle="bold" />
 
        <!-- <Button
