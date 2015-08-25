@@ -1,6 +1,5 @@
 package com.fromgeoto.nefujwc.webappliction;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -18,7 +17,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import BaseView.BaseActivity;
-import DataFactory.DataHelper;
 import DataFactory.JsonHelper;
 import NetWork.QucikConnection;
 
@@ -26,16 +24,14 @@ import NetWork.QucikConnection;
  * Created by David Lin on 2015/08/17.
  * 该页面是程序的启动页，用于处于初始化操作。
  * 执行逻辑如下：
- * <li>检查用户是否为当天第一次打开应用，是则查看有无新的数据 。
- * <li>检查用户是否为第一次打开应用，是则跳转到登录页 。
- * <li>检查用户是否已经登录，是则跳转到 MainActivity，否则跳到 LoginActivity 。
+ * <li>检查用户是否为当天第一次打开应用，是则查看有无新的数据
+ * <li>检查用户是否为第一次打开应用，是则跳转到登录页
+ * <li>检查用户是否已经登录，是则跳转到 MainActivity，否则跳到 LoginActivity
  */
 public class SplashActivity extends BaseActivity {
 
     private JsonHelper mJsonHelper = new JsonHelper();
-    private QucikConnection mQucikConnection;
     private ImageView mImageView;
-    private boolean hasLogin;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +43,6 @@ public class SplashActivity extends BaseActivity {
 
         setContentView(R.layout.activity_splash);
         initView();
-
         // 单日第一次进入，更新数据
         boolean firstCome = (!mDataHelper.getSharedPreferencesValue(mDataHelper.APPINFO, mDataHelper.UPDATATIME).equals(mDataHelper.getTime()) ||
                 mDataHelper.UPDATATIME.equals(mDataHelper.getSharedPreferencesValue(mDataHelper.APPINFO, mDataHelper.UPDATATIME)));
@@ -67,7 +62,6 @@ public class SplashActivity extends BaseActivity {
         } else {
             if (checkNetwork()) {
                 checkLogin();
-                goNextActivity(hasLogin);
             } else {
                 showNetErrorDialog(this);
             }
@@ -98,32 +92,35 @@ public class SplashActivity extends BaseActivity {
                 // 载入图片
                 mImageView.setImageBitmap(BitmapFactory.decodeFile(getFilesDir().getAbsolutePath() + mDataHelper.WELCOMEIMAGE));
                 mDataHelper.setSharedPreferencesValue(mDataHelper.APPINFO, mDataHelper.WELCOMEIMAGE, String.valueOf(true));
+            }else if (msg.arg1 == 2){
+                // 登录
+                goNextActivity(msg.arg2 == 1);
             }
         }
     };
 
-    private boolean checkLogin() {
-        hasLogin = false;
+    // 检查账户是否可用
+    private void checkLogin() {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                if ("ERROR".equals(mQucikConnection.getResultString(mDataHelper.getNEWJWCURL()))) {
-                    hasLogin = false;
+                Message message = Message.obtain();
+                message.arg1=2;
+                message.arg2=0;
+                if ("ERROR".equals(QucikConnection.getResultString(mDataHelper.getNEWJWCURL()))) {
+                    handler.sendMessage(message);
                     return;
                 } else {
                     Map<String, String> data = new HashMap<String, String>();
-                    data = mQucikConnection.getResultMap(mDataHelper.getSharedPreferencesValue(mDataHelper.APPACCOUNT, mDataHelper.USERID), mDataHelper.getSharedPreferencesValue(mDataHelper.APPACCOUNT, mDataHelper.PASSWORD), mDataHelper.getPOSTURL());
+                    data = QucikConnection.getResultMap(mDataHelper.getSharedPreferencesValue(mDataHelper.APPACCOUNT, mDataHelper.USERID), mDataHelper.getSharedPreferencesValue(mDataHelper.APPACCOUNT, mDataHelper.PASSWORD), mDataHelper.getPOSTURL());
                     if (!data.get(mDataHelper.URL).equals(mDataHelper.URL) && data.get(mDataHelper.URL) != null) {
-                        mDataHelper.setSharedPreferencesValue(mDataHelper.APPACCOUNT, mDataHelper.USERTYPE, data.get(mDataHelper.USERTYPE));
                         mDataHelper.setSharedPreferencesValue(mDataHelper.APPACCOUNT, mDataHelper.URL, data.get(mDataHelper.URL));
-                        hasLogin = true;
-                        return;
+                        message.arg2=1;
                     }
-                    return;
                 }
+                handler.sendMessage(message);
             }
         }).start();
-        return hasLogin;
     }
 
     private void downloadDate() {
@@ -140,14 +137,12 @@ public class SplashActivity extends BaseActivity {
             @Override
             public void run() {
                 Map<String, String> data = new HashMap<String, String>();
-                String result = mQucikConnection.getResultString(mDataHelper.getAPPLICATIONINFOURL());
+                String result = QucikConnection.getResultString(mDataHelper.getAPPLICATIONINFOURL());
                 mDataHelper.setSharedPreferencesValues(mDataHelper.APPUPDATA, mJsonHelper.parseApplictionJson(result,
                         new String[]{mDataHelper.VERSION, mDataHelper.VERSIONCODE, mDataHelper.URL,
                                 mDataHelper.ONE, mDataHelper.TWO, mDataHelper.THREE}));
-                updateCount();
-                Log.e("135", "Good!");
             }
-        });
+        }).start();
     }
 
     private void downloadImage() {
@@ -156,25 +151,27 @@ public class SplashActivity extends BaseActivity {
             @Override
             public void run() {
                 String resultURL = QucikConnection.getResultString(mDataHelper.getIMAGEINFOURL());
-                if (!resultURL.equals(mDataHelper.getDEFAULTIMAGEURL()) &&
-                        mQucikConnection.saveImage(new File(getFilesDir().getAbsoluteFile() + "/" + mDataHelper.WELCOMEIMAGE), resultURL)) {
+                if (!resultURL.contains(mDataHelper.getDEFAULTIMAGEURL()) &&
+                        QucikConnection.saveImage(new File(getFilesDir().getAbsoluteFile() + "/" + mDataHelper.WELCOMEIMAGE), resultURL)) {
                     Message message = Message.obtain();
                     message.arg1= 1;
                     handler.sendMessage(message);
                 }
             }
         }).start();
-
     }
 
+    // 统计更新提示框的次数
     private void updateCount() {
-        if (getVersionInfo(1).equals(mDataHelper.getSharedPreferencesValue(mDataHelper.APPUPDATA, mDataHelper.VERSIONCODE)) &&
+        if (!mDataHelper.VERSIONCODE.equals(mDataHelper.getSharedPreferencesValue(mDataHelper.APPUPDATA, mDataHelper.VERSIONCODE)) &&
+                !getVersionInfo(1).equals(mDataHelper.getSharedPreferencesValue(mDataHelper.APPUPDATA, mDataHelper.VERSIONCODE)) &&
                 !mDataHelper.COUNT.equals(mDataHelper.getSharedPreferencesValue(mDataHelper.APPUPDATA, mDataHelper.COUNT))) {
             mDataHelper.setSharedPreferencesValue(mDataHelper.APPUPDATA, mDataHelper.COUNT,
                     String.valueOf(Integer.parseInt(mDataHelper.getSharedPreferencesValue(mDataHelper.APPUPDATA, mDataHelper.COUNT)) + 1));
         } else {
             mDataHelper.setSharedPreferencesValue(mDataHelper.APPUPDATA, mDataHelper.COUNT, String.valueOf(0));
         }
+        Log.e("Splash",mDataHelper.getSharedPreferencesValue(mDataHelper.APPUPDATA,mDataHelper.COUNT));
     }
 
     protected void goNextActivity(boolean done) {
@@ -189,6 +186,7 @@ public class SplashActivity extends BaseActivity {
         },1500);
     }
 
+    // type 为 1 时获取 versionCode ,其它时输出 VersionName
     private String getVersionInfo(int type) {
         String reslut = null;
         try {
@@ -201,5 +199,4 @@ public class SplashActivity extends BaseActivity {
         }
         return reslut;
     }
-
 }

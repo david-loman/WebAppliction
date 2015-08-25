@@ -28,8 +28,4 @@
     <string name="help">帮助</string>
     <string name="currenSystem">帐号类型：</string>
     <string name="currenUser">用户姓名：</string>
-    <string name="title_activity_splash">SplashActivity</string>
-
-    <string name="hello_world">Hello world!</string>
-    <string name="title_activity_login">LoginActivity</string>
 </resources>

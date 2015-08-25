@@ -34,10 +34,10 @@ public class DataHelper {
     private final String MYZHIHU = "http://www.zhihu.com/people/david-lin-92";
     private final String MYZHUYE = "http://davidloman.net";
     private final String UPDATASTATUSURL = "http://jwcglxt.qiniudn.com/updataStatus";
-    private final String APPLICATIONINFOURL = "http://jwcglxt.qiniudn.com/applictionUpdateInfo";
-    private final String DATAINFOURL = "http://jwcglxt.qiniudn.com/dataInfo";
+    private final String APPLICATIONINFOURL = "http://jwcglxt.qiniudn.com/applictionInfo";
+    //   private final String DATAINFOURL = "http://jwcglxt.qiniudn.com/dataInfo"; // 为低版本保留
     private final String IMAGEINFOURL = "http://jwcglxt.qiniudn.com/imageInfo";
-    private final String DEFAULTIMAGEURL = "";
+    private final String DEFAULTIMAGEURL = "http://jwcglxt.qiniudn.com/404.jpg";
     //SharedPrefence名称
     public final String APPACCOUNT = "app_account";
     public final String APPUPDATA = "app_updata";
@@ -175,9 +175,9 @@ public class DataHelper {
         return APPLICATIONINFOURL;
     }
 
-    public String getDATAINFOURL() {
-        return DATAINFOURL;
-    }
+//    public String getDATAINFOURL() {
+//        return DATAINFOURL;
+//    }
 
     public String getIMAGEINFOURL(){
         return IMAGEINFOURL;

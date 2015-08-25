@@ -99,29 +99,29 @@ public class MainActivity extends ActionBarActivity {
         if (checkUpdata()) {
             showUpdataDialog();
         }
-        if (QucikConnection.checkNetwork(getApplicationContext())) {
+//        if (QucikConnection.checkNetwork(getApplicationContext())) {
             if (!dataHelper.getSharedPreferencesValue(dataHelper.APPACCOUNT, dataHelper.URL).equals(dataHelper.URL)) {
                 login();
             } else {
                 Toast.makeText(getApplicationContext(), "登录信息出错，通过备用方式登录。", Toast.LENGTH_SHORT).show();
                 login(dataHelper.getSharedPreferencesValue(dataHelper.APPACCOUNT, dataHelper.USERID), dataHelper.getSharedPreferencesValue(dataHelper.APPACCOUNT, dataHelper.PASSWORD));
             }
-        } else {
-            drawDialog.getErrorDialog("网络错误", drawDialog.NetWorkError, drawDialog.exitListener());
-        }
+//        } else {
+//            drawDialog.getErrorDialog("网络错误", drawDialog.NetWorkError, drawDialog.exitListener());
+//        }
 
         webView.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 view.setInitialScale(39);
-                if (QucikConnection.checkNetwork(getApplicationContext())) {
+//                if (QucikConnection.checkNetwork(getApplicationContext())) {
                     HashMap<String, String> map = new HashMap<String, String>();
                     map.put("website", url);
                     MobclickAgent.onEvent(MainActivity.this, "visit_ok", map);
                     webView.loadUrl(url);
-                } else {
-                    drawDialog.getErrorDialog("网络错误", drawDialog.NetWorkError, drawDialog.exitListener());
-                }
+//                } else {
+//                    drawDialog.getErrorDialog("网络错误", drawDialog.NetWorkError, drawDialog.exitListener());
+//                }
                 return true;
             }
 
@@ -231,9 +231,9 @@ public class MainActivity extends ActionBarActivity {
 
         drawDialog.getUpdateDialog(dataHelper.getUpdataInfo(), drawDialog.downloadListener(dataHelper.getSharedPreferencesValue(dataHelper.APPUPDATA, dataHelper.URL)));
         //更新 count值
-        int tmp = Integer.parseInt(dataHelper.getSharedPreferencesValue(dataHelper.APPUPDATA, dataHelper.COUNT));
-        tmp++;
-        dataHelper.setSharedPreferencesValue(dataHelper.APPUPDATA, dataHelper.COUNT, String.valueOf(tmp));
+//        int tmp = Integer.parseInt(dataHelper.getSharedPreferencesValue(dataHelper.APPUPDATA, dataHelper.COUNT));
+//        tmp++;
+//        dataHelper.setSharedPreferencesValue(dataHelper.APPUPDATA, dataHelper.COUNT, String.valueOf(tmp));
     }
 
     //访问教务管理系统

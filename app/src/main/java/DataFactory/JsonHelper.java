@@ -50,9 +50,9 @@ public class JsonHelper {
             data.put(jsonKey[1], jsonObject.getString(jsonKey[1]));
             data.put(jsonKey[2],jsonObject.getString(jsonKey[2]));
             JSONObject childJsonObject = jsonObject.getJSONObject(INFO);
-            data.put(jsonKey[3], childJsonObject.getString(jsonKey[2]));
-            data.put(jsonKey[4], childJsonObject.getString(jsonKey[3]));
-            data.put(jsonKey[5], childJsonObject.getString(jsonKey[4]));
+            data.put(jsonKey[3], childJsonObject.getString(jsonKey[3]));
+            data.put(jsonKey[4], childJsonObject.getString(jsonKey[4]));
+            data.put(jsonKey[5], childJsonObject.getString(jsonKey[5]));
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -67,6 +67,7 @@ public class QucikConnection {
         return stringBuffer.toString();
     }
 
+    // 返回学生姓名，类型，与登录地址
     public static Map<String, String> getResultMap(String user, String pasw, String urlString) {
         boolean status = false;
         Map<String, String> resultMap = new HashMap<String, String>();
@@ -127,7 +128,7 @@ public class QucikConnection {
             httpURLConnection.setRequestMethod("GET");
             httpURLConnection.setConnectTimeout(2000);
             httpURLConnection.setDoInput(true);
-            Log.e("QN",file.toString()+" : "+urlString);
+            Log.e("QN130",file.toString()+" : "+urlString);
             //获取 ICON
             if (httpURLConnection.getResponseCode() == httpURLConnection.HTTP_OK) {
                 tmpBitmap = BitmapFactory.decodeStream(httpURLConnection.getInputStream());
