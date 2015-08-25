@@ -5,7 +5,6 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.text.InputType;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -24,7 +23,6 @@ import java.util.Map;
 
 import BaseView.BaseViewActivity;
 import NetWork.QucikConnection;
-
 
 public class LoginActivity extends BaseViewActivity {
 

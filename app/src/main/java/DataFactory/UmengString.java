@@ -9,7 +9,6 @@ import android.content.Context;
  */
 public class UmengString {
 
-    private Context context;
     // 所有统计点的字段在此定义
     public final String CHECKUPDATA = "check_updata";
     public final String DOWNLOADAPPLICTION = "download_appliction";

@@ -1,13 +1,10 @@
 package com.fromgeoto.nefujwc.webappliction;
 
 import android.content.Intent;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.widget.ImageView;
 
 import com.umeng.analytics.MobclickAgent;
@@ -17,6 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import BaseView.BaseActivity;
+import BaseView.BaseViewActivity;
 import DataFactory.JsonHelper;
 import NetWork.QucikConnection;
 
@@ -28,7 +26,7 @@ import NetWork.QucikConnection;
  * <li>检查用户是否为第一次打开应用，是则跳转到登录页
  * <li>检查用户是否已经登录，是则跳转到 MainActivity，否则跳到 LoginActivity
  */
-public class SplashActivity extends BaseActivity {
+public class SplashActivity extends BaseViewActivity {
 
     private JsonHelper mJsonHelper = new JsonHelper();
     private ImageView mImageView;
@@ -55,7 +53,7 @@ public class SplashActivity extends BaseActivity {
                 mImageView.setImageBitmap(BitmapFactory.decodeFile(getFilesDir().getAbsoluteFile() + mDataHelper.WELCOMEIMAGE));
             }
         }
-        updateCount();
+
         // 用户第一次登录，无需检查帐号信息
         if (mDataHelper.getSharedPreferencesValue(mDataHelper.APPACCOUNT, mDataHelper.PASSWORD).equals(mDataHelper.PASSWORD)) {
             goNextActivity(false);
@@ -161,19 +159,6 @@ public class SplashActivity extends BaseActivity {
         }).start();
     }
 
-    // 统计更新提示框的次数
-    private void updateCount() {
-        if (!mDataHelper.VERSIONCODE.equals(mDataHelper.getSharedPreferencesValue(mDataHelper.APPUPDATA, mDataHelper.VERSIONCODE)) &&
-                !getVersionInfo(1).equals(mDataHelper.getSharedPreferencesValue(mDataHelper.APPUPDATA, mDataHelper.VERSIONCODE)) &&
-                !mDataHelper.COUNT.equals(mDataHelper.getSharedPreferencesValue(mDataHelper.APPUPDATA, mDataHelper.COUNT))) {
-            mDataHelper.setSharedPreferencesValue(mDataHelper.APPUPDATA, mDataHelper.COUNT,
-                    String.valueOf(Integer.parseInt(mDataHelper.getSharedPreferencesValue(mDataHelper.APPUPDATA, mDataHelper.COUNT)) + 1));
-        } else {
-            mDataHelper.setSharedPreferencesValue(mDataHelper.APPUPDATA, mDataHelper.COUNT, String.valueOf(0));
-        }
-        Log.e("Splash",mDataHelper.getSharedPreferencesValue(mDataHelper.APPUPDATA,mDataHelper.COUNT));
-    }
-
     protected void goNextActivity(boolean done) {
         final Intent intent = done ? new Intent(this, MainActivity.class) : new Intent(this, LoginActivity.class);
         // 延时执行
@@ -186,17 +171,4 @@ public class SplashActivity extends BaseActivity {
         },1500);
     }
 
-    // type 为 1 时获取 versionCode ,其它时输出 VersionName
-    private String getVersionInfo(int type) {
-        String reslut = null;
-        try {
-            PackageManager pm = getPackageManager();
-            PackageInfo pi = pm.getPackageInfo(getPackageName(), 0);
-            reslut = type == 1 ? String.valueOf(pi.versionCode) : pi.versionName;
-        } catch (Exception e) {
-            e.printStackTrace();
-            reslut = "ERROR";
-        }
-        return reslut;
-    }
 }

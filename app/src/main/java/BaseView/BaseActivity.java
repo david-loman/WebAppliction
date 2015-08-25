@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.support.v7.app.ActionBarActivity;
 
 import DataFactory.DataHelper;
 import DrawItem.DrawDialog;
@@ -18,7 +19,7 @@ import DrawItem.DrawDialog;
  * <li> 子类在继承时要完善 initView 方法
  * <li>
  */
-public abstract class BaseActivity extends Activity {
+public abstract class BaseActivity extends ActionBarActivity {
 
     protected DataHelper mDataHelper;
     protected DrawDialog mDrawerLayout;
