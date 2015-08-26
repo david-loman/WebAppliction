@@ -115,6 +115,7 @@ public class SplashActivity extends BaseViewActivity {
                         mDataHelper.setSharedPreferencesValue(mDataHelper.APPACCOUNT, mDataHelper.URL, data.get(mDataHelper.URL));
                         message.arg2=1;
                     }
+                    data = null;
                 }
                 handler.sendMessage(message);
             }
@@ -134,7 +135,6 @@ public class SplashActivity extends BaseViewActivity {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                Map<String, String> data = new HashMap<String, String>();
                 String result = QucikConnection.getResultString(mDataHelper.getAPPLICATIONINFOURL());
                 mDataHelper.setSharedPreferencesValues(mDataHelper.APPUPDATA, mJsonHelper.parseApplictionJson(result,
                         new String[]{mDataHelper.VERSION, mDataHelper.VERSIONCODE, mDataHelper.URL,

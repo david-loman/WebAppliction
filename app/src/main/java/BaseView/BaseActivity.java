@@ -65,12 +65,6 @@ public abstract class BaseActivity extends ActionBarActivity {
                 }).show();
     }
 
-    // 消息对话框
-    protected void showMessageDialog (Context context,String title,String msg,String posString,DialogInterface.OnClickListener onClickListener) {
-        new AlertDialog.Builder(context).setTitle(title).setMessage(msg)
-                .setPositiveButton(posString, onClickListener).show();
-    }
-
     protected abstract void initView();
     protected abstract void goNextActivity(boolean isComplete);
 }

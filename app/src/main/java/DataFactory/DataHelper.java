@@ -35,14 +35,12 @@ public class DataHelper {
     private final String MYZHUYE = "http://davidloman.net";
     private final String UPDATASTATUSURL = "http://jwcglxt.qiniudn.com/updataStatus";
     private final String APPLICATIONINFOURL = "http://jwcglxt.qiniudn.com/applictionInfo";
-    //   private final String DATAINFOURL = "http://jwcglxt.qiniudn.com/dataInfo"; // 为低版本保留
     private final String IMAGEINFOURL = "http://jwcglxt.qiniudn.com/imageInfo";
     private final String DEFAULTIMAGEURL = "http://jwcglxt.qiniudn.com/404.jpg";
     //SharedPrefence名称
     public final String APPACCOUNT = "app_account";
     public final String APPUPDATA = "app_updata";
     public final String APPINFO = "app_info";
-//    public final String APPWEBSITE = "app_website";
     //SharedPrefence属性
     public final String VERSION = "version";
     public final String VERSIONCODE = "versioncode";
@@ -56,8 +54,6 @@ public class DataHelper {
     public final String USERNAME = "username";
     public final String PASSWORD = "password";
     public final String UPDATATIME = "updatetime";
-    public final String APPWEBSITE = "appwebsite";
-    public final String DEFAULTWEBSITE = "defaultwebsite";
     public final String WELCOMEIMAGE = "welcomeImage";
     public final String SAVEFILE = "iconImage";
     //私有属性
@@ -147,10 +143,6 @@ public class DataHelper {
         sharedPreferences = null;
     }
 
-    public void setInfo (){
-
-    }
-
     public String getNEWJWCURL() {
         return NEWJWCURL;
     }
@@ -167,17 +159,9 @@ public class DataHelper {
         return MYZHUYE;
     }
 
-    public String getUPDATASTATUSURL() {
-        return UPDATASTATUSURL;
-    }
-
     public String getAPPLICATIONINFOURL() {
         return APPLICATIONINFOURL;
     }
-
-//    public String getDATAINFOURL() {
-//        return DATAINFOURL;
-//    }
 
     public String getIMAGEINFOURL(){
         return IMAGEINFOURL;
@@ -186,7 +170,6 @@ public class DataHelper {
     public String getDEFAULTIMAGEURL(){
         return DEFAULTIMAGEURL;
     }
-
 
     public String getUpdataInfo() {
 

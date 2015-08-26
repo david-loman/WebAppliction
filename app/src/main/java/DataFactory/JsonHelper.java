@@ -13,34 +13,7 @@ import java.util.Map;
  */
 public class JsonHelper {
 
-    private final String LENTH = "len";
-    private final String USERNAME = "username";
-    private final String PASSWORD = "password";
-    private final String APPLICTION = "application";
-    private final String DATA = "data";
     private final String INFO = "info";
-
-    public final String NAME = "name";
-    public final String URL = "url";
-
-    public boolean[] parseUpdataJson(String jsonString) {
-        boolean[] result = new boolean[5];
-
-        try {
-            JSONObject jsonObject = new JSONObject(jsonString);
-            result[0] = jsonObject.getBoolean(APPLICTION);
-            result[1] = jsonObject.getBoolean(DATA);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return result;
-    }
-
-    public Map<String,String> parseImageJson(String jsonString){
-        Map<String,String> map = new HashMap<>();
-        return map;
-    }
 
     public Map<String, String> parseApplictionJson(String jsonString, String[] jsonKey) {
         Map<String, String> data = new HashMap<String, String>();

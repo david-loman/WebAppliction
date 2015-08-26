@@ -24,22 +24,12 @@ import DataFactory.UmengString;
 public class DrawDialog {
 
     private Context context;
-    private String title = null;
     private final String NO = "取消";
     private View view;
-    private EditText editText1, editText2;
-    private TextView textView1, textView2;
-    private ListView listview;
     public final String YES = "确定";
-    public final String NetWorkError = "网络连接错误，请检查设置";
 
     public DrawDialog(Context context) {
         this.context = context;
-    }
-
-    public DrawDialog(Context context, String title) {
-        this.context = context;
-        this.title = title;
     }
 
     //响应数据输入
@@ -55,21 +45,6 @@ public class DrawDialog {
     //响应更新操作
     public AlertDialog getUpdateDialog(String msg, DialogInterface.OnClickListener listener) {
         return new AlertDialog.Builder(context).setTitle("更新信息").setMessage(msg).setNegativeButton(NO, null).setPositiveButton(YES, listener).show();
-    }
-
-    //响应帮助操作
-    public AlertDialog getHelpDialog() {
-        View view = getView(R.layout.help_layout);
-        return new AlertDialog.Builder(context)
-                .setTitle("帮助信息").setView(view)
-                .setNegativeButton("更多", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Uri uri = Uri.parse("https://github.com/david-loman/WebAppliction/blob/master/%E5%B8%AE%E5%8A%A9%E6%96%87%E6%A1%A3.md");
-                        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-                        ((Activity) context).startActivity(intent);
-                    }
-                }).setPositiveButton(YES, null).show();
     }
 
     //响应帮助者操作
@@ -126,50 +101,12 @@ public class DrawDialog {
         };
     }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public EditText getEditText1(int res) {
-        return (EditText) getView(res).findViewById(R.id.usernamedEditText);
-    }
-
     public EditText getEditText1() {
         return (EditText) view.findViewById(R.id.usernamedEditText);
     }
 
-    public EditText getEditText2(int res) {
-        return (EditText) getView(res).findViewById(R.id.passwordedEditText);
-    }
-
     public EditText getEditText2() {
         return (EditText) view.findViewById(R.id.passwordedEditText);
-    }
-
-    public TextView getTextView1(int res) {
-        return (TextView) getView(res).findViewById(R.id.usernamedTextView);
-    }
-
-    public TextView getTextView1() {
-        return (TextView) view.findViewById(R.id.usernamedTextView);
-    }
-
-    public TextView getTextView2(int res) {
-        return (TextView) getView(res).findViewById(R.id.passwordedTextView);
-    }
-
-    public TextView getTextView2() {
-        return (TextView) view.findViewById(R.id.passwordedTextView);
-    }
-
-    public ListView getListview() {
-
-        return (ListView) view.findViewById(R.id.website_list);
-    }
-
-    public ListView getListview(int res) {
-
-        return (ListView) getView(res).findViewById(R.id.website_list);
     }
 
     public View getView(int res) {
