@@ -7,8 +7,8 @@ android {
         applicationId 'com.fromgeoto.nefujwc.webappliction'
         minSdkVersion 9
         targetSdkVersion 21
-        versionCode 1
-        versionName '1.3.0'
+        versionCode 150
+        versionName '1.5.0'
     }
     buildTypes {
         release {
