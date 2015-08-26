@@ -278,7 +278,7 @@ public class MainActivity extends BaseViewActivity {
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawerlayout);
         // 抽屉效果
-        mActionBarDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, mToolbar, R.string.one, R.string.two) {
+        mActionBarDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, mToolbar, R.string.usrname, R.string.password) {
             @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
@@ -382,7 +382,7 @@ public class MainActivity extends BaseViewActivity {
             public void onClick(View view) {
                 clearCookies();
 
-                Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
+                Intent intent = new Intent(MainActivity.this, SettingActivity.class);
                 startActivity(intent);
                 mDrawerLayout.closeDrawer(mItemScrollView);
                 MobclickAgent.onEvent(MainActivity.this, UmengString.VISITSETTINGS);

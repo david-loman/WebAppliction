@@ -2,30 +2,13 @@
 <resources>
 
     <string name="app_name">教务管理系统</string>
-    <string name="action_settings">设置</string>
     <string name="action_exit">退出</string>
-    <string name="action_orientation">屏幕方向</string>
-    <string name="note">提示:</string>
-    <string name="one">1.我是初始页面，你只会在第一次登录看到我</string>
-    <string name="two">2.你可以在这里选择登录到新或者旧教务系统</string>
-    <string name="three">3.新教务系统首次登录时需要填写学号与密码</string>
-    <string name="four">4.旧教务系统苦大仇深，登录时都要学号与密码</string>
-    <string name="five">5.如果你见到我，就说明你刚刚涉足这个新世界，或者你有病了，请从设置-->帮助获取治疗信息</string>
-    <string name="systemSeleciton">系统选择</string>
-    <string name="oldsystem">旧教务系统</string>
-    <string name="newsystem">新教务系统</string>
-    <string name="back">返回</string>
-    <string name="userinfo">账户信息</string>
     <string name="usrname">请输入用户名</string>
     <string name="password">请输入密码</string>
-    <string name="sure">确定</string>
     <string name="updata">检查更新</string>
-    <string name="changes">切换用户</string>
     <string name="user">用户名：</string>
     <string name="psw">密码：</string>
-    <string name="diy">自定义添加</string>
     <string name="developer">开发者</string>
-    <string name="help">帮助</string>
     <string name="currenSystem">帐号类型：</string>
     <string name="currenUser">用户姓名：</string>
 

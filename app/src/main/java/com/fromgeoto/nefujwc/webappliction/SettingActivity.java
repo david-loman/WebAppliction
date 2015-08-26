@@ -16,7 +16,7 @@ import DataFactory.UmengString;
 /**
  * Created by David on 2014/8/28.
  */
-public class SettingsActivity extends BaseViewActivity {
+public class SettingActivity extends BaseViewActivity {
 
     private Button mDevButton, mClearButton, mUpdateButton, mSuggestionButton;
     private TextView mStudentNameTextView, mStudentTypeTextView;
@@ -24,7 +24,7 @@ public class SettingsActivity extends BaseViewActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.settings);
+        setContentView(R.layout.activity_setting);
 
         initView();
         showInfo();
@@ -71,8 +71,9 @@ public class SettingsActivity extends BaseViewActivity {
             public void onClick(View v) {
                 mDataHelper.deleteSharedPreferences(mDataHelper.APPINFO);
                 mDataHelper.deleteSharedPreferences(mDataHelper.APPACCOUNT);
+                MobclickAgent.onEvent(SettingActivity.this,UmengString.CLEARDATA);
+                Toast.makeText(SettingActivity.this, "账户信息删除完成，请重新登录", Toast.LENGTH_SHORT).show();
                 goNextActivity(false);
-                Toast.makeText(SettingsActivity.this, "账户信息删除完成，请重新登录", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -84,7 +85,7 @@ public class SettingsActivity extends BaseViewActivity {
     }
 
     private void updata() {
-        MobclickAgent.onEvent(SettingsActivity.this, UmengString.CHECKUPDATA);
+        MobclickAgent.onEvent(SettingActivity.this, UmengString.CHECKUPDATA);
         if (Integer.parseInt(mDataHelper.getSharedPreferencesValue(mDataHelper.APPUPDATA, mDataHelper.COUNT)) != 0) {
             mDrawerLayout.getUpdateDialog(mDataHelper.getUpdataInfo(), mDrawerLayout.downloadListener(mDataHelper.getSharedPreferencesValue(mDataHelper.APPUPDATA, mDataHelper.URL)));
         } else {
@@ -109,7 +110,7 @@ public class SettingsActivity extends BaseViewActivity {
 
     @Override
     protected void goNextActivity(boolean isComplete) {
-        Intent intent = new Intent(SettingsActivity.this,LoginActivity.class);
+        Intent intent = new Intent(SettingActivity.this,LoginActivity.class);
         startActivity(intent);
         finish();
         return;
