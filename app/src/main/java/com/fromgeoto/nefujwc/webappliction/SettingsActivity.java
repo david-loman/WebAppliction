@@ -1,6 +1,7 @@
 package com.fromgeoto.nefujwc.webappliction;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.*;
 import android.view.View;
 import android.widget.Button;
@@ -10,20 +11,15 @@ import android.widget.Toast;
 import com.umeng.analytics.MobclickAgent;
 
 import BaseView.BaseViewActivity;
-import DataFactory.DataHelper;
 import DataFactory.UmengString;
-import DrawItem.DrawDialog;
 
 /**
  * Created by David on 2014/8/28.
  */
 public class SettingsActivity extends BaseViewActivity {
 
-    private Button devButton, clearButton, updateButton;
-    private TextView studentNameTextView, studentTypeTextView;
-
-    private DataHelper dataHelper = new DataHelper(this);
-    private DrawDialog drawDialog = new DrawDialog(this);
+    private Button mDevButton, mClearButton, mUpdateButton, mSuggestionButton;
+    private TextView mStudentNameTextView, mStudentTypeTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,27 +40,37 @@ public class SettingsActivity extends BaseViewActivity {
         super.onResume();
         MobclickAgent.onResume(this);
 
-        updateButton.setOnClickListener(new View.OnClickListener() {
+        mSuggestionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent internt = new Intent(Intent.ACTION_SENDTO);
+                internt.setData(Uri.parse("mailto:790955623@qq.com"));
+                internt.putExtra(Intent.EXTRA_SUBJECT,"反馈");
+                startActivity(internt);
+            }
+        });
+
+        mUpdateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 updata();
             }
         });
 
-        devButton.setOnClickListener(new View.OnClickListener() {
+        mDevButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                drawDialog.getDeeveloperDialog(dataHelper.getMYWEIBO(), dataHelper.getMYZHIHU(), dataHelper.getMYZHUYE());
+                mDrawerLayout.getDeeveloperDialog(mDataHelper.getMYWEIBO(), mDataHelper.getMYZHIHU(), mDataHelper.getMYZHUYE());
             }
         });
 
-        devButton.setOnLongClickListener(drawDialog.thansListener());
+        mDevButton.setOnLongClickListener(mDrawerLayout.thansListener());
 
-        clearButton.setOnClickListener(new View.OnClickListener() {
+        mClearButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dataHelper.deleteSharedPreferences(dataHelper.APPINFO);
-                dataHelper.deleteSharedPreferences(dataHelper.APPACCOUNT);
+                mDataHelper.deleteSharedPreferences(mDataHelper.APPINFO);
+                mDataHelper.deleteSharedPreferences(mDataHelper.APPACCOUNT);
                 goNextActivity(false);
                 Toast.makeText(SettingsActivity.this, "账户信息删除完成，请重新登录", Toast.LENGTH_SHORT).show();
             }
@@ -79,25 +85,26 @@ public class SettingsActivity extends BaseViewActivity {
 
     private void updata() {
         MobclickAgent.onEvent(SettingsActivity.this, UmengString.CHECKUPDATA);
-        if (Integer.parseInt(dataHelper.getSharedPreferencesValue(dataHelper.APPUPDATA, dataHelper.COUNT)) != 0) {
-            drawDialog.getUpdateDialog(dataHelper.getUpdataInfo(), drawDialog.downloadListener(dataHelper.getSharedPreferencesValue(dataHelper.APPUPDATA, dataHelper.URL)));
+        if (Integer.parseInt(mDataHelper.getSharedPreferencesValue(mDataHelper.APPUPDATA, mDataHelper.COUNT)) != 0) {
+            mDrawerLayout.getUpdateDialog(mDataHelper.getUpdataInfo(), mDrawerLayout.downloadListener(mDataHelper.getSharedPreferencesValue(mDataHelper.APPUPDATA, mDataHelper.URL)));
         } else {
-            drawDialog.getErrorDialog("更新信息", "当前已是最高版本", null);
+            mDrawerLayout.getErrorDialog("更新信息", "当前已是最高版本", null);
         }
     }
 
     private void showInfo() {
-        studentTypeTextView.setText(dataHelper.getSharedPreferencesValue(dataHelper.APPACCOUNT, dataHelper.USERTYPE));
-        studentNameTextView.setText(dataHelper.getSharedPreferencesValue(dataHelper.APPACCOUNT, dataHelper.USERNAME));
+        mStudentTypeTextView.setText(mDataHelper.getSharedPreferencesValue(mDataHelper.APPACCOUNT, mDataHelper.USERTYPE));
+        mStudentNameTextView.setText(mDataHelper.getSharedPreferencesValue(mDataHelper.APPACCOUNT, mDataHelper.USERNAME));
     }
 
     @Override
     protected void initView() {
-        updateButton = (Button) findViewById(R.id.updataButton);
-        devButton = (Button) findViewById(R.id.developerButton);
-        clearButton = (Button) findViewById(R.id.clearButton);
-        studentNameTextView = (TextView) findViewById(R.id.student_name_value);
-        studentTypeTextView = (TextView) findViewById(R.id.student_type_value);
+        mUpdateButton = (Button) findViewById(R.id.updataButton);
+        mDevButton = (Button) findViewById(R.id.developerButton);
+        mClearButton = (Button) findViewById(R.id.clearButton);
+        mSuggestionButton=(Button)findViewById(R.id.suggestionButton);
+        mStudentNameTextView = (TextView) findViewById(R.id.student_name_value);
+        mStudentTypeTextView = (TextView) findViewById(R.id.student_type_value);
     }
 
     @Override
