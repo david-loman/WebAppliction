@@ -1,36 +1,23 @@
 package com.fromgeoto.nefujwc.webappliction;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.*;
-import android.os.Process;
-import android.support.v7.app.ActionBarActivity;
-import android.text.InputType;
-import android.text.method.HideReturnsTransformationMethod;
-import android.view.Menu;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.umeng.analytics.MobclickAgent;
 
-import java.io.File;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import BaseView.BaseViewActivity;
 import DataFactory.DataHelper;
-import DataFactory.JsonHelper;
 import DataFactory.UmengString;
 import DrawItem.DrawDialog;
 
 /**
  * Created by David on 2014/8/28.
  */
-public class MenuActivity extends BaseViewActivity{
+public class MenuActivity extends BaseViewActivity {
 
     private Button devButton, clearButton, updateButton;
     private TextView studentNameTextView, studentTypeTextView;
@@ -76,12 +63,10 @@ public class MenuActivity extends BaseViewActivity{
         clearButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                dataHelper.deleteSharedPreferences(dataHelper.APPINFO);
                 dataHelper.deleteSharedPreferences(dataHelper.APPACCOUNT);
+                goNextActivity(false);
                 Toast.makeText(MenuActivity.this, "账户信息删除完成，请重新登录", Toast.LENGTH_SHORT).show();
-                // 跳转并清除父Actitity
-                Intent intent= new Intent(MenuActivity.this, LoginActivity.class);
-                startActivity(intent);
-                finish();
             }
         });
     }
@@ -117,6 +102,9 @@ public class MenuActivity extends BaseViewActivity{
 
     @Override
     protected void goNextActivity(boolean isComplete) {
-        return ;
+        Intent intent = new Intent(MenuActivity.this,LoginActivity.class);
+        startActivity(intent);
+        finish();
+        return;
     }
 }

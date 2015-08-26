@@ -72,7 +72,7 @@ public class MainActivity extends BaseViewActivity {
     protected void onRestart() {
         super.onRestart();
         // 补丁 防止回退的时候跳出 MainActivity
-        if (mDataHelper.getSharedPreferencesValue(mDataHelper.APPACCOUNT, mDataHelper.URL).contains(mDataHelper.URL)) {
+        if (mDataHelper.getSharedPreferencesValue(mDataHelper.APPINFO, mDataHelper.UPDATATIME).contains(mDataHelper.UPDATATIME)) {
             finish();
         }
     }
