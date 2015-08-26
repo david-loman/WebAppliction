@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -48,11 +49,11 @@ public class MainActivity extends BaseViewActivity {
             mSignupLinearLayout, mAppraiseLinearLayout, mCalendarLinearLayout, mGuestLinearLayout, mSettingsLinearLayout, mHelpLinearLayout;
     private ScrollView mItemScrollView;
     private ActionBarDrawerToggle mActionBarDrawerToggle;
-    
+
     private final String USERNAME = "USERNAME";
     private final String PASSWORD = "PASSWORD";
     private DrawDialog mDrawDialog = new DrawDialog(this);
-    
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,10 +61,6 @@ public class MainActivity extends BaseViewActivity {
 
         initView();
         setmWebView();
-        // 补丁 防止回退的时候跳出 MainActivity
-        if (mDataHelper.URL.equals(mDataHelper.getSharedPreferencesValue(mDataHelper.APPACCOUNT,mDataHelper.URL))){
-            finish();
-        }
     }
 
     @Override
@@ -74,6 +71,10 @@ public class MainActivity extends BaseViewActivity {
     @Override
     protected void onRestart() {
         super.onRestart();
+        // 补丁 防止回退的时候跳出 MainActivity
+        if (mDataHelper.getSharedPreferencesValue(mDataHelper.APPACCOUNT, mDataHelper.URL).contains(mDataHelper.URL)) {
+            finish();
+        }
     }
 
     @Override
@@ -135,11 +136,15 @@ public class MainActivity extends BaseViewActivity {
     }
 
     private void doLogin(boolean b) {
-        if (b) {
-            login();
+        if (isFinishing()) {
+            return;
         } else {
-            Toast.makeText(getApplicationContext(), "登录信息出错，通过备用方式登录。", Toast.LENGTH_SHORT).show();
-            login(mDataHelper.getSharedPreferencesValue(mDataHelper.APPACCOUNT, mDataHelper.USERID), mDataHelper.getSharedPreferencesValue(mDataHelper.APPACCOUNT, mDataHelper.PASSWORD));
+            if (b) {
+                login();
+            } else {
+                Toast.makeText(getApplicationContext(), "登录信息出错，通过备用方式登录。", Toast.LENGTH_SHORT).show();
+                login(mDataHelper.getSharedPreferencesValue(mDataHelper.APPACCOUNT, mDataHelper.USERID), mDataHelper.getSharedPreferencesValue(mDataHelper.APPACCOUNT, mDataHelper.PASSWORD));
+            }
         }
     }
 
@@ -182,7 +187,7 @@ public class MainActivity extends BaseViewActivity {
         if (id == R.id.action_exit) {
             MobclickAgent.onKillProcess(this);
             this.finish();
-        }  else if (id == R.id.action_share) {
+        } else if (id == R.id.action_share) {
             MobclickAgent.onEvent(this, UmengString.SHAREAPPLICTION);
             share();
         }
