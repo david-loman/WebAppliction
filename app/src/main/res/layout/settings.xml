@@ -37,6 +37,18 @@
             android:textStyle="bold" />
         -->
         <Button
+            android:id="@+id/suggestionButton"
+            android:background="#FFFFFF"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginLeft="16dp"
+            android:gravity="center_vertical"
+            android:text="建议与反馈"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            />
+
+        <Button
             android:id="@+id/updataButton"
             android:layout_width="match_parent"
             android:layout_height="48dp"
@@ -53,7 +65,7 @@
             android:background="#FFFFFF"
             android:layout_marginLeft="16dp"
             android:gravity="center_vertical"
-            android:text="清除数据"
+            android:text="清除账户"
             android:textSize="18sp"
             android:textStyle="bold" />
         <Button
@@ -67,17 +79,6 @@
             android:layout_marginLeft="16dp"
             android:textStyle="bold" />
 
-       <!-- <Button
-            android:id="@+id/logoutButton"
-            android:background="#FFFFFF"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:layout_marginLeft="16dp"
-            android:gravity="center_vertical"
-            android:text="退出登录"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            /> -->
         <View
             android:background="#B6B6B6"
             android:layout_width="match_parent"

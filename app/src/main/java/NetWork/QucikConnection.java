@@ -150,7 +150,7 @@ public class QucikConnection {
         }
     }
 
-    public void DownloadApplication(String url) {
+    public void downloadApplication(String url) {
 
     }
 

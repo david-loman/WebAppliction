@@ -60,8 +60,8 @@ public class MainActivity extends BaseViewActivity {
 
         initView();
         setmWebView();
-        // 补丁
-        if (mDataHelper.UPDATATIME.equals(mDataHelper.getSharedPreferencesValue(mDataHelper.APPINFO,mDataHelper.UPDATATIME))){
+        // 补丁 防止回退的时候跳出 MainActivity
+        if (mDataHelper.URL.equals(mDataHelper.getSharedPreferencesValue(mDataHelper.APPACCOUNT,mDataHelper.URL))){
             finish();
         }
     }

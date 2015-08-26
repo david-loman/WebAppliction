@@ -76,11 +76,12 @@ public class MenuActivity extends BaseViewActivity{
         clearButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dataHelper.deleteSharedPreferences(dataHelper.APPUPDATA);
-                dataHelper.deleteSharedPreferences(dataHelper.APPINFO);
                 dataHelper.deleteSharedPreferences(dataHelper.APPACCOUNT);
-                android.os.Process.killProcess(Process.myPid());
-                Toast.makeText(MenuActivity.this, "网址已清除", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MenuActivity.this, "账户信息删除完成，请重新登录", Toast.LENGTH_SHORT).show();
+                // 跳转并清除父Actitity
+                Intent intent= new Intent(MenuActivity.this, LoginActivity.class);
+                startActivity(intent);
+                finish();
             }
         });
     }
