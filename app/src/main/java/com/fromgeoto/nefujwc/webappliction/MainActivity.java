@@ -388,7 +388,7 @@ public class MainActivity extends BaseViewActivity {
         mHelpLinearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mDrawDialog.getHelpDialog();
+                mWebView.loadUrl("file:///android_asset/html/help.html");
                 mDrawerLayout.closeDrawer(mItemScrollView);
                 MobclickAgent.onEvent(MainActivity.this, UmengString.SHOWHELP);
             }
