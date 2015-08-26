@@ -32,7 +32,7 @@
             android:name=".MainActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
-            android:name=".MenuActivity"
+            android:name=".SettingsActivity"
             android:parentActivityName=".MainActivity" />
         <activity android:name=".InitActivity" />
         <activity

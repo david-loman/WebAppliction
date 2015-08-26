@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -33,7 +32,6 @@ import org.apache.http.util.EncodingUtils;
 import java.util.HashMap;
 
 import BaseView.BaseViewActivity;
-import DataFactory.JsonHelper;
 import DataFactory.UmengString;
 import DrawItem.DrawDialog;
 
@@ -384,7 +382,7 @@ public class MainActivity extends BaseViewActivity {
             public void onClick(View view) {
                 clearCookies();
 
-                Intent intent = new Intent(MainActivity.this, MenuActivity.class);
+                Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
                 startActivity(intent);
                 mDrawerLayout.closeDrawer(mItemScrollView);
                 MobclickAgent.onEvent(MainActivity.this, UmengString.VISITSETTINGS);

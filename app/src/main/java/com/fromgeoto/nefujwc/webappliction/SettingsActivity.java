@@ -17,7 +17,7 @@ import DrawItem.DrawDialog;
 /**
  * Created by David on 2014/8/28.
  */
-public class MenuActivity extends BaseViewActivity {
+public class SettingsActivity extends BaseViewActivity {
 
     private Button devButton, clearButton, updateButton;
     private TextView studentNameTextView, studentTypeTextView;
@@ -66,7 +66,7 @@ public class MenuActivity extends BaseViewActivity {
                 dataHelper.deleteSharedPreferences(dataHelper.APPINFO);
                 dataHelper.deleteSharedPreferences(dataHelper.APPACCOUNT);
                 goNextActivity(false);
-                Toast.makeText(MenuActivity.this, "账户信息删除完成，请重新登录", Toast.LENGTH_SHORT).show();
+                Toast.makeText(SettingsActivity.this, "账户信息删除完成，请重新登录", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -78,7 +78,7 @@ public class MenuActivity extends BaseViewActivity {
     }
 
     private void updata() {
-        MobclickAgent.onEvent(MenuActivity.this, UmengString.CHECKUPDATA);
+        MobclickAgent.onEvent(SettingsActivity.this, UmengString.CHECKUPDATA);
         if (Integer.parseInt(dataHelper.getSharedPreferencesValue(dataHelper.APPUPDATA, dataHelper.COUNT)) != 0) {
             drawDialog.getUpdateDialog(dataHelper.getUpdataInfo(), drawDialog.downloadListener(dataHelper.getSharedPreferencesValue(dataHelper.APPUPDATA, dataHelper.URL)));
         } else {
@@ -102,7 +102,7 @@ public class MenuActivity extends BaseViewActivity {
 
     @Override
     protected void goNextActivity(boolean isComplete) {
-        Intent intent = new Intent(MenuActivity.this,LoginActivity.class);
+        Intent intent = new Intent(SettingsActivity.this,LoginActivity.class);
         startActivity(intent);
         finish();
         return;
