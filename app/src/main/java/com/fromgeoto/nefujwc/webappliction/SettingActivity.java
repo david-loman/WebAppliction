@@ -12,6 +12,7 @@ import com.umeng.analytics.MobclickAgent;
 
 import BaseView.BaseViewActivity;
 import DataFactory.UmengString;
+import DrawItem.DrawDialog;
 
 /**
  * Created by David on 2014/8/28.
@@ -106,6 +107,8 @@ public class SettingActivity extends BaseViewActivity {
         mSuggestionButton=(Button)findViewById(R.id.suggestionButton);
         mStudentNameTextView = (TextView) findViewById(R.id.student_name_value);
         mStudentTypeTextView = (TextView) findViewById(R.id.student_type_value);
+        // bugfixed
+        mDrawerLayout = new DrawDialog(this);
     }
 
     @Override
